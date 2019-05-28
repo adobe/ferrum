@@ -1,0 +1,8 @@
+coverage
+.nyc_output/
+node_modules/
+junit
+tmp
+logs
+.DS_Store
+test-results.xml

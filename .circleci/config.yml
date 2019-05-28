@@ -1,0 +1,104 @@
+version: 2.1
+executors:
+  node8:
+    docker:
+    - image: circleci/node:8
+    environment:
+      NPM_CONFIG_PREFIX: ~/.npm-global
+
+commands:
+  setup:
+    steps:
+    - checkout
+    - restore_cache:
+        keys:
+        - v1-dependencies-{{ arch }}-{{ checksum "package-lock.json" }}
+    - run:
+        name: install npm 6.4.1
+        command: sudo npm -g install npm@6.4.1
+    - run:
+        name: Installing Dependencies
+        command: npm install
+    - save_cache:
+        paths:
+        - node_modules
+        key: v1-dependencies-{{ arch }}-{{ checksum "package-lock.json" }}
+    - run:
+        name: prepare test git user
+        command: git config --global user.email "circleci@example.com" && git config --global user.name "CircleCi Build"
+
+jobs:
+  build:
+    executor: node8
+
+    steps:
+    - setup
+    - run: mkdir junit
+    - run:
+        name: Lint
+        command: npm run lint
+
+    # test & get code coverage
+    - run:
+        name: Getting Code Coverage
+        command: circleci tests glob test/test*.js | circleci tests split --split-by=timings | xargs ./node_modules/.bin/istanbul cover ./node_modules/mocha/bin/_mocha -- -R mocha-junit-reporter --exit && npx codecov
+        environment:
+          MOCHA_FILE: junit/test-results.xml
+
+    - store_test_results:
+        path: junit
+
+    - store_artifacts:
+        path: junit
+
+  publish-pre-release:
+    executor: node8
+
+    steps:
+    - setup
+
+    # uncomment and add proper fingerprint of the github.com R/W private key
+    #- add_ssh_keys:
+    #    fingerprints:
+    #    - "6c:30:89:4d:a5:0f:8a:89:a7:4d:bb:98:d3:59:c4:f7"
+
+    - run:
+        name: revert changes to package-lock.json
+        command: git checkout -- package-lock.json
+
+    - run:
+        name: configure npm registry
+        command: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> ~/.npmrc
+
+    - run:
+        name: version pre-release
+        command: npm version prerelease --preid=pre -m "Release %s [ci skip]"
+        environment:
+          MOCHA_FILE: junit/test-results.xml
+
+    - store_test_results:
+        path: junit
+
+    # unfortunately we cannot create a release commit with no tag with `npm version`, so we need to delete it here again
+    - run:
+        name: delete pre-release tag
+        command: npm run delete-git-tag
+
+    - run:
+        name: publish pre-release
+        command: npm publish --tag next --access public
+
+workflows:
+  version: 2
+  build:
+    jobs:
+    - build
+    # the publish-pre-release jobs needs a $NPM_TOKEN environment to be setup and also have a
+    # valid SSH_KEY added for the `github.com` host.
+    - publish-pre-release:
+        requires:
+        - build
+        filters:
+          branches:
+            # rename to `master` once $NPM_TOKEN and github.com ssh key is setup.
+            only: master_disabled
