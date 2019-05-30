@@ -1,0 +1,23 @@
+{
+    "plugins": [
+      "plugins/markdown",
+      "plugins/underscore"
+    ],
+    "source": {
+      "include": ["./src/"]
+    },
+    "opts": {
+      "recurse": "true",
+      "readme": "./README.md",
+      "package": "./package.json",
+      "destination": "./docs/",
+      "template": "node_modules/docdash"
+    },
+    "docdash": {
+      "static": true,
+      "sort": true,
+      "search": true,
+      "wrap": true,
+      "typedefs": true
+    }
+}
