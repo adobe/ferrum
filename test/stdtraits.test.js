@@ -14,202 +14,14 @@
 /* global describe, it */
 const assert = require('assert');
 const {
-  compose, typedArrays, isdef, type, typename, isPrimitive, HybridWeakMap,
-  TraitNotImplemented, Trait, supports, valueSupports, typeIsImmutable,
-  isImmutable, assertEquals, assertUneq, size, empty, Size, shallowclone,
-  deepclone, pairs, keys, values, get, has, assign, del, setdefault, replace,
-  each, dict, uniq, range0, map, all, first, takeDef, zip, count, extend,
+  compose, _typedArrays, type, HybridWeakMap, TraitNotImplemented,
+  typeIsImmutable, isImmutable, assertEquals, assertUneq, size, empty, Size,
+  shallowclone, deepclone, pairs, keys, values, get, has, assign, del,
+  setdefault, replace, each, dict, uniq, range0, map, all, first, takeDef, zip,
+  count, extend,
 } = require('../src/index');
 const { ckEqSeq, ckThrows } = require('./util');
 
-it('isdef()', () => {
-  each([null, undefined], v => assert(!isdef(v)));
-  each([false, [], {}, 0], v => assert(isdef(v)));
-});
-
-it('type()', () => {
-  assert.strictEqual(type(null), null);
-  assert.strictEqual(type(undefined), undefined);
-  assert.strictEqual(type(2), Number);
-  assert.strictEqual(type({}), Object);
-});
-
-it('typename()', () => {
-  const examples = {
-    null: null,
-    undefined,
-    Number:
-   22,
-    Object: {},
-    Map: new Map(),
-  };
-
-  each(examples, ([k, v]) => assert.strictEqual(typename(type(v)), k));
-});
-
-it('isPrimitive()', () => {
-  assert(isPrimitive(null));
-  assert(isPrimitive(undefined));
-  assert(isPrimitive(0));
-  assert(isPrimitive(true));
-  assert(isPrimitive('hello'));
-  assert(isPrimitive(Symbol('')));
-  assert(!isPrimitive({}));
-  // eslint-disable-next-line no-new-wrappers
-  assert(!isPrimitive(new Number(0)));
-});
-
-it('HybridWeakMap', () => {
-  const o1 = {};
-  const o2 = {};
-  const m = new HybridWeakMap([[null, 22], [1, 42], [o1, 13], [Function, 44]]);
-  m.set(o2, 14);
-  m.set(Object, 99);
-  m.set(2, 32);
-  m.set(null, 24);
-  m.set(Function, 49);
-
-  assert.strictEqual(m.get(null), 24);
-  assert.strictEqual(m.get(1), 42);
-  assert.strictEqual(m.get(o1), 13);
-  assert.strictEqual(m.get(Function), 49);
-  assert.strictEqual(m.get(o2), 14);
-  assert.strictEqual(m.get(Object), 99);
-  assert.strictEqual(m.get(2), 32);
-  assert.strictEqual(m.get(44), undefined);
-  assert.strictEqual(m.get({}), undefined);
-  assert.strictEqual(m.get(undefined), undefined);
-
-  assert(m.has(o1));
-  assert(m.has(o2));
-  assert(m.has(Object));
-  assert(m.has(2));
-  assert(m.has(null));
-  assert(!m.has(undefined));
-  assert(!m.has(44));
-  assert(!m.has({}));
-
-  m.delete(Object);
-  m.delete(2);
-  assert(!m.has(Object));
-  assert(!m.has(2));
-  assert(m.has(o1));
-  assert(m.has(o2));
-
-  // The rest must be stored in the weak map
-  assert.strictEqual(size(m.primitives), 2);
-});
-
-describe('Trait', () => {
-  const Foo = new Trait('Foo');
-  let callcount = 0;
-
-  Foo.implStatic(42, () => {
-    callcount += 1;
-    return 'static_42';
-  });
-
-  Foo.implStatic(undefined, () => {
-    callcount += 1;
-    return 'static_undef';
-  });
-
-  Foo.implStatic('hello', () => {
-    callcount += 1;
-    return 'static_hello';
-  });
-
-  Foo.impl(Object, () => {
-    callcount += 1;
-    return 'dynamic_obj';
-  });
-
-  Foo.impl(String, () => {
-    callcount += 1;
-    return 'dynamic_str';
-  });
-
-  class Bar {
-    [Foo.sym]() {
-      callcount += 1;
-      return 'prop_bar';
-    }
-  }
-  class Baz extends Bar {}
-
-  class Bang {}
-  class Borg {}
-
-  const SubFoo = new Trait('SubFoo');
-  SubFoo.impl(Borg, () => 'subfoo');
-
-  const SubBar = new Trait('SubBar');
-  SubBar.impl(Borg, () => 'subbar');
-
-  Foo.implDerived([SubFoo, SubBar], ([sf, sb], v) => {
-    assert(v instanceof Borg);
-    callcount += 1;
-    return `${sf(v)}_${sb(v)}`;
-  });
-
-  Foo.implWildStatic((nr) => {
-    const fn = () => {
-      callcount += 1;
-      return 'wild_neg';
-    };
-    return type(nr) === Number && nr < 0 ? fn : undefined;
-  });
-
-  const o1 = Function;
-  Foo.implWild(what => (what === o1 ? (() => {
-    callcount += 1;
-    return 'wild_o1';
-  }) : undefined));
-
-  const examples = [
-    [42, 'static_42'],
-    [undefined, 'static_undef'],
-    ['hello', 'static_hello'],
-    ['hello ', 'dynamic_str'],
-    ['hel', 'dynamic_str'],
-    [{}, 'dynamic_obj'],
-    [{ foo: 42 }, 'dynamic_obj'],
-    [new Bar(), 'prop_bar'],
-    [new Baz(), 'prop_bar'],
-    [new Borg(), 'subfoo_subbar'],
-    [-1, 'wild_neg'],
-    [-100, 'wild_neg'],
-    [o1, 'wild_o1'],
-  ];
-
-  each(examples, ([what, expect]) => {
-    it(`yields ${expect} for ${what}`, () => {
-      callcount = 0;
-      assert(valueImplements(what));
-      assert.strictEqual(Foo.invoke(what), expect);
-      assert.strictEqual(callcount, 1);
-    });
-  });
-
-  it('supports()', () => {
-    assert(supports(String, Foo));
-    assert(supports(Object, Foo));
-    assert(supports(Bar, Foo));
-    assert(supports(Baz, Foo));
-    assert(!supports(Number, Foo));
-  });
-
-  each([13, new Bang(), null], (what) => {
-    const err = ckThrows(Error, () => Foo.invoke(what));
-    assert.strictEqual(err.trait, Foo);
-  });
-
-  it('supports different symbols', () => {
-    const s = Symbol('Boom');
-    const Boom = new Trait('Boom', s);
-    assert.strictEqual(s, Boom.sym);
-  });
-});
 
 it('Immutable', () => {
   each([String, Number, Symbol, undefined, RegExp, Function], (Typ) => {
@@ -252,7 +64,7 @@ it('size(), empty(), count()', () => {
   ck(new Bang(), 42);
   ck(new Baz(), 23);
 
-  each(typedArrays, (Typ) => {
+  each(_typedArrays, (Typ) => {
     ck(new Typ([]), 0);
     ck(new Typ([1, 2]), 2);
   });
@@ -298,7 +110,7 @@ describe('Equals', () => {
     () => new Map(),
     () => new Set(),
     () => new Set(['foo', 42]),
-    ...(map(typedArrays, Typ => () => new Typ([1, 2, 3, 4]))),
+    ...(map(_typedArrays, Typ => () => new Typ([1, 2, 3, 4]))),
   ];
 
 
@@ -393,13 +205,13 @@ it('Shallowclone', () => {
   assert(se !== se2);
   assert.strictEqual(first(se2), first(se));
 
-  each(typedArrays, (Typ) => {
+  each(_typedArrays, (Typ) => {
     const orig = new Typ([1, 2, 3, 4]);
     const nu = ck();
     assert(orig !== nu);
   });
 
-  each([new Date(), ...map(typedArrays, Typ => new Typ([1, 2, 3]))], (val) => {
+  each([new Date(), ...map(_typedArrays, Typ => new Typ([1, 2, 3]))], (val) => {
     const nu = ck(val);
     assert(val !== nu);
   });
@@ -427,7 +239,7 @@ it('Deepclone', () => {
   assertEquals(m, m2);
   assert.strictEqual(first(keys(m)), first(keys(m2)));
 
-  each(typedArrays, (Typ) => {
+  each(_typedArrays, (Typ) => {
     const orig = new Typ([1, 2, 3, 4]);
     const nu = deepclone(orig);
     assert.strictEqual(type(orig), type(nu));
@@ -435,7 +247,7 @@ it('Deepclone', () => {
     assert(orig !== nu);
   });
 
-  each([new Date(), ...map(typedArrays, Typ => new Typ([1, 2, 3]))], (val) => {
+  each([new Date(), ...map(_typedArrays, Typ => new Typ([1, 2, 3]))], (val) => {
     const nu = deepclone(val);
     assert.strictEqual(type(val), type(nu));
     assertEquals(val, nu);
@@ -456,7 +268,7 @@ it('Pairs', () => {
   ckEqSeq(pairs({ hello: 'world' }), [['hello', 'world']]);
   ckEqSeq(pairs(dict({ hello: 'world' })), [['hello', 'world']]);
 
-  each(typedArrays, (Typ) => {
+  each(_typedArrays, (Typ) => {
     ckEqSeq(pairs(new Typ([42, 23])), [[0, 42], [1, 23]]);
   });
 });
@@ -469,7 +281,7 @@ it('keys', () => {
   ckEqSeq(keys(new Set(['foo'])), ['foo']);
   ckEqSeq(keys({ hello: 'world' }), ['hello']);
   ckEqSeq(keys(dict({ hello: 'world' })), ['hello']);
-  each(typedArrays, (Typ) => {
+  each(_typedArrays, (Typ) => {
     ckEqSeq(keys(new Typ([42, 23])), [0, 1]);
   });
 });
@@ -482,7 +294,7 @@ it('values', () => {
   ckEqSeq(values(new Set(['foo'])), ['foo']);
   ckEqSeq(values({ hello: 'world' }), ['world']);
   ckEqSeq(values(dict({ hello: 'world' })), ['world']);
-  each(typedArrays, (Typ) => {
+  each(_typedArrays, (Typ) => {
     ckEqSeq(values(new Typ([42, 23])), [42, 23]);
   });
 });
@@ -516,7 +328,7 @@ it('Get', () => {
   ck(wm, {}, undefined);
   ck(wse, {}, undefined);
 
-  each(typedArrays, (Typ) => {
+  each(_typedArrays, (Typ) => {
     ck(new Typ([42, 23]), 1, 23);
   });
 });
@@ -546,7 +358,7 @@ it('Has', () => {
   assert(has(se, 'foo'));
   assert(!has(se, -1));
 
-  each(typedArrays, (Typ) => {
+  each(_typedArrays, (Typ) => {
     const cont = new Typ([42, 23]);
     assert(has(cont, 1));
     assert(!has(cont, 4));
@@ -577,7 +389,7 @@ it('Assign', () => {
   ckThrows(Error, () => assign(se, 4, 5));
   assertEquals(se, uniq(['foo', 4]));
 
-  each(typedArrays, (Typ) => {
+  each(_typedArrays, (Typ) => {
     const cont = new Typ([42, 23]);
     assign(cont, 0, 22);
     assertEquals(cont, new Typ([22, 23]));

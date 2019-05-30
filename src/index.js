@@ -10,9 +10,13 @@
  * governing permissions and limitations under the License.
  */
 
+/* eslint-disable global-require */
+
 module.exports = {
+  ...require('./typesafe'),
   ...require('./functional'),
   ...require('./op'),
-  ...require('./types'),
+  ...require('./trait'),
+  ...require('./stdtraits'),
   ...require('./sequence'),
 };

@@ -19,13 +19,17 @@ const { curry, pipe } = require('./functional');
 const {
   plus, or, mul, and,
 } = require('./op');
+const { type } = require('./typesafe');
+const { Trait } = require('./trait');
 const {
-  size, type, Trait, Size, pairs, eq, empty, typedArrays,
-} = require('./types');
+  size, Size, pairs, eq, empty, _typedArrays,
+} = require('./stdtraits');
 
 // ITERATOR GENERATORS ///////////////////////////////////////
 
 /**
+ * @module seqeuence
+ * @description
  * Generic library for advanced utilization of es6 iterators.
  *
  * map, fold and so on...
@@ -167,13 +171,15 @@ const {
  * @returns {Iterator}
  * @yields The data from the given elements
  */
-const iter = (v) => Sequence.invoke(v);
+const iter = v => Sequence.invoke(v);
 
 /**
  * Trait for any iterable type.
  *
  * Uses the `Symbol.iterator` Symbol, so this is implemented for any
  * type that implements the iterator protocol.
+ *
+ * @interface
  */
 const Sequence = new Trait('Sequence', Symbol.iterator);
 Sequence.impl(Object, pairs);
@@ -459,12 +465,14 @@ const into = curry('into', (seq, t) => Into.invoke(t, seq));
  * const seq = concat([[99, 42]], new Map(true, 23), {bar: 13});
  * into(seq, Map) # Map( 99 => 42, true => 23, bar => 13 )
  * ```
+ *
+ * @interface
  */
 const Into = new Trait('Into');
 Into.implStatic(Array, (t, v) => list(v));
 Into.implStatic(String, (t, v) => join(v, ''));
 Into.implStatic(Object, (t, v) => obj(v));
-each([Set, Map, WeakSet, WeakMap, ...typedArrays], (Typ) => {
+each([Set, Map, WeakSet, WeakMap, ..._typedArrays], (Typ) => {
   Into.implStatic(Typ, (t, v) => new Typ(iter(v)));
 });
 
@@ -942,9 +950,10 @@ const lookahead = curry('lookahead', (seq, no, filler) => {
  * assert(z.constructor === Set)
  * ```
  *
- * @param {Any} v The value to transform
+ * @template T Just any type
+ * @param {T} v The value to transform
  * @param {Function} Fn The transformation function
- * @returns {typeof v}
+ * @returns {T}
  */
 const mod = curry('mod', (v, fn) => into(type(v))(fn(v)));
 

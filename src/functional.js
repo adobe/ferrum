@@ -10,21 +10,67 @@
  * governing permissions and limitations under the License.
  */
 
-/** Generic library for functional programming & working with function */
+/**
+ * @module functional
+ * @description Generic library for functional programming & working with functions.
+ */
 
 /**
  * Immediately execute the given function.
-* Mostly used as a way to open a scope.
+ *
+ * ```
+ * const {exec} = require('ferrum');
+ *
+ * // Normal scopes cannot return values
+ * let r;
+ * {
+ *   let x = 42, y = 5;
+ *   r = x + y;
+ * }
+ *
+ * // Can be rewritten as
+ * const r = exec(() => {
+ *   let x = 42, y = 5;
+ *   return  x + y;
+ * });
+ * ```
  */
 const exec = fn => fn();
 
-/** Just a function that returns it's argument! */
+/**
+ * Just a function that returns it's argument!
+ *
+ * ```
+ * const {identity, list, filter} = require('ferrum');
+ *
+ * identity(null) # => null
+ * identity(42) # => 42
+ *
+ * // Identity is sometimes useful in higher order functions like
+ * // filter(); this example for instance removes all values from
+ * // the list that are falsy
+ * pipe(
+ *   [null, "asd", "", "foo"],
+ *   filter(identity),
+ *   list
+ * );
+ * // => ["asd", "foo"]
+ * ```
+ */
 const identity = a => a;
 
 /**
  * Pipeline a value through multiple function calls.
  *
  * ```
+ * // Sometimes you get very nested function invocations:
+ *
+ * pipe(
+ *   [1,2,null,3,4,null,5,1,3,2,null,1,4],
+ *   filter(identity),
+ *   uniq,
+ *   map(plus(2)),
+ * )
  * console.log(pipe(
  *   4,
  *   (x) => x+2,

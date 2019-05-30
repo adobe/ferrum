@@ -16,7 +16,7 @@
 const assert = require('assert');
 const {
   and, plus, or, mul,
-  size, TraitNotImplemented, typedArrays, assertEquals,
+  size, TraitNotImplemented, _typedArrays, assertEquals,
   iter, range, range0, repeat, extend, extend1, flattenTree,
   IteratorEnded, next, nth, first, second, seqEq, each, count, list, uniq,
   join, dict, obj, into, foldl, foldr, any, all, sum, product, map,
@@ -85,7 +85,7 @@ it('each() can iterate the sequences', () => {
   checkEach('', []);
   checkEach([], []);
   checkEach({}, []);
-  each(typedArrays, (Typ) => {
+  each(_typedArrays, (Typ) => {
     checkEach(new Typ([42, 23]), [42, 23]);
   });
 });
@@ -200,7 +200,7 @@ it('into()', () => {
     });
   });
 
-  each(typedArrays, (Typ) => {
+  each(_typedArrays, (Typ) => {
     const fn = into(Typ);
     assertEquals(fn(iter([1, 2])), new Typ([1, 2]));
   });

@@ -14,7 +14,7 @@
 
 const assert = require('assert');
 const {
-  exec, identity, pipe, compose, withFunctionName, curry, mul, plus
+  exec, identity, pipe, compose, withFunctionName, curry, mul, plus,
 } = require('../src/index');
 
 it('exec()', () => {

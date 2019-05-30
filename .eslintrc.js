@@ -41,8 +41,19 @@ module.exports = {
     // Allow return before else & redundant else statements
     'no-else-return': 'off',
 
-    // allow dangling underscores for 'fields'
-    'no-underscore-dangle': ['error', {'allowAfterThis': true}],
+    // Dangling underscore is useful to mark variables/fields as private
+    'no-underscore-dangle': 'off',
+
+    // We have quite a lot of use cases where assignment to function
+    // parameters is definitely desirable
+    'no-param-reassign': 'off',
+
+    // Allow marking variables unused using a underscore at the start
+    'no-unused-vars': ["error", {
+      "varsIgnorePattern": "^_.*$",
+      "argsIgnorePattern": "^_.*$",
+      "caughtErrorsIgnorePattern": "^_.*$"
+    }],
 
     // enforce license header (todo: improve plugin to support patterns for multi-lines)
     'header/header': [2, 'block', ['',
