@@ -1,0 +1,2910 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <meta charset="utf-8">
+    <title>stdtraits - Documentation</title>
+    
+    
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc.css">
+    <script src="scripts/nav.js" defer></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav class="wrap">
+    
+    <input type="text" id="nav-search" placeholder="Search" />
+    
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="module-trait-HybridWeakMap.html">HybridWeakMap</a></li><li><a href="module-trait-TraitNotImplemented.html">TraitNotImplemented</a></li><li><a href="module-trait-Trait.html">Trait</a><ul class='methods'><li data-type='method'><a href="module-trait-Trait.html#lookupValue">lookupValue</a></li><li data-type='method'><a href="module-trait-Trait.html#lookupType">lookupType</a></li><li data-type='method'><a href="module-trait-Trait.html#invoke">invoke</a></li><li data-type='method'><a href="module-trait-Trait.html#impl">impl</a></li><li data-type='method'><a href="module-trait-Trait.html#implStatic">implStatic</a></li><li data-type='method'><a href="module-trait-Trait.html#implDerived">implDerived</a></li><li data-type='method'><a href="module-trait-Trait.html#implWild">implWild</a></li><li data-type='method'><a href="module-trait-Trait.html#implWildStatic">implWildStatic</a></li></ul></li></ul><h3>Modules</h3><ul><li><a href="module-functional.html">functional</a><ul class='methods'><li data-type='method'><a href="module-functional.html#~exec">exec</a></li><li data-type='method'><a href="module-functional.html#~identity">identity</a></li><li data-type='method'><a href="module-functional.html#~pipe">pipe</a></li><li data-type='method'><a href="module-functional.html#~compose">compose</a></li><li data-type='method'><a href="module-functional.html#~withFunctionName">withFunctionName</a></li><li data-type='method'><a href="module-functional.html#~curry">curry</a></li></ul></li><li><a href="module-op.html">op</a><ul class='methods'><li data-type='method'><a href="module-op.html#~and">and</a></li><li data-type='method'><a href="module-op.html#~or">or</a></li><li data-type='method'><a href="module-op.html#~not">not</a></li><li data-type='method'><a href="module-op.html#~nand">nand</a></li><li data-type='method'><a href="module-op.html#~nor">nor</a></li><li data-type='method'><a href="module-op.html#~xor">xor</a></li><li data-type='method'><a href="module-op.html#~xnor">xnor</a></li><li data-type='method'><a href="module-op.html#~is">is</a></li><li data-type='method'><a href="module-op.html#~aint">aint</a></li><li data-type='method'><a href="module-op.html#~plus">plus</a></li><li data-type='method'><a href="module-op.html#~mul">mul</a></li></ul></li><li><a href="module-seqeuence.html">seqeuence</a><ul class='methods'><li data-type='method'><a href="module-seqeuence.html#~iter">iter</a></li><li data-type='method'><a href="module-seqeuence.html#~range">range</a></li><li data-type='method'><a href="module-seqeuence.html#~range0">range0</a></li><li data-type='method'><a href="module-seqeuence.html#~repeat">repeat</a></li><li data-type='method'><a href="module-seqeuence.html#~next">next</a></li><li data-type='method'><a href="module-seqeuence.html#~first">first</a></li><li data-type='method'><a href="module-seqeuence.html#~second">second</a></li><li data-type='method'><a href="module-seqeuence.html#~seqEq">seqEq</a></li><li data-type='method'><a href="module-seqeuence.html#~count">count</a></li><li data-type='method'><a href="module-seqeuence.html#~list">list</a></li><li data-type='method'><a href="module-seqeuence.html#~uniq">uniq</a></li><li data-type='method'><a href="module-seqeuence.html#~dict">dict</a></li><li data-type='method'><a href="module-seqeuence.html#~obj">obj</a></li><li data-type='method'><a href="module-seqeuence.html#~any">any</a></li><li data-type='method'><a href="module-seqeuence.html#~all">all</a></li><li data-type='method'><a href="module-seqeuence.html#~sum">sum</a></li><li data-type='method'><a href="module-seqeuence.html#~product">product</a></li><li data-type='method'><a href="module-seqeuence.html#~reverse">reverse</a></li><li data-type='method'><a href="module-seqeuence.html#~enumerate">enumerate</a></li><li data-type='method'><a href="module-seqeuence.html#~takeDef">takeDef</a></li><li data-type='method'><a href="module-seqeuence.html#~flat">flat</a></li><li data-type='method'><a href="module-seqeuence.html#~concat">concat</a></li><li data-type='method'><a href="module-seqeuence.html#~zipLeast">zipLeast</a></li><li data-type='method'><a href="module-seqeuence.html#~zip">zip</a></li><li data-type='method'><a href="module-seqeuence.html#~union">union</a></li></ul></li><li><a href="module-stdtraits.html">stdtraits</a><ul class='methods'><li data-type='method'><a href="module-stdtraits.html#~typeIsImmutable">typeIsImmutable</a></li><li data-type='method'><a href="module-stdtraits.html#~isImmutable">isImmutable</a></li><li data-type='method'><a href="module-stdtraits.html#~eq">eq</a></li><li data-type='method'><a href="module-stdtraits.html#~uneq">uneq</a></li><li data-type='method'><a href="module-stdtraits.html#~assertEquals">assertEquals</a></li><li data-type='method'><a href="module-stdtraits.html#~assertUneq">assertUneq</a></li><li data-type='method'><a href="module-stdtraits.html#~size">size</a></li><li data-type='method'><a href="module-stdtraits.html#~empty">empty</a></li><li data-type='method'><a href="module-stdtraits.html#~shallowclone">shallowclone</a></li><li data-type='method'><a href="module-stdtraits.html#~deepclone">deepclone</a></li><li data-type='method'><a href="module-stdtraits.html#~pairs">pairs</a></li><li data-type='method'><a href="module-stdtraits.html#~keys">keys</a></li><li data-type='method'><a href="module-stdtraits.html#~values">values</a></li></ul></li><li><a href="module-trait.html">trait</a><ul class='methods'><li data-type='method'><a href="module-trait.html#~supports">supports</a></li><li data-type='method'><a href="module-trait.html#~valueSupports">valueSupports</a></li></ul></li><li><a href="module-typesafe.html">typesafe</a><ul class='methods'><li data-type='method'><a href="module-typesafe.html#~isdef">isdef</a></li><li data-type='method'><a href="module-typesafe.html#~type">type</a></li><li data-type='method'><a href="module-typesafe.html#~typename">typename</a></li><li data-type='method'><a href="module-typesafe.html#~isPrimitive">isPrimitive</a></li></ul></li></ul><h3>Interfaces</h3><ul><li><a href="module-seqeuence-Sequence.html">Sequence</a></li><li><a href="module-seqeuence-Into.html">Into</a></li><li><a href="module-stdtraits-Immutable.html">Immutable</a></li><li><a href="module-stdtraits-Equals.html">Equals</a></li><li><a href="module-stdtraits-Size.html">Size</a></li><li><a href="module-stdtraits-Shallowclone.html">Shallowclone</a></li><li><a href="module-stdtraits-Deepclone.html">Deepclone</a></li><li><a href="module-stdtraits-Pairs.html">Pairs</a></li><li><a href="module-stdtraits-Get.html">Get</a></li><li><a href="module-stdtraits-Has.html">Has</a></li><li><a href="module-stdtraits-Assign.html">Assign</a></li><li><a href="module-stdtraits-Delete.html">Delete</a></li><li><a href="module-stdtraits-Setdefault.html">Setdefault</a></li><li><a href="module-stdtraits-Replace.html">Replace</a></li></ul>
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">stdtraits</h1>
+    
+
+    
+
+
+
+
+<section>
+
+<header>
+    
+        
+            
+        
+    
+</header>
+
+<article>
+    
+        <div class="container-overview">
+        
+            
+                <div class="description usertext"><p>Highly gen­eric traits/​in­ter­faces.</p>
+<h1>Laws</h1>
+<p>These ap­ply to all traits in this mod­ule.</p>
+<ul>
+<li>Ar­rays, Strings and any list-like data struc­tures are treated
+as map­pings from in­dex -&gt; value</li>
+<li>Ar­ray sparse­ness is ig­nored on read; any list-like con­tainer <code>has</code> a
+spe­cific in­dex if <code>size(my­Con­tainer) =&gt; key</code>; get­ting an un­set value
+yields <code>un­defined</code></li>
+<li>Sets are treated as map­pings from a key to it­self</li>
+</ul></div>
+            
+
+            
+                
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="stdtraits.js.html">stdtraits.js</a>, <a href="stdtraits.js.html#line25">line 25</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            
+        
+        </div>
+    
+
+    
+
+    
+
+    
+    
+    		
+	    <h3 class="subsection-title">Interfaces</h3>		
+	
+	    <dl>		
+	        <dt><a href="module-stdtraits-Immutable.html">Immutable</a></dt>		
+	        <dd></dd>		
+	    		
+	        <dt><a href="module-stdtraits-Equals.html">Equals</a></dt>		
+	        <dd></dd>		
+	    		
+	        <dt><a href="module-stdtraits-Size.html">Size</a></dt>		
+	        <dd></dd>		
+	    		
+	        <dt><a href="module-stdtraits-Shallowclone.html">Shallowclone</a></dt>		
+	        <dd></dd>		
+	    		
+	        <dt><a href="module-stdtraits-Deepclone.html">Deepclone</a></dt>		
+	        <dd></dd>		
+	    		
+	        <dt><a href="module-stdtraits-Pairs.html">Pairs</a></dt>		
+	        <dd></dd>		
+	    		
+	        <dt><a href="module-stdtraits-Get.html">Get</a></dt>		
+	        <dd></dd>		
+	    		
+	        <dt><a href="module-stdtraits-Has.html">Has</a></dt>		
+	        <dd></dd>		
+	    		
+	        <dt><a href="module-stdtraits-Assign.html">Assign</a></dt>		
+	        <dd></dd>		
+	    		
+	        <dt><a href="module-stdtraits-Delete.html">Delete</a></dt>		
+	        <dd></dd>		
+	    		
+	        <dt><a href="module-stdtraits-Setdefault.html">Setdefault</a></dt>		
+	        <dd></dd>		
+	    		
+	        <dt><a href="module-stdtraits-Replace.html">Replace</a></dt>		
+	        <dd></dd>		
+	    </dl>		
+	
+
+     
+
+    
+
+    
+        <h3 class="subsection-title">Members</h3>
+
+        
+            
+<h4 class="name" id="~get"><span class="type-signature">(inner, constant) </span>get<span class="type-signature"></span></h4>
+
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="stdtraits.js.html">stdtraits.js</a>, <a href="stdtraits.js.html#line771">line 771</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description usertext">
+    <p>Given a key, get a value from a con­tainer.</p>
+</div>
+
+
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="~has"><span class="type-signature">(inner, constant) </span>has<span class="type-signature"></span></h4>
+
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="stdtraits.js.html">stdtraits.js</a>, <a href="stdtraits.js.html#line801">line 801</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description usertext">
+    <p>Test if a con­tainer in­cludes an entry with the given key</p>
+</div>
+
+
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="~assign"><span class="type-signature">(inner, constant) </span>assign<span class="type-signature"></span></h4>
+
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="stdtraits.js.html">stdtraits.js</a>, <a href="stdtraits.js.html#line834">line 834</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description usertext">
+    <p>Set a value in a con­tainer.
+Al­ways re­turns the given value.</p>
+</div>
+
+
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="~del"><span class="type-signature">(inner, constant) </span>del<span class="type-signature"></span></h4>
+
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="stdtraits.js.html">stdtraits.js</a>, <a href="stdtraits.js.html#line877">line 877</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description usertext">
+    <p>De­lete an entry with the given key from a con­tainer</p>
+</div>
+
+
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="~setdefault"><span class="type-signature">(inner, constant) </span>setdefault<span class="type-signature"></span></h4>
+
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="stdtraits.js.html">stdtraits.js</a>, <a href="stdtraits.js.html#line909">line 909</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description usertext">
+    <p>Set a de­fault value in a con­tainer.</p>
+</div>
+
+
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="~replace"><span class="type-signature">(inner, constant) </span>replace<span class="type-signature"></span></h4>
+
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="stdtraits.js.html">stdtraits.js</a>, <a href="stdtraits.js.html#line933">line 933</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description usertext">
+    <p>Swap out one value in a con­tainer for an­other</p>
+</div>
+
+
+
+
+
+
+
+
+        
+    
+
+    
+        <h3 class="subsection-title">Methods</h3>
+
+        
+            
+
+    
+
+    <h4 class="name" id="~typeIsImmutable"><span class="type-signature">(inner) </span>typeIsImmutable<span class="signature">(t)</span><span class="type-signature"> &rarr; {Boolean}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="stdtraits.js.html">stdtraits.js</a>, <a href="stdtraits.js.html#line66">line 66</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-see">See:</dt>
+    <dd class="tag-see">
+        <ul>
+            <li><p><a href="module-stdtraits-Immutable.html">Immutable</a></p></li>
+        </ul>
+    </dd>
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description usertext">
+    <p>Test whether in­stance of a given type is im­mut­able.</p>
+<pre class="prettyprint source"><code>typeIs­Im­mut­able(Ob­ject); // =&gt; false
+typeIs­Im­mut­able(String); // =&gt; true
+</code></pre>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>t</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Type</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Boolean</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="~isImmutable"><span class="type-signature">(inner) </span>isImmutable<span class="signature">(v)</span><span class="type-signature"> &rarr; {Boolean}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="stdtraits.js.html">stdtraits.js</a>, <a href="stdtraits.js.html#line82">line 82</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-see">See:</dt>
+    <dd class="tag-see">
+        <ul>
+            <li><p><a href="module-stdtraits-Immutable.html">Immutable</a> for examples</p></li>
+        </ul>
+    </dd>
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description usertext">
+    <p>Test whether a given value is im­mut­able.</p>
+<pre class="prettyprint source"><code>isIm­mut­able({}); // =&gt; false
+isIm­mut­able(42); // =&gt; true
+</code></pre>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>v</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">T</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Boolean</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="~eq"><span class="type-signature">(inner) </span>eq<span class="signature">(a, b)</span><span class="type-signature"> &rarr; {Boolean}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="stdtraits.js.html">stdtraits.js</a>, <a href="stdtraits.js.html#line161">line 161</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-see">See:</dt>
+    <dd class="tag-see">
+        <ul>
+            <li><p><a href="module-stdtraits-Equals.html">Equals</a></p></li>
+        </ul>
+    </dd>
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description usertext">
+    <p>De­term­ine whether two val­ues are equal us­ing the Equals trait.</p>
+<pre class="prettyprint source"><code>eq([{foo: 42}], [{foo: 42}]); // =&gt; true
+eq(1, 2); // =&gt; false
+</code></pre>
+<p>This func­tion is a bit more power­ful than than the Equals trait it­self:
+First of all it searches for a <code>Equals</code> im­ple­ment­a­tion for both ar­gu­ments
+and it falls back to <code>===</code> if none is found.
+For this reason us­ing eq() is usu­ally pre­ferred over us­ing the Equals trait dir­ectly.</p>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>a</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">A</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>b</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">B</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Boolean</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="~uneq"><span class="type-signature">(inner) </span>uneq<span class="signature">(a, b)</span><span class="type-signature"> &rarr; {Boolean}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="stdtraits.js.html">stdtraits.js</a>, <a href="stdtraits.js.html#line190">line 190</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-see">See:</dt>
+    <dd class="tag-see">
+        <ul>
+            <li><p><a href="module-stdtraits-Equals.html">Equals</a> for examples</p></li>
+        </ul>
+    </dd>
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description usertext">
+    <p>Equi­val­ent to <code>!eq(a, b)</code></p>
+<pre class="prettyprint source"><code>uneq(4, 5); # =&gt; true
+</code></pre>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>a</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">A</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>b</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">B</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Boolean</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="~assertEquals"><span class="type-signature">(inner) </span>assertEquals<span class="signature">(a, b, msg)</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="stdtraits.js.html">stdtraits.js</a>, <a href="stdtraits.js.html#line209">line 209</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-see">See:</dt>
+    <dd class="tag-see">
+        <ul>
+            <li><p><a href="module-stdtraits-Equals.html">Equals</a> for examples</p></li>
+        </ul>
+    </dd>
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description usertext">
+    <p>As­sert that <code>eq(ac­tual, ex­pec­ted)</code></p>
+<pre class="prettyprint source"><code>as­ser­tEquals([{foo: 42}], [{foo: 42}]); // OK!
+as­ser­tEquals(1, 2); // As­ser­tion­Error!
+</code></pre>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>a</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">A</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>b</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">B</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>msg</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+|
+
+<span class="param-type">undefined</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>The er­ror mes­sage to print</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Throws:</h5>
+
+        
+
+    <div class="param-desc usertext">
+    
+        
+<span class="param-type">AssertionError</span>
+
+
+    
+    </div>
+
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="~assertUneq"><span class="type-signature">(inner) </span>assertUneq<span class="signature">(a, b, msg)</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="stdtraits.js.html">stdtraits.js</a>, <a href="stdtraits.js.html#line242">line 242</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-see">See:</dt>
+    <dd class="tag-see">
+        <ul>
+            <li><p><a href="module-stdtraits-Equals.html">Equals</a> for examples</p></li>
+        </ul>
+    </dd>
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description usertext">
+    <p>As­sert that <code>!eq(ac­tual, ex­pec­ted)</code></p>
+<pre class="prettyprint source"><code>as­ser­tUneq(1, 2); // OK!
+as­ser­tUneq([{foo: 42}], [{foo: 42}]); // As­ser­tion­Error!
+</code></pre>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>a</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">A</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>b</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">B</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>msg</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+|
+
+<span class="param-type">undefined</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>The er­ror mes­sage to print</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Throws:</h5>
+
+        
+
+    <div class="param-desc usertext">
+    
+        <p>AssertionError</p>
+    
+    </div>
+
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="~size"><span class="type-signature">(inner) </span>size<span class="signature">(what)</span><span class="type-signature"> &rarr; {Number}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="stdtraits.js.html">stdtraits.js</a>, <a href="stdtraits.js.html#line389">line 389</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-see">See:</dt>
+    <dd class="tag-see">
+        <ul>
+            <li><p><a href="module-stdtraits-Size.html">Size</a> for examples</p></li>
+        </ul>
+    </dd>
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description usertext">
+    <p>De­term­ine the size of a con­tainer. Uses the Size trait.</p>
+<pre class="prettyprint source"><code>size({foo: 42}); // =&gt; 1
+size([1,2,3]); // =&gt; 3
+</code></pre>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>what</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">T</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Number</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="~empty"><span class="type-signature">(inner) </span>empty<span class="signature">(what)</span><span class="type-signature"> &rarr; {Boolean}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="stdtraits.js.html">stdtraits.js</a>, <a href="stdtraits.js.html#line405">line 405</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-see">See:</dt>
+    <dd class="tag-see">
+        <ul>
+            <li><p><a href="module-stdtraits-Size.html">Size</a> for examples</p></li>
+        </ul>
+    </dd>
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description usertext">
+    <p>De­term­ine if a con­tainer is empty. Uses <code>size(x) === 0</code>a</p>
+<pre class="prettyprint source"><code>empty([]); // =&gt; true
+empty({}); // =&gt; true
+empty("asd"); // =&gt; false
+</code></pre>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>what</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">T</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Boolean</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="~shallowclone"><span class="type-signature">(inner) </span>shallowclone<span class="signature">(a)</span><span class="type-signature"> &rarr; {A}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="stdtraits.js.html">stdtraits.js</a>, <a href="stdtraits.js.html#line484">line 484</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-see">See:</dt>
+    <dd class="tag-see">
+        <ul>
+            <li><p><a href="module-stdtraits-Shallowclone.html">Shallowclone</a> for examples</p></li>
+        </ul>
+    </dd>
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description usertext">
+    <p>Shal­lowly clone an ob­ject</p>
+<pre class="prettyprint source"><code>const a = {foo: []};
+const b = shal­low­clone(a);
+b.foo.push(42);
+
+a;  // =&gt; {foo: [42]}
+b;  // =&gt; {foo: [42]}
+</code></pre>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>a</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">A</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">A</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="~deepclone"><span class="type-signature">(inner) </span>deepclone<span class="signature">(a)</span><span class="type-signature"> &rarr; {A}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="stdtraits.js.html">stdtraits.js</a>, <a href="stdtraits.js.html#line566">line 566</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-see">See:</dt>
+    <dd class="tag-see">
+        <ul>
+            <li><p><a href="module-stdtraits-Deepclone.html">Deepclone</a> for examples</p></li>
+        </ul>
+    </dd>
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description usertext">
+    <p>Re­curs­ively clone an ob­ject</p>
+<pre class="prettyprint source"><code>const a = {foo: []};
+const b = deep­clone(a);
+b.foo.push(42);
+
+a;  // =&gt; {foo: []}
+b;  // =&gt; {foo: [42]}
+</code></pre>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>a</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">A</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">A</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="~pairs"><span class="type-signature">(inner) </span>pairs<span class="signature">(what)</span><span class="type-signature"> &rarr; {Array}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="stdtraits.js.html">stdtraits.js</a>, <a href="stdtraits.js.html#line668">line 668</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-see">See:</dt>
+    <dd class="tag-see">
+        <ul>
+            <li><p><a href="module-stdtraits-Pairs.html">Pairs</a></p></li>
+        </ul>
+    </dd>
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description usertext">
+    <p>Get an iter­ator over any con­tainer.
+Al­ways re­turns pairs <code>[key, value]</code>, this dis­tin­guishes <code>pairs()</code>
+from <code>iter()</code>/nor­mal it­er­a­tion.</p>
+<p>Note that usu­ally you should use <code>iter()</code> over pairs un­less you
+really know that for­cing a con­tainer into key/​value rep­res­ent­a­tion
+is needed (e.g. Ar­ray with in­dices) since <code>pairs()</code> will only work
+on a very se­lect num­ber of con­tain­ers, while <code>iter()</code> will work on
+any iter­at­ors and will ac­tu­ally sup­port lists of key value pairs.</p>
+<pre class="prettyprint source"><code>const {list, pairs} = re­quire('fer­rum');
+
+list(pairs(['a', 'b'])); // =&gt; [[0, 'a'], [1, 'b']]
+list(pairs(new Set[1, 2])); // =&gt; [[1, 1], [2, 2]]
+list(pairs({foo: 42})); // [['foo', 42]]
+</code></pre>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>what</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">T</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+		
+<h5>Yields:</h5>		
+		
+        
+<div class="param-desc">
+    Key/Value Pairs
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Array</span>
+
+
+    </dd>
+</dl>
+		
+    
+
+        
+            
+
+    
+
+    <h4 class="name" id="~keys"><span class="type-signature">(generator, inner) </span>keys<span class="signature">(what)</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="stdtraits.js.html">stdtraits.js</a>, <a href="stdtraits.js.html#line686">line 686</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-see">See:</dt>
+    <dd class="tag-see">
+        <ul>
+            <li><p><a href="module-stdtraits-Pairs.html">Pairs</a></p></li>
+        </ul>
+    </dd>
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description usertext">
+    <p>Get an iter­ator over the keys of a con­tainer. Uses <code>pairs(c)</code>.</p>
+<pre class="prettyprint source"><code>const {list, keys} = re­quire('fer­rum');
+
+list(keys(['a', 'b'])); // =&gt; [0, 1]
+list(keys(new Set[1, 2])); // =&gt; [1, 2]
+list(keys({foo: 42})); // ['foo']
+</code></pre>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>what</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">T</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+		
+<h5>Yields:</h5>		
+		
+        
+<div class="param-desc">
+    The keys of the container
+</div>
+
+
+		
+    
+
+        
+            
+
+    
+
+    <h4 class="name" id="~values"><span class="type-signature">(generator, inner) </span>values<span class="signature">(what)</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="stdtraits.js.html">stdtraits.js</a>, <a href="stdtraits.js.html#line707">line 707</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-see">See:</dt>
+    <dd class="tag-see">
+        <ul>
+            <li><p><a href="module-stdtraits-Pairs.html">Pairs</a></p></li>
+        </ul>
+    </dd>
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description usertext">
+    <p>Get an iter­ator over the val­ues of a con­tainer. Uses <code>pairs(c)</code>.</p>
+<pre class="prettyprint source"><code>const {list, val­ues} = re­quire('fer­rum');
+
+list(val­ues(['a', 'b'])); // =&gt; ['a', 'b']
+list(val­ues(new Set[1, 2])); // =&gt; [1, 2]
+list(val­ues({foo: 42})); // [42]
+</code></pre>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>what</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">T</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+		
+<h5>Yields:</h5>		
+		
+        
+<div class="param-desc">
+    The values of the container
+</div>
+
+
+		
+    
+
+        
+    
+
+    
+
+    
+</article>
+
+</section>
+
+
+
+
+    
+    
+</div>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.2</a> on Mon Jun 03 2019 13:39:36 GMT+0200 (Central European Summer Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/polyfill.js"></script>
+<script src="scripts/linenumber.js"></script>
+
+<script src="scripts/search.js" defer></script>
+
+
+
+</body>
+</html>
