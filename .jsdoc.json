@@ -19,5 +19,8 @@
       "search": true,
       "wrap": true,
       "typedefs": true
+    },
+    "templates": {
+      "cleverLinks": true
     }
 }

@@ -49,14 +49,70 @@ const _maybeURL = typeof URL !== 'undefined' ? [URL] : [];
 
 // IMMUTABLE TRAIT ////////////////////////////////////
 
-/** Test whether instance of a given type is immutable */
+/**
+ * Test whether instance of a given type is immutable.
+ *
+ * ```
+ * typeIsImmutable(Object); // => false
+ * typeIsImmutable(String); // => true
+ * ```
+ *
+ * @function
+ * @see [Immutable](module-stdtraits-Immutable.html)
+ * @template Type
+ * @param {Type} t
+ * @returns {Boolean}
+ */
 const typeIsImmutable = t => supports(t, Immutable);
 
-/** Test whether a given value is immutable */
+/**
+ * Test whether a given value is immutable.
+ *
+ * ```
+ * isImmutable({}); // => false
+ * isImmutable(42); // => true
+ * ```
+ *
+ * @function
+ * @see [Immutable](module-stdtraits-Immutable.html) for examples
+ * @template T
+ * @param {T} v
+ * @returns {Boolean}
+ */
 const isImmutable = v => valueSupports(v, Immutable);
 
 /**
  * This is a flag trait that indicates whether a type is immutable.
+ *
+ * ```
+ * const {Immutable, isImmutable, typeIsImmutable} = require('ferrum');
+ *
+ * // Mark a custom type as immutable
+ * class Foo {
+ *   [Immutable.sym]() {}
+ * };
+ *
+ * // Or alternatively
+ * Immutable.impl(Foo, true);
+ *
+ * // Mark a custom value as immutable
+ * const bar = {};
+ * Immutable.implStatic(bar, true);
+ *
+ * // Test a type for immutability
+ * typeIsImmutable(Foo); // => true
+ * typeIsImmutable(Number); // => true
+ * typeIsImmutable(Object); // => false
+ *
+ * // Test a value for immutability
+ * isImmutable(42); // => true
+ * isImmutable({}); // => false
+ * isImmutable(bar); // => true
+ *
+ * // Any other classes will not be considered immutable by default
+ * class Bang {};
+ * typeIsImmutable(Bang); // => false
+ * ```
  *
  * Since javascript has not real way to enforce absolute immutability
  * this trait considers anything immutable that is hard to mutate
@@ -67,11 +123,16 @@ const isImmutable = v => valueSupports(v, Immutable);
  * This is used in a couple paces; specifically it is used as a list of types
  * that should be left alone in `deepclone` and `shallowclone`.
  *
+ * **See:** [ isImmutable ]( module-stdtraits.html#~isImmutable )  
+ * **See:** [ typeIsImmutable ]( module-stdtraits.html#~typeIsImmutable )
+ *
+ * **By default implemented for:** String, Number, Boolean, RegExp, Date, Symbol, Function, null, undefined
+ *
  * @interface
  */
 const Immutable = new Trait('Immutable');
 [String, Number, Boolean, null, undefined, RegExp, Date, Symbol, Function].map((Typ) => {
-  Immutable.impl(Typ, () => true);
+  Immutable.impl(Typ, true);
 });
 
 // EQUALS TRAIT ///////////////////////////////////////
@@ -79,10 +140,23 @@ const Immutable = new Trait('Immutable');
 /**
  * Determine whether two values are equal using the Equals trait.
  *
+ * ```
+ * eq([{foo: 42}], [{foo: 42}]); // => true
+ * eq(1, 2); // => false
+ * ```
+ *
  * This function is a bit more powerful than than the Equals trait itself:
  * First of all it searches for a `Equals` implementation for both arguments
  * and it falls back to `===` if none is found.
  * For this reason using eq() is usually preferred over using the Equals trait directly.
+ *
+ * @function
+ * @see [Equals](module-stdtraits-Equals.html)
+ * @template A
+ * @template B
+ * @param {A} a
+ * @param {B} b
+ * @returns {Boolean}
  */
 const eq = curry('eq', (a, b) => {
   const main = Equals.lookupValue(a);
@@ -98,10 +172,40 @@ const eq = curry('eq', (a, b) => {
   return a === b;
 });
 
-/** Equivalent to `!eq(a, b)` */
+/**
+ * Equivalent to `!eq(a, b)`
+ *
+ * ```
+ * uneq(4, 5); # => true
+ * ```
+ *
+ * @function
+ * @see [Equals](module-stdtraits-Equals.html) for examples
+ * @template A
+ * @template B
+ * @param {A} a
+ * @param {B} b
+ * @returns {Boolean}
+ */
 const uneq = curry('uneq', (a, b) => !eq(a, b));
 
-/** Assert that `eq(actual, expected)` */
+/**
+ * Assert that `eq(actual, expected)`
+ *
+ * ```
+ * assertEquals([{foo: 42}], [{foo: 42}]); // OK!
+ * assertEquals(1, 2); // AssertionError!
+ * ```
+ *
+ * @function
+ * @see [Equals](module-stdtraits-Equals.html) for examples
+ * @template A
+ * @template B
+ * @param {A} a
+ * @param {B} b
+ * @param {String|undefined} msg The error message to print
+ * @throws {AssertionError}
+ */
 const assertEquals = (actual, expected, msg) => {
   const P = v => inspect(v, {
     depth: null, breakLength: 1, compact: false, sorted: true,
@@ -118,7 +222,23 @@ const assertEquals = (actual, expected, msg) => {
   }
 };
 
-/** Assert that `!eq(actual, expected)` */
+/**
+ * Assert that `!eq(actual, expected)`
+ *
+ * ```
+ * assertUneq(1, 2); // OK!
+ * assertUneq([{foo: 42}], [{foo: 42}]); // AssertionError!
+ * ```
+ *
+ * @function
+ * @see [Equals](module-stdtraits-Equals.html) for examples
+ * @template A
+ * @template B
+ * @param {A} a
+ * @param {B} b
+ * @param {String|undefined} msg The error message to print
+ * @throws AssertionError
+ */
 const assertUneq = (actual, notExpected, msg) => {
   const P = v => inspect(v, {
     depth: null, breakLength: 1, compact: false, sorted: true,
@@ -136,7 +256,43 @@ const assertUneq = (actual, notExpected, msg) => {
 };
 
 /**
- * Trait to check whether two values are equal.
+ * Trait to check whether two values are equal.a
+ *
+ * ```
+ * const {equals, eq, uneq, assertEquals, assertUneq} = require('ferrum');
+ *
+ * // Implementing this type
+ * class Bar {
+ *   constructor(foo, bang) {
+ *     this.foo = foo;
+ *     this.bang = bang;
+ *   }
+ *
+ *   [Equals.sym](a, b) {
+ *     return b instanceof Bar
+ *         && eq(a.foo, b.foo)
+ *         && eq(a.bang, b.bang);
+ *   }
+ * }
+ *
+ * // Or alternatively
+ * Equals.impl(Bar, (a, b) => {
+ *   ...
+ * });
+ *
+ * // Test for equality
+ * eq(new Bar(42, 23), new Bar(42, 23)); // => true
+ * eq(new Bar(42, 23), new Bar(0, 0)); // => falseAA
+ *
+ * uneq(4, 3); // => true
+ * uneq(4, 4); // => false
+ *
+ * assertEquals({}, {}, 'Values where different!'); // OK!
+ * assertEquals({}, {foo: 42}, 'Values where different!'); // Assertion Error!
+ *
+ * assertUneq([], [{}], 'Values where the same'); // OK!
+ * assertUneq([], [], 'Values where the same'); // Assertion Error!
+ * ```
  *
  * Normally this trait should not be used directly; consider using
  * `eq()` instead.
@@ -181,6 +337,11 @@ const assertUneq = (actual, notExpected, msg) => {
  * since in sets keys and values are the same thing and keys always follow `===`
  * semantics.
  *
+ * **See:** [ eq ]( module-stdtraits.html#~eq )  
+ * **See:** [ uneq ]( module-stdtraits.html#~uneq )  
+ * **See:** [ assertEquals ]( module-stdtraits.html#~assertEquals )  
+ * **See:** [ assertUneq ]( module-stdtraits.html#~assertUneq )
+ *
  * @interface
  */
 const Equals = new Trait('Equals');
@@ -212,13 +373,62 @@ Equals.impl(RegExp, (a, b) => type(b) === RegExp && a.source === b.source && a.f
 
 // SIZE TRAIT /////////////////////////////////////////
 
-/** Determine the size of a container. Uses the Size trait */
+/**
+ * Determine the size of a container. Uses the Size trait.
+ *
+ * ```
+ * size({foo: 42}); // => 1
+ * size([1,2,3]); // => 3
+ * ```
+ *
+ * @see [Size](module-stdtraits-Size.html) for examples
+ * @template T
+ * @param {T} what
+ * @returns {Number}
+ */
 const size = what => Size.invoke(what);
-/** Determine if a container is empty. Uses `size(x) === 0` */
+
+/**
+ * Determine if a container is empty. Uses `size(x) === 0`a
+ *
+ * ```
+ * empty([]); // => true
+ * empty({}); // => true
+ * empty("asd"); // => false
+ * ```
+ *
+ * @see [Size](module-stdtraits-Size.html) for examples
+ * @template T
+ * @param {T} what
+ * @returns {Boolean}
+ */
 const empty = what => size(what) === 0;
 
 /**
  * Trait to determine the size of a container.
+ *
+ * ```
+ * // Implementing size
+ * class Foo {
+ *   constructor(len) {
+ *     this.len = len || 42;
+ *   }
+ *
+ *   [Size.symbol]() {
+ *     return this.len;
+ *   }
+ * }
+ *
+ * // Alternatively
+ * Size.impl(Foo, (v) => v.len);
+ *
+ * // Determine the size
+ * size(new Map()); // => 0
+ * size("foobar"); // => 6
+ * size({foo: 42, bar: 5}); // => 2
+ * empty(new Set()); // => true
+ * empty([1,2]); // => false
+ * ```
  *
  * Implemented at least for Object, String, Array, Map, Set.
  *
@@ -231,6 +441,9 @@ const empty = what => size(what) === 0;
  * - `i >= 0`
  * - `i !== null && i !== undefined`.
  * - Must be efficient to execute. No IO, avoid bad algorithmic complexities.
+ *
+ * **See:** [ size ]( module-stdtraits.html#~size )  
+ * **See:** [ empty ]( module-stdtraits.html#~empty )  
  *
  * @interface
  */
@@ -250,11 +463,52 @@ Size.impl(Object, (x) => {
 
 // CLONING TRAITS /////////////////////////////////////
 
-/** Shallowly clone an object */
-const shallowclone = x => Shallowclone.invoke(x);
+/**
+ * Shallowly clone an object
+ *
+ * ```
+ * const a = {foo: []};
+ * const b = shallowclone(a);
+ * b.foo.push(42);
+ *
+ * a;  // => {foo: [42]}
+ * b;  // => {foo: [42]}
+ * ```
+ *
+ * @see [Shallowclone](module-stdtraits-Shallowclone.html) for examples
+ * @function
+ * @template A
+ * @param {A} a
+ * @returns {A}
+ */
+const shallowclone = a => Shallowclone.invoke(a);
 
 /**
  * Shallowly clone an object.
+ *
+ * ```
+ * const {Shallowclone, shallowclone} = require('ferrum');
+ *
+ * class Bar {
+ *   constructor(foo, bang) {
+ *     this.foo = foo;
+ *     this.bang = bang;
+ *   }
+ *
+ *   [Shallowclone.sym]() {
+ *     return new Bar(this.foo, this.bar);
+ *   }
+ * }
+ *
+ * const a = new Bar({foo: 42}, {bar: 5});
+ * const b = shallowclone(a);
+ *
+ * assert(a !== b);
+ * assertEquals(a, b);
+ *
+ * a.foo.foo = 5;
+ * assert(b.foo.foo === 5);
+ * ```
  *
  * # Interface
  *
@@ -268,6 +522,8 @@ const shallowclone = x => Shallowclone.invoke(x);
  * # Implementation Notes
  *
  * No-Op implementations are provided for read only primitive types.
+ *
+ * **See:** [ shallowclone ]( module-stdtraits.html#~shallowclone )  
  *
  * @interface
  */
@@ -290,11 +546,51 @@ Shallowclone.impl(Object, (x) => {
 // Immutables are left as is
 Shallowclone.implDerived([Immutable], ([_], v) => v);
 
-/** Recursively clone an object */
+/**
+ * Recursively clone an object
+ *
+ * ```
+ * const a = {foo: []};
+ * const b = deepclone(a);
+ * b.foo.push(42);
+ *
+ * a;  // => {foo: []}
+ * b;  // => {foo: [42]}
+ * ```
+ * @see [Deepclone](module-stdtraits-Deepclone.html) for examples
+ * @function
+ * @template A
+ * @param {A} a
+ * @returns {A}
+ */
 const deepclone = x => Deepclone.invoke(x);
 
 /**
  * Recursively clone an object.
+ *
+ * ```
+ * const {Deepclone, deepclone} = require('ferrum');
+ *
+ * class Bar {
+ *   constructor(foo, bang) {
+ *     this.foo = foo;
+ *     this.bang = bang;
+ *   }
+ *
+ *   [Deepclone.sym]() {
+ *     return new Bar(deepclone(this.foo), deepclone(this.bar));
+ *   }
+ * }
+ *
+ * const a = new Bar({foo: 42}, {bar: 5});
+ * const b = deepclone(a);
+ *
+ * assert(a !== b);
+ * assertEquals(a, b);
+ *
+ * a.foo.foo = 5;
+ * assert(b.foo.foo === 42);
+ * ```
  *
  * # Interface
  *
@@ -316,6 +612,8 @@ const deepclone = x => Deepclone.invoke(x);
  * If we cloned sets deeply, `has(orig, key) implies has(clone, key)` would be violated
  * and the sets would not be equal after cloning.
  * For the same reason, Map keys are not cloned either!
+ *
+ * **See:** [ deepclone ]( module-stdtraits.html#~deepclone )  
  *
  * @interface
  */
@@ -343,15 +641,69 @@ Deepclone.implDerived([Immutable], ([_], v) => v);
 
 // CONTAINER ITERATION ////////////////////////////////
 
-/** Get an iterator over any container; always returns pairs [key, value] */
+/**
+ * Get an iterator over any container.
+ * Always returns pairs `[key, value]`, this distinguishes `pairs()`
+ * from `iter()`/normal iteration.
+ *
+ * Note that usually you should use `iter()` over pairs unless you
+ * really know that forcing a container into key/value representation
+ * is needed (e.g. Array with indices) since `pairs()` will only work
+ * on a very select number of containers, while `iter()` will work on
+ * any iterators and will actually support lists of key value pairs.
+ *
+ * ```
+ * const {list, pairs} = require('ferrum');
+ *
+ * list(pairs(['a', 'b'])); // => [[0, 'a'], [1, 'b']]
+ * list(pairs(new Set[1, 2])); // => [[1, 1], [2, 2]]
+ * list(pairs({foo: 42})); // [['foo', 42]]
+ * ```
+ *
+ * @see [Pairs](module-stdtraits-Pairs.html)
+ * @template T
+ * @param {T} what
+ * @yields {Array} Key/Value Pairs
+ */
 const pairs = x => Pairs.invoke(x);
-/** Get an iterator over the keys of a container. Uses `pairs(c)`. */
+
+/**
+ * Get an iterator over the keys of a container. Uses `pairs(c)`.
+ *
+ * ```
+ * const {list, keys} = require('ferrum');
+ *
+ * list(keys(['a', 'b'])); // => [0, 1]
+ * list(keys(new Set[1, 2])); // => [1, 2]
+ * list(keys({foo: 42})); // ['foo']
+ * ```
+ *
+ * @see [Pairs](module-stdtraits-Pairs.html)
+ * @template T
+ * @param {T} what
+ * @yields The keys of the container
+ */
 const keys = function* keys(x) {
   for (const [k, _] of pairs(x)) {
     yield k;
   }
 };
-/** Get an iterator over the values of a container. Uses `pairs(c)`. */
+/**
+ * Get an iterator over the values of a container. Uses `pairs(c)`.
+ *
+ * ```
+ * const {list, values} = require('ferrum');
+ *
+ * list(values(['a', 'b'])); // => ['a', 'b']
+ * list(values(new Set[1, 2])); // => [1, 2]
+ * list(values({foo: 42})); // [42]
+ * ```
+ *
+ * @see [Pairs](module-stdtraits-Pairs.html)
+ * @template T
+ * @param {T} what
+ * @yields The values of the container
+ */
 const values = function* values(x) {
   for (const [_, v] of pairs(x)) {
     yield v;
@@ -360,6 +712,20 @@ const values = function* values(x) {
 
 /**
  * Get an iterator over a container.
+ *
+ * ```
+ * const {list, values, keys, pairs, Pairs} = require('ferrum');
+ * class Bar {
+ *   *[Pairs.sym]() {
+ *     yield ['foo', 42];
+ *     yield ['bar', 5];
+ *   }
+ * }
+ *
+ * list(pairs(new Bar()); // => [['foo', 42], ['bar', 5]]
+ * list(keys(new Bar()); // => ['foo', 'bar']
+ * list(values(new Bar()); // => [42, 5]
+ * ```
  *
  * This is different from the `Sequence` trait in `sequence.js`
  * in that this always returns pairs, even for lists, sets, strings...
@@ -371,6 +737,10 @@ const values = function* values(x) {
  * # Specialization Notes
  *
  * Array like types return index => value, set returns value => value.
+ *
+ * **See:** [ pairs ]( module-stdtraits.html#~pairs )  
+ * **See:** [ keys ]( module-stdtraits.html#~keys )  
+ * **See:** [ values ]( module-stdtraits.html#~values )  
  *
  * @interface
  */
