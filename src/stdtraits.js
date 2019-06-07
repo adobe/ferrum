@@ -123,10 +123,11 @@ const isImmutable = v => valueSupports(v, Immutable);
  * This is used in a couple paces; specifically it is used as a list of types
  * that should be left alone in `deepclone` and `shallowclone`.
  *
- * **See:** [ isImmutable ]( module-stdtraits.html#~isImmutable )  
+ * **See:** [ isImmutable ]( module-stdtraits.html#~isImmutable )
  * **See:** [ typeIsImmutable ]( module-stdtraits.html#~typeIsImmutable )
  *
- * **By default implemented for:** String, Number, Boolean, RegExp, Date, Symbol, Function, null, undefined
+ * **By default implemented for:** String, Number, Boolean, RegExp,
+ * Date, Symbol, Function, null, undefined
  *
  * @interface
  */
@@ -337,9 +338,9 @@ const assertUneq = (actual, notExpected, msg) => {
  * since in sets keys and values are the same thing and keys always follow `===`
  * semantics.
  *
- * **See:** [ eq ]( module-stdtraits.html#~eq )  
- * **See:** [ uneq ]( module-stdtraits.html#~uneq )  
- * **See:** [ assertEquals ]( module-stdtraits.html#~assertEquals )  
+ * **See:** [ eq ]( module-stdtraits.html#~eq )
+ * **See:** [ uneq ]( module-stdtraits.html#~uneq )
+ * **See:** [ assertEquals ]( module-stdtraits.html#~assertEquals )
  * **See:** [ assertUneq ]( module-stdtraits.html#~assertUneq )
  *
  * @interface
@@ -442,8 +443,8 @@ const empty = what => size(what) === 0;
  * - `i !== null && i !== undefined`.
  * - Must be efficient to execute. No IO, avoid bad algorithmic complexities.
  *
- * **See:** [ size ]( module-stdtraits.html#~size )  
- * **See:** [ empty ]( module-stdtraits.html#~empty )  
+ * **See:** [ size ]( module-stdtraits.html#~size )
+ * **See:** [ empty ]( module-stdtraits.html#~empty )
  *
  * @interface
  */
@@ -523,7 +524,7 @@ const shallowclone = a => Shallowclone.invoke(a);
  *
  * No-Op implementations are provided for read only primitive types.
  *
- * **See:** [ shallowclone ]( module-stdtraits.html#~shallowclone )  
+ * **See:** [ shallowclone ]( module-stdtraits.html#~shallowclone )
  *
  * @interface
  */
@@ -613,7 +614,7 @@ const deepclone = x => Deepclone.invoke(x);
  * and the sets would not be equal after cloning.
  * For the same reason, Map keys are not cloned either!
  *
- * **See:** [ deepclone ]( module-stdtraits.html#~deepclone )  
+ * **See:** [ deepclone ]( module-stdtraits.html#~deepclone )
  *
  * @interface
  */
@@ -738,9 +739,9 @@ const values = function* values(x) {
  *
  * Array like types return index => value, set returns value => value.
  *
- * **See:** [ pairs ]( module-stdtraits.html#~pairs )  
- * **See:** [ keys ]( module-stdtraits.html#~keys )  
- * **See:** [ values ]( module-stdtraits.html#~values )  
+ * **See:** [ pairs ]( module-stdtraits.html#~pairs )
+ * **See:** [ keys ]( module-stdtraits.html#~keys )
+ * **See:** [ values ]( module-stdtraits.html#~values )
  *
  * @interface
  */

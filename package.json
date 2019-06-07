@@ -5,7 +5,7 @@
   "main": "src/index.js",
   "scripts": {
     "test": " nyc --reporter=text --reporter=lcov --check-coverage --branches 90 --statements 90 --lines 90 mocha",
-    "lint": "./node_modules/.bin/eslint .",
+    "lint": "./node_modules/.bin/eslint src test",
     "junit": "mocha --exit -R mocha-junit-reporter",
     "preversion": "npm run junit",
     "postversion": "git push origin master --follow-tags",
