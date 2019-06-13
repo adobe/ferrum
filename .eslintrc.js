@@ -36,7 +36,7 @@ module.exports = {
     'max-statements-per-line': ["error", { "max": 1 }],
 
     // Allow for-of loops
-    'no-restricted-syntax': ['error', 'ForInStatement', 'LabeledStatement', 'WithStatement'],
+    'no-restricted-syntax': ['error', 'ForInStatement', 'WithStatement'],
 
     // Allow return before else & redundant else statements
     'no-else-return': 'off',
@@ -54,6 +54,11 @@ module.exports = {
       "argsIgnorePattern": "^_.*$",
       "caughtErrorsIgnorePattern": "^_.*$"
     }],
+
+    // Required for some more complex algorithms
+    'no-labels': 'off',
+    'no-continue': 'off',
+    'no-plusplus': 'off',
 
     // enforce license header (todo: improve plugin to support patterns for multi-lines)
     'header/header': [2, 'block', ['',

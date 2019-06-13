@@ -24,6 +24,7 @@ const {
   take, takeWhile, takeUntilVal, takeDef, flat, concat, prepend, append,
   mapSort, zipLeast, zip, zipLongest, zipLeast2, zip2, zipLongest2,
   slidingWindow, trySlidingWindow, lookahead, mod, union, union2,
+  cartesian, cartesian2,
 } = require('../src/index');
 const { ckEqSeq, ckThrows } = require('./util');
 
@@ -369,6 +370,25 @@ it('lookahead', () => {
   ck([42], 3, null, [[42, null, null, null]]);
   ck([42, 23], 3, null, [[42, 23, null, null], [23, null, null, null]]);
   ck([42, 23], 0, null, [[42], [23]]);
+});
+
+it('cartesian', () => {
+  ckEqSeq(cartesian([]), []);
+  ckEqSeq(cartesian([[]]), []);
+  ckEqSeq(cartesian([[], [42, 23]]), []);
+  ckEqSeq(cartesian([[42, 23], [42, 23], []]), []);
+  ckEqSeq(cartesian([[42, 23], [], [22]]), []);
+  ckEqSeq(cartesian([[1]]), [[1]]);
+  ckEqSeq(cartesian([[1, 2, 3, 4, 5]]), [[1], [2], [3], [4], [5]]);
+  ckEqSeq(cartesian([[1], [2]]), [[1, 2]]);
+  ckEqSeq(cartesian([[1], [2], [3]]), [[1, 2, 3]]);
+  ckEqSeq(cartesian([[1], [2, 3], [4]]), [[1, 2, 4], [1, 3, 4]]);
+  ckEqSeq(cartesian([[1, 2], [3, 4], [5]]), [[1, 3, 5], [1, 4, 5], [2, 3, 5], [2, 4, 5]]);
+  ckEqSeq(cartesian2([])([1, 2, 3]), []);
+  ckEqSeq(cartesian2([4, 5, 6])([1, 2, 3]), [
+    [1, 4], [1, 5], [1, 6],
+    [2, 4], [2, 5], [2, 6],
+    [3, 4], [3, 5], [3, 6]]);
 });
 
 it('mod', () => {

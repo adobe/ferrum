@@ -15,6 +15,7 @@
  * @description Helpers for working with types; specifically designed
  * to allow null/undefined to be treated the same as any other value.
  */
+const { curry } = require('./functional');
 
 /**
  * Checks whether a value is null or undefined
@@ -37,6 +38,44 @@
  * @returns {Boolean}
  */
 const isdef = v => v !== undefined && v !== null;
+
+/**
+ * Apply the given function to the value only if the value is defined
+ * (not null or undefined).
+ *
+ * This basically implements Optional semantics using null/undefined.
+ *
+ * ```
+ * const {plus, pipe, isdef, ifdef} = require('ferrum');
+ *
+ * const o = {
+ *   foo: 42
+ * };
+ *
+ * ifdef(o['foo'], plus(2)); // 44
+ * ifdef(o['bar'], plus(2)); // undefined
+ *
+ * // This is particularly useful for map or curry
+ * pipe(
+ *   [1,2,null,3],
+ *   map(ifdef(x => x*3))
+ *   list);
+ * // yields [3,6,null,9]
+ *
+ * // Without ifdef the pipe above would have to be manually written,
+ * // which is a bit harder to read
+ * pipe(
+ *   [1,2,null,3],
+ *   map(x => isdef(x) ? x : x*3)
+ *   list);
+ * ```
+ *
+ * @function
+ * @param {T} v
+ * @param {Function} fn
+ * @returns null | undefined | typeof(fn())
+ */
+const ifdef = curry('ifdef', (v, fn) => (isdef(v) ? fn(v) : v));
 
 /**
  * Determine type of an object.
@@ -124,5 +163,5 @@ const typename = t => (isdef(t) ? t.name : `${t}`);
 const isPrimitive = v => v !== Object(v);
 
 module.exports = {
-  isdef, type, typename, isPrimitive,
+  isdef, ifdef, type, typename, isPrimitive,
 };

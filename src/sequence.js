@@ -13,7 +13,7 @@
 // This code contains a lot of functions that call each other;
 // sometimes using mutual recursion and we do not have forward
 // declaraions...
-/* eslint-disable no-use-before-define, no-param-reassign */
+/* eslint-disable no-use-before-define, no-param-reassign, no-restricted-syntax */
 
 const { curry, pipe } = require('./functional');
 const {
@@ -935,6 +935,71 @@ const lookahead = curry('lookahead', (seq, no, filler) => {
   return trySlidingWindow(filled, no + 1);
 });
 
+/**
+ * Calculate the cartesian product of the given sequences.
+ *
+ * ```
+ * const {cartesian, list} = require('ferrum');
+ *
+ * list(cartesian([])); // => []
+ * list(cartesian([[1,2]])); // => [[1], [2]]
+ * list(cartesian([[1,2], [3,4]])); // => [[1,3], [1, 4], [2, 3], [2, 4]]
+ * list(cartesian([[1,2], [3,4], [5,6]]));
+ * // => [[1,3,5], [1,3,6], [1,4,5], [1,4,6],
+ *        [2,3,5], [2,3,6], [2,4,5], [2,4,6]]
+ * list(cartesian([[], [3,4], [5,6]])); // => []
+ * ```
+ *
+ * @function
+ * @param {Sequence} seqs A sequence of sequences
+ * @yields {Array} The cartesian product
+ */
+const cartesian = function* cartesian(seqs) {
+  seqs = list(map(seqs, list));
+  const idxv = pipe(
+    repeat(0),
+    take(seqs.length),
+    list,
+  );
+
+  if (empty(seqs) || any(map(seqs, empty))) {
+    return;
+  }
+
+  yielding: while (true) {
+    // Collect all elements with their respective indices
+    yield list(map(enumerate(idxv), ([x, y]) => seqs[x][y]));
+
+    // Increment indices
+    for (let x = seqs.length - 1; x >= 0; x--) {
+      idxv[x] = (idxv[x] + 1) % seqs[x].length;
+      if (idxv[x] > 0) {
+        continue yielding;
+      }
+    }
+
+    return;
+  }
+};
+
+/*
+ * Calculate the cartesian product of two sequences.
+ *
+ * ```
+ * const {cartesian2, list} = require('ferrum');
+ *
+ * list(cartesian2([1,2], [3,4])); // => [[1,3], [1, 4], [2, 3], [2, 4]]
+ * list(cartesian2([3,4])([1,2])); // => [[1,3], [1, 4], [2, 3], [2, 4]]
+ * list(cartesian2([])([1,2])); // => []
+ * ```
+ *
+ * @function
+ * @param {Sequence} a
+ * @param {Sequence} b
+ * @yields {Array} The cartesian product
+ */
+const cartesian2 = curry('cartesian2', (a, b) => cartesian([a, b]));
+
 // TRANSFORMING NON SEQUENCES ////////////////////////////////
 
 /**
@@ -1030,6 +1095,8 @@ module.exports = {
   slidingWindow,
   trySlidingWindow,
   lookahead,
+  cartesian,
+  cartesian2,
   mod,
   union,
   union2,

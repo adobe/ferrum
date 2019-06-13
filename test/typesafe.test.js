@@ -14,12 +14,23 @@
 
 const assert = require('assert');
 const {
-  isPrimitive, each, type, isdef, typename,
+  isPrimitive, each, type, isdef, ifdef, typename, plus,
 } = require('../src/index');
 
 it('isdef()', () => {
   each([null, undefined], v => assert(!isdef(v)));
   each([false, [], {}, 0], v => assert(isdef(v)));
+});
+
+it('ifdef()', () => {
+  const f = ifdef(plus(2));
+  const ck = (x, r) => assert.strictEqual(f(x), r);
+  ck(2, 4);
+  ck(0, 2);
+  ck(Infinity, Infinity);
+  ck(NaN, NaN);
+  ck(null, null);
+  ck(undefined, undefined);
 });
 
 it('type()', () => {
