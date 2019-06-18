@@ -18,7 +18,8 @@ const {
   and, plus, or, mul,
   size, TraitNotImplemented, _typedArrays, assertEquals,
   iter, range, range0, repeat, extend, extend1, flattenTree,
-  IteratorEnded, next, nth, first, second, seqEq, each, count, list, uniq,
+  IteratorEnded, next, tryNext, nth, first, second, last, tryNth, tryFirst,
+  trySecond, tryLast, seqEq, each, find, tryFind, count, list, uniq,
   join, dict, obj, into, foldl, foldr, any, all, sum, product, map,
   filter, reject, reverse, enumerate, trySkip, skip, skipWhile, tryTake,
   take, takeWhile, takeUntilVal, takeDef, flat, concat, prepend, append,
@@ -157,14 +158,38 @@ it('next(), first()', () => {
   });
 });
 
-it('nth()', () => {
-  ckThrows(IteratorEnded, () => nth([1, 2, 3, 4], 5));
-  assert.strictEqual(nth([1, 2, 3, 4], 2), 3);
+it('tryNext(), tryFirst()', () => {
+  each([tryNext, tryFirst], (fn) => {
+    assert.deepStrictEqual(fn(null)({ foo: 42 }), ['foo', 42]);
+    each([{}, [], ''], (cont) => {
+      assertEquals(fn(null)(cont), null);
+    });
+  });
 });
 
-it('second()', () => {
+it('nth(), tryNth()', () => {
+  ckThrows(IteratorEnded, () => nth([1, 2, 3, 4], 10));
+  assertEquals(nth([1, 2, 3, 4], 2), 3);
+
+  assertEquals(tryNth(null)(5)([1,2,3]), null);
+  assertEquals(tryNth(null)(2)([1,2,3]), 3);
+});
+
+it('second(), trySecond', () => {
   ckThrows(IteratorEnded, () => second([4]));
   assert.strictEqual(second([4, 3]), 3);
+
+  assertEquals(trySecond(null)([]), null);
+  assertEquals(trySecond(null)([1,2,3]), 2);
+});
+
+it('last()', () => {
+  ckThrows(IteratorEnded, () => last([]));
+  assert.strictEqual(last([4, 3]), 3);
+
+  assertEquals(tryLast(null)([]), null);
+  assertEquals(tryLast(null)([1,2,3]), 3);
+  assertEquals(tryLast(null)([1,2,3,4]), 4);
 });
 
 it('into(), list()', () => {
@@ -397,6 +422,14 @@ it('mod', () => {
   assert(s.constructor === Set);
   ckEqSeq(s, [1, 2, 3, 4]); // no modify
   ckEqSeq(t, [2, 4, 6, 8]); // no modify
+});
+
+it('find, tryFind', () => {
+  assertEquals(find([1,2,3,4], x => x>2), 3);
+  ckThrows(IteratorEnded, () => find([1,2,3,4], x => x>10));
+
+  assertEquals(tryFind([1,2,3,4], null, x => x>2), 3);
+  assertEquals(tryFind([1,2,3,4], null, x => x>10), null);
 });
 
 it('union/union2', () => {

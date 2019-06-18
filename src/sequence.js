@@ -13,7 +13,7 @@
 // This code contains a lot of functions that call each other;
 // sometimes using mutual recursion and we do not have forward
 // declaraions...
-/* eslint-disable no-use-before-define, no-param-reassign, no-restricted-syntax */
+/* eslint-disable no-use-before-define, no-param-reassign, no-restricted-syntax, no-return-assign */
 
 const { curry, pipe } = require('./functional');
 const {
@@ -295,9 +295,21 @@ class IteratorEnded extends Error {}
 
 /**
  * Extracts the next element from the iterator.
- * If the element is exhausted, IteratorEnded will be thrown
  *
+ * ```
+ * const {iter, next} = require('ferrum');
+ *
+ * const it = iter([1,2,3]);
+ * next(it); // => 1
+ * next(it); // => 2
+ * next(it); // => 3
+ * next(it); // throws IteratorEnded
+ * next(it); // throws IteratorEnded
+ * ```
+ *
+ * @function
  * @param {Sequence} seq Any sequence for which iter() is defined
+ * @throws {IteratorEnded} If the sequence is empty
  * @returns {Any}
  */
 const next = (seq) => {
@@ -309,12 +321,199 @@ const next = (seq) => {
   }
 };
 
-/** Extract the nth element from the sequence */
+/**
+ * Extracts the next element from the iterator.
+ *
+ * ```
+ * const {iter, tryNext} = require('ferrum');
+ *
+ * const it = iter([1,2,3]);
+ * tryNext(it, null); // => 1
+ * tryNext(it, null); // => 2
+ * tryNext(it, null); // => 3
+ * tryNext(it, null); // => null
+ * tryNext(it, null); // => null
+ * ```
+ *
+ * @function
+ * @param {Sequence} seq Any sequence for which iter() is defined
+ * @param {Any} fallback The value to return if the sequence is empty
+ * @returns {Any}
+ */
+const tryNext = curry('tryNext', (seq, fallback) => {
+  const { done, value } = iter(seq).next();
+  if (done) {
+    return fallback;
+  } else {
+    return value;
+  }
+});
+
+/**
+ * Extract the nth element from the sequence
+ *
+ * ```
+ * const {iter, next, nth} = require('ferrum');
+ *
+ *
+ * const it = iter('hello world');
+ * nth(it, 3);  // => 'l'
+ * next(it);    // => 'o'
+ *
+ * const fifth = nth(4);
+ * fifth(it)  // => 'l'
+ * nth(it, 10); // throws IteratorEnded
+ * ```
+ *
+ * @function
+ * @param {Sequence} seq Any sequence for which iter() is defined
+ * @param {Number} idx The index of the element
+ * @throws {IteratorEnded} If the sequence is too short
+ * @returns {Any}
+ */
 const nth = curry('nth', (seq, idx) => next(skip(seq, idx)));
-/** Extract the first element from the sequence */
+/**
+ * Extract the first element from the sequence; this is effectively
+ * an alias for next();
+ *
+ * ```
+ * const {first} = require('ferrum');
+ *
+ * first([1,2]) // => 1
+ * first([]); // throws IteratorEnded
+ * ```
+ *
+ * @function
+ * @param {Sequence} seq Any sequence for which iter() is defined
+ * @throws {IteratorEnded} If the sequence is too short
+ * @returns {Any}
+ */
 const first = seq => next(seq);
-/** Extract the second element from the sequence */
+/**
+ * Extract the second element from the sequence
+ *
+ * ```
+ * const {second} = require('ferrum');
+ *
+ * second([1,2]) // => 2
+ * second([1]); // throws IteratorEnded
+ * ```
+ *
+ * @function
+ * @param {Sequence} seq Any sequence for which iter() is defined
+ * @throws {IteratorEnded} If the sequence is too short
+ * @returns {Any}
+ */
 const second = seq => nth(seq, 1);
+/**
+ * Extract the last element from the sequence
+ *
+ * ```
+ * const {last} = require('ferrum');
+ *
+ * last([1,2,3,4,5]) // => 5
+ * last([]); // throws IteratorEnded
+ * ```
+ *
+ * @function
+ * @param {Sequence} seq Any sequence for which iter() is defined
+ * @throws {IteratorEnded} If the sequence is empty
+ * @returns {Any}
+ */
+const last = (seq) => {
+  const nothing = Symbol('');
+  const v = tryLast(seq, nothing);
+  if (v === nothing) {
+    throw new IteratorEnded();
+  } else {
+    return v;
+  }
+};
+
+/**
+ * Extract the nth element from the sequence
+ *
+ * ```
+ * const {iter, next, tryNth} = require('ferrum');
+ *
+ * const it = iter('hello world');
+ * tryNth(it, null, 3);  // => 'l'
+ * next(it);    // => 'o'
+ *
+ * const fifth = nth(4, null);
+ * fifth(it)  // => 'l'
+ * tryNth(it, 10, null); // => null
+ * ```
+ *
+ * @function
+ * @param {Sequence} seq Any sequence for which iter() is defined
+ * @param {Number} idx The index of the element
+ * @param {Any} fallback The value to return if the sequence is too short
+ * @returns {Any}
+ */
+const tryNth = curry('tryNth', (seq, idx, fallback) => tryNext(trySkip(seq, idx), fallback));
+/**
+ * Extract the first element from the sequence; this is effectively
+ * an alias for tryNext();
+ *
+ * ```
+ * const {tryFirst} = require('ferrum');
+ *
+ * tryFirst([1,2], null) // => 1
+ * tryFirst([], null);   // => null
+ *
+ * const fn = tryFirst(null);
+ * fn([]); // => null
+ * ```
+ *
+ * @function
+ * @param {Sequence} seq Any sequence for which iter() is defined
+ * @param {Any} fallback The value to return if the sequence is too short
+ * @returns {Any}
+ */
+const tryFirst = curry('tryFirst', (seq, fallback) => tryNext(seq, fallback));
+/**
+ * Extract the second element from the sequence
+ *
+ * ```
+ * const {trySecond} = require('ferrum');
+ *
+ * trySecond([1,2], null) // => 2
+ * trySecond([1], null);  // => null
+ *
+ * const fn = trySecond(null);
+ * fn([1]); // => null
+ * ```
+ *
+ * @function
+ * @param {Sequence} seq Any sequence for which iter() is defined
+ * @param {Any} fallback The value to return if the sequence is too short
+ * @returns {Any}
+ */
+const trySecond = curry('trySecond', (seq, fallback) => tryNth(seq, 1, fallback));
+/**
+ * Extract the last element from the sequence
+ *
+ * ```
+ * const {tryLast} = require('ferrum');
+ *
+ * tryLast([1,2,3,4,5], null) // => 5
+ * tryLast([], null); // => null
+ *
+ * const fn = tryLast(null);
+ * fn([]); // => null
+ * ```
+ *
+ * @function
+ * @param {Sequence} seq Any sequence for which iter() is defined
+ * @param {Any} fallback The value to return if the sequence is empty
+ * @returns {Any}
+ */
+const tryLast = curry('tryLast', (seq, fallback) => {
+  let r = fallback;
+  each(seq, v => r = v);
+  return r;
+});
 
 // ITERATOR SINKS ////////////////////////////////////////////
 
@@ -322,6 +521,19 @@ const second = seq => nth(seq, 1);
  * Iterate over sequences: Apply the give function to
  * every element in the sequence
  *
+ * ```
+ * const {each} = require('ferrum');
+ *
+ * each({foo: 42, bar: 23}, ([key, value]) => {
+ *   console.log(`${key}: ${value}`)
+ * });
+ *
+ * each([1,2,3], (v) => {
+ *   console.log(v);
+ * });
+ * ```
+ *
+ * @function
  * @param {Sequence} seq Any sequence for which iter() is defined
  * @param {Function} fn Function taking a single parameter
  */
@@ -331,7 +543,91 @@ const each = curry('each', (seq, fn) => {
   }
 });
 
-/** Determine whether the items in two sequences are equal. */
+/**
+ * Return the first element in the sequence for which the predicate matches.
+ *
+ * ```
+ * const {find} = require('ferrum');
+ *
+ * find([1,2,3,4], v => v>2); // => 3
+ * find([1,2,3,4], v => v>10); // throws IteratorEnded
+ *
+ * const findEven = find(v => v % 2 === 0);
+ * find([3,4,1,2]); // => 4
+ * find([]); // throws IteratorEnded
+ * ```
+ *
+ * @function
+ * @param {Sequence} seq Any sequence for which iter() is defined
+ * @param {Function} fn The predicate
+ * @throws {IteratorEnded} If no element in the sequence matches the predicate..
+ * @returns Any
+ */
+const find = curry('find', (seq, fn) => next(filter(seq, fn)));
+
+/**
+ * Return the first element in the sequence for which the predicate matches.
+ *
+ * ```
+ * const {tryFind} = require('ferrum');
+ *
+ * tryFind([1,2,3,4], null, v => v>2); // => 3
+ * tryFind([1,2,3,4], null, v => v>10); // => null
+ *
+ * const findEven = tryFind(null, v => v%2 === 0);
+ * findEven([1,9,10,14]); // => 10
+ * findEven([]); // => null
+ * ```
+ *
+ * @function
+ * @param {Sequence} seq Any sequence for which iter() is defined
+ * @param {Any} fallback The value to return if no element in the sequence matches the predicate
+ * @param {Function} fn The predicate
+ * @returns Any
+ */
+const tryFind = curry('tryFind', (seq, fallback, fn) => tryNext(filter(seq, fn), fallback));
+
+/**
+ * Determine whether the items in two sequences are equal.
+ *
+ * ```
+ * const {seqEq, eq} = require('ferrum');
+ *
+ * seqEq([1,2,3,4], [1,2,3,4]); // => true
+ * seqEq([1,2,3,4], [1,2,3]); // => false
+ *
+ * // The types of the objects being compared is not important,
+ * // just the contents of the iterator
+ * seqEq(new Set([1,2,3]), [1,2,3]); // => true
+ * seqEq(new Set([1,2,3,3]), [1,2,3,3]); // => false (the set discards the second 3)
+ *
+ * // Note that sets and maps should usually compared using eq() and not
+ * // seqEq, since seqEq cares about the infestation order while eq() does
+ * // not for sets and maps
+ * eq(new Set([1,2,3]), new Set([1,2,3])); // => true
+ * eq(new Set([3,2,1]), new Set([1,2,3])); // => true
+ *
+ * seqEq(new Set([1,2,3]), new Set([1,2,3])); // => true
+ * seqEq(new Set([3,2,1]), new Set([1,2,3])); // => false
+ *
+ * // Objects should never be compared using seqEq, because the order
+ * // in which the elements of an object are returned is undefined
+ * const obj = {foo: 23, bar: 42};
+ * seqEq(obj, obj); // UNDEFINED BEHAVIOUR; could be true or false
+ *
+ * // Same goes of course for es6 Maps created from objects
+ * seqEq(dict(obj), dict(obj))); // => UNDEFINED BEHAVIOUR; could be true or false
+ *
+ * // Objects as elements inside the iterator are OK; elements are compared
+ * // using eq() not seqEq()
+ * seqEq([{foo: 42, bar: 23}], [{bar: 23, foo: 42}]); // => true
+ * ```
+ *
+ * @function
+ * @param {Sequence} a Any sequence for which iter() is defined
+ * @param {Sequence} b Any sequence for which iter() is defined
+ * @returns {Boolean}
+ */
 const seqEq = (a, b) => pipe(
   zipLongest([a, b], Symbol('EqualToNothing')),
   map(([x, y]) => eq(x, y)),
@@ -342,6 +638,19 @@ const seqEq = (a, b) => pipe(
  * Determine the number of elements in an iterator.
  * This will try using trySize(), but fall back to iterating
  * over the container and counting the elements this way if necessary.
+ *
+ * ```
+ * const {iter,count} = require('ferrum')
+ *
+ * count([1,2,3]); // => 3; O(1)
+ * count(iter([1,2,3])); // => 3; O(n)
+ * ```
+ *
+ * See: [https://en.wikipedia.org/wiki/Big_O_notation]()
+ *
+ * @function
+ * @param {Sequence} a Any sequence for which iter() is defined
+ * @returns {Number}
  */
 const count = (val) => {
   const impl = Size.lookupValue(val);
@@ -1050,11 +1359,19 @@ module.exports = {
   flattenTree,
   IteratorEnded,
   next,
+  tryNext,
   nth,
   first,
   second,
+  last,
+  tryNth,
+  tryFirst,
+  trySecond,
+  tryLast,
   seqEq,
   each,
+  find,
+  tryFind,
   count,
   list,
   uniq,
