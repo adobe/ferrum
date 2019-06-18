@@ -588,6 +588,68 @@ const find = curry('find', (seq, fn) => next(filter(seq, fn)));
 const tryFind = curry('tryFind', (seq, fallback, fn) => tryNext(filter(seq, fn), fallback));
 
 /**
+ * Test if the given sequence contains a value that matches the predicate.
+ *
+ * ```
+ * const {contains, eq, is, not} = require('ferrum');
+ *
+ * const containsEven = contains(x => x%2 === 0);#
+ * containsEven([1,2,3,4]); // => true
+ * containsEven([1,3,5,7]); // => false
+ *
+ * // Use is to search vor values using the === operator
+ * const contains4 = contains(is(4));
+ * // const contains4 = contains(x => x === 4); // this is a bit longer & harder to read
+ * contains4([1,2,3]); // => false
+ * contains4([4,4,4]); // => true
+ *
+ * // You can use eq to search for values equal to another value
+ * const containsEmptyObject = contains(eq({}));
+ * containsEmptyObject([{foo: 42}]); // => false
+ * containsEmptyObject([{}]); // => true
+ * ```
+ *
+ * This function should be used over `tryFind` in cases where just the presence
+ * of a value should be tested for:
+ *
+ * ```
+ * // The usual pattern checking whether a value is contained would be this:
+ * tryFind([1,2,3,4], null, is(3)); // => 3 (truthy)
+ * tryFind([1,2,4,5], null, is(3)); // => null (falsy)
+ *
+ * // Obviously this pattern breaks down when searching for falsy values
+ * tryFind([0,1,2,3,4], null, is(0)); // => 0 (falsy - FALSE POSITIVE)
+ * tryFind([1,1,2,3,4], null, is(0)); // => null (falsy)
+ *
+ * // Using contains() gets you around this issue and does what you would expect
+ * contains([0,1,2,3,4], is(0)); // => true
+ * contains([1,1,2,3,4], is(0)); // => false
+ *
+ * // If you need to search for the value and do not want to run into this issue,
+ * // the following pattern (creating a symbol on the fly) can be used
+ * // This is also how contains() is implemented.
+ * // You could also use null or undefined as the sentinel value, but this is discouraged,
+ * // as the sequence could contain those values; this can never be the case with a symbol
+ * // you just created
+ *
+ * const nothing = Symbol('');
+ * const v = tryFind([1,2,3,null,4,0], nothing, not) // tryFindFalsy
+ * if (v === nothing) {
+ *   // handle that case
+ * } else {
+ *   // Got a valid, falsy value
+ * }
+ * ```
+ * @function
+ * @param {Sequence} seq Any sequence for which iter() is defined
+ * @returns {Boolean}
+ */
+const contains = curry('contains', (seq, fn) => {
+  const nothing = Symbol('');
+  return tryFind(seq, nothing, fn) !== nothing;
+});
+
+/**
  * Determine whether the items in two sequences are equal.
  *
  * ```
@@ -1372,6 +1434,7 @@ module.exports = {
   each,
   find,
   tryFind,
+  contains,
   count,
   list,
   uniq,

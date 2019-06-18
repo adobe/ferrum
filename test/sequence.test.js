@@ -15,12 +15,12 @@
 
 const assert = require('assert');
 const {
-  and, plus, or, mul,
+  and, plus, or, mul, not,
   size, TraitNotImplemented, _typedArrays, assertEquals,
   iter, range, range0, repeat, extend, extend1, flattenTree,
   IteratorEnded, next, tryNext, nth, first, second, last, tryNth, tryFirst,
-  trySecond, tryLast, seqEq, each, find, tryFind, count, list, uniq,
-  join, dict, obj, into, foldl, foldr, any, all, sum, product, map,
+  trySecond, tryLast, seqEq, each, find, tryFind, contains, count, list,
+  uniq, join, dict, obj, into, foldl, foldr, any, all, sum, product, map,
   filter, reject, reverse, enumerate, trySkip, skip, skipWhile, tryTake,
   take, takeWhile, takeUntilVal, takeDef, flat, concat, prepend, append,
   mapSort, zipLeast, zip, zipLongest, zipLeast2, zip2, zipLongest2,
@@ -171,8 +171,8 @@ it('nth(), tryNth()', () => {
   ckThrows(IteratorEnded, () => nth([1, 2, 3, 4], 10));
   assertEquals(nth([1, 2, 3, 4], 2), 3);
 
-  assertEquals(tryNth(null)(5)([1,2,3]), null);
-  assertEquals(tryNth(null)(2)([1,2,3]), 3);
+  assertEquals(tryNth(null)(5)([1, 2, 3]), null);
+  assertEquals(tryNth(null)(2)([1, 2, 3]), 3);
 });
 
 it('second(), trySecond', () => {
@@ -180,7 +180,7 @@ it('second(), trySecond', () => {
   assert.strictEqual(second([4, 3]), 3);
 
   assertEquals(trySecond(null)([]), null);
-  assertEquals(trySecond(null)([1,2,3]), 2);
+  assertEquals(trySecond(null)([1, 2, 3]), 2);
 });
 
 it('last()', () => {
@@ -188,8 +188,8 @@ it('last()', () => {
   assert.strictEqual(last([4, 3]), 3);
 
   assertEquals(tryLast(null)([]), null);
-  assertEquals(tryLast(null)([1,2,3]), 3);
-  assertEquals(tryLast(null)([1,2,3,4]), 4);
+  assertEquals(tryLast(null)([1, 2, 3]), 3);
+  assertEquals(tryLast(null)([1, 2, 3, 4]), 4);
 });
 
 it('into(), list()', () => {
@@ -424,12 +424,18 @@ it('mod', () => {
   ckEqSeq(t, [2, 4, 6, 8]); // no modify
 });
 
-it('find, tryFind', () => {
-  assertEquals(find([1,2,3,4], x => x>2), 3);
-  ckThrows(IteratorEnded, () => find([1,2,3,4], x => x>10));
+it('find, tryFind, contains', () => {
+  assertEquals(find([1, 2, 3, 4], x => x > 2), 3);
+  ckThrows(IteratorEnded, () => find([1, 2, 3, 4], x => x > 10));
 
-  assertEquals(tryFind([1,2,3,4], null, x => x>2), 3);
-  assertEquals(tryFind([1,2,3,4], null, x => x>10), null);
+  assertEquals(tryFind([1, 2, 3, 4], null, x => x > 2), 3);
+  assertEquals(tryFind([1, 2, 3, 4], null, x => x > 10), null);
+
+  const containsFalsy = contains(not);
+  assert(!containsFalsy([]));
+  assert(containsFalsy([null]));
+  assert(containsFalsy([undefined]));
+  assert(containsFalsy([0]));
 });
 
 it('union/union2', () => {
