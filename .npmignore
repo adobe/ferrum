@@ -8,3 +8,10 @@ logs
 test-results.xml
 docs/
 test/
+.github
+.eslintignore
+.eslintrc.js
+.jsdoc.json
+.vscode
+CODE_OF_CONDUCT.md
+CONTRIBUTING.md
