@@ -1,6 +1,6 @@
 {
   "name": "ferrum",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "",
   "main": "src/index.js",
   "scripts": {
@@ -23,9 +23,6 @@
   },
   "homepage": "https://github.com/adobe/ferrum#readme",
   "dependencies": {
-    "hyphenation.en-gb": "^0.2.1",
-    "hypher": "^0.2.5",
-    "jsdom": "^15.1.1",
     "lodash.isplainobject": "^4.0.6"
   },
   "devDependencies": {
