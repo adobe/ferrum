@@ -10,7 +10,7 @@
  * governing permissions and limitations under the License.
  */
 
-const { isPlainObject } = require('lodash');
+const isPlainObject = require('lodash.isplainobject');
 const { curry } = require('./functional');
 const {
   isPrimitive, type, typename, isdef,

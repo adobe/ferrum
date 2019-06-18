@@ -1,6 +1,6 @@
 {
   "name": "ferrum",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "",
   "main": "src/index.js",
   "scripts": {
@@ -23,7 +23,7 @@
   },
   "homepage": "https://github.com/adobe/ferrum#readme",
   "dependencies": {
-    "lodash": "4.17.11"
+    "lodash.isplainobject": "^4.0.6"
   },
   "devDependencies": {
     "ajv": "^6.10.0",
