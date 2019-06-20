@@ -7,7 +7,7 @@
 <dt><a href="#module_op">op</a></dt>
 <dd><p>Provides common javascript operators as curryable functions.</p>
 </dd>
-<dt><a href="#module_seqeuence">seqeuence</a></dt>
+<dt><a href="#module_sequence">sequence</a></dt>
 <dd><p>Generic library for advanced utilization of es6 iterators.</p>
 <p>map, fold and so on...</p>
 <p>sequence.js functions are fully lazy and work with anything implementing
@@ -578,9 +578,9 @@ do this: `const div = (a, b) => mul(a, 1/b)`;
 | a | <code>Number</code> | 
 | b | <code>Number</code> | 
 
-<a name="module_seqeuence"></a>
+<a name="module_sequence"></a>
 
-## seqeuence
+## sequence
 Generic library for advanced utilization of es6 iterators.
 
 map, fold and so on...
@@ -707,88 +707,88 @@ into `new Map(...)`;
 The full behaviour of for each
 
 
-* [seqeuence](#module_seqeuence)
-    * [~Sequence](#module_seqeuence..Sequence)
-    * [~Into](#module_seqeuence..Into)
-    * [~extend](#module_seqeuence..extend) ⇒ <code>Iterator</code>
-    * [~extend1](#module_seqeuence..extend1) ⇒ <code>Iterator</code>
-    * [~flattenTree](#module_seqeuence..flattenTree) ⇒ <code>Sequnece</code>
-    * [~join](#module_seqeuence..join)
-    * [~into](#module_seqeuence..into)
-    * [~foldl](#module_seqeuence..foldl)
-    * [~foldr](#module_seqeuence..foldr)
-    * [~map](#module_seqeuence..map) ⇒ <code>Iterator</code>
-    * [~filter](#module_seqeuence..filter) ⇒ <code>Iterator</code>
-    * [~reject](#module_seqeuence..reject)
-    * [~trySkip](#module_seqeuence..trySkip) ⇒ <code>Iterator</code>
-    * [~skip](#module_seqeuence..skip) ⇒ <code>Iterator</code>
-    * [~skipWhile](#module_seqeuence..skipWhile) ⇒ <code>Iterator</code>
-    * [~tryTake](#module_seqeuence..tryTake) ⇒ <code>Iterator</code>
-    * [~take](#module_seqeuence..take) ⇒ <code>Array</code>
-    * [~takeWhile](#module_seqeuence..takeWhile) ⇒ <code>Iterator</code>
-    * [~takeUntilVal](#module_seqeuence..takeUntilVal) ⇒ <code>Iterator</code>
-    * [~prepend](#module_seqeuence..prepend)
-    * [~append](#module_seqeuence..append)
-    * [~mapSort](#module_seqeuence..mapSort) ⇒ <code>Array</code>
-    * [~zipLeast2](#module_seqeuence..zipLeast2)
-    * [~zip2](#module_seqeuence..zip2)
-    * [~zipLongest](#module_seqeuence..zipLongest) ⇒ <code>Iterator</code>
-    * [~zipLongest2](#module_seqeuence..zipLongest2)
-    * [~slidingWindow](#module_seqeuence..slidingWindow) ⇒ <code>Iterator</code>
-    * [~trySlidingWindow](#module_seqeuence..trySlidingWindow)
-    * [~lookahead](#module_seqeuence..lookahead)
-    * [~mod](#module_seqeuence..mod) ⇒ <code>T</code>
-    * [~union2](#module_seqeuence..union2)
-    * [~iter(obj)](#module_seqeuence..iter) ⇒ <code>Iterator</code>
-    * [~range(start, start)](#module_seqeuence..range)
-    * [~range0()](#module_seqeuence..range0)
-    * [~repeat()](#module_seqeuence..repeat)
-    * [~next(seq)](#module_seqeuence..next) ⇒ <code>Any</code>
-    * [~tryNext(seq, fallback)](#module_seqeuence..tryNext) ⇒ <code>Any</code>
-    * [~nth(seq, idx)](#module_seqeuence..nth) ⇒ <code>Any</code>
-    * [~first(seq)](#module_seqeuence..first) ⇒ <code>Any</code>
-    * [~second(seq)](#module_seqeuence..second) ⇒ <code>Any</code>
-    * [~last(seq)](#module_seqeuence..last) ⇒ <code>Any</code>
-    * [~tryNth(seq, idx, fallback)](#module_seqeuence..tryNth) ⇒ <code>Any</code>
-    * [~tryFirst(seq, fallback)](#module_seqeuence..tryFirst) ⇒ <code>Any</code>
-    * [~trySecond(seq, fallback)](#module_seqeuence..trySecond) ⇒ <code>Any</code>
-    * [~tryLast(seq, fallback)](#module_seqeuence..tryLast) ⇒ <code>Any</code>
-    * [~each(seq, fn)](#module_seqeuence..each)
-    * [~find(seq, fn)](#module_seqeuence..find) ⇒
-    * [~tryFind(seq, fallback, fn)](#module_seqeuence..tryFind) ⇒
-    * [~contains(seq)](#module_seqeuence..contains) ⇒ <code>Boolean</code>
-    * [~seqEq(a, b)](#module_seqeuence..seqEq) ⇒ <code>Boolean</code>
-    * [~count(a)](#module_seqeuence..count) ⇒ <code>Number</code>
-    * [~list()](#module_seqeuence..list)
-    * [~uniq()](#module_seqeuence..uniq)
-    * [~dict()](#module_seqeuence..dict)
-    * [~obj()](#module_seqeuence..obj)
-    * [~any()](#module_seqeuence..any)
-    * [~all()](#module_seqeuence..all)
-    * [~sum()](#module_seqeuence..sum)
-    * [~product()](#module_seqeuence..product)
-    * [~reverse(seq)](#module_seqeuence..reverse) ⇒ <code>Array</code>
-    * [~enumerate(seq)](#module_seqeuence..enumerate) ⇒ <code>Iterator</code>
-    * [~takeDef(seq)](#module_seqeuence..takeDef) ⇒ <code>Iterator</code>
-    * [~flat(seq)](#module_seqeuence..flat)
-    * [~concat()](#module_seqeuence..concat)
-    * [~zipLeast(seq)](#module_seqeuence..zipLeast) ⇒ <code>Iterator</code>
-    * [~zip(seq)](#module_seqeuence..zip) ⇒ <code>Iterator</code>
-    * [~cartesian(seqs)](#module_seqeuence..cartesian)
-    * [~union()](#module_seqeuence..union)
+* [sequence](#module_sequence)
+    * [~Sequence](#module_sequence..Sequence)
+    * [~Into](#module_sequence..Into)
+    * [~extend](#module_sequence..extend) ⇒ <code>Iterator</code>
+    * [~extend1](#module_sequence..extend1) ⇒ <code>Iterator</code>
+    * [~flattenTree](#module_sequence..flattenTree) ⇒ <code>Sequnece</code>
+    * [~join](#module_sequence..join)
+    * [~into](#module_sequence..into)
+    * [~foldl](#module_sequence..foldl)
+    * [~foldr](#module_sequence..foldr)
+    * [~map](#module_sequence..map) ⇒ <code>Iterator</code>
+    * [~filter](#module_sequence..filter) ⇒ <code>Iterator</code>
+    * [~reject](#module_sequence..reject)
+    * [~trySkip](#module_sequence..trySkip) ⇒ <code>Iterator</code>
+    * [~skip](#module_sequence..skip) ⇒ <code>Iterator</code>
+    * [~skipWhile](#module_sequence..skipWhile) ⇒ <code>Iterator</code>
+    * [~tryTake](#module_sequence..tryTake) ⇒ <code>Iterator</code>
+    * [~take](#module_sequence..take) ⇒ <code>Array</code>
+    * [~takeWhile](#module_sequence..takeWhile) ⇒ <code>Iterator</code>
+    * [~takeUntilVal](#module_sequence..takeUntilVal) ⇒ <code>Iterator</code>
+    * [~prepend](#module_sequence..prepend)
+    * [~append](#module_sequence..append)
+    * [~mapSort](#module_sequence..mapSort) ⇒ <code>Array</code>
+    * [~zipLeast2](#module_sequence..zipLeast2)
+    * [~zip2](#module_sequence..zip2)
+    * [~zipLongest](#module_sequence..zipLongest) ⇒ <code>Iterator</code>
+    * [~zipLongest2](#module_sequence..zipLongest2)
+    * [~slidingWindow](#module_sequence..slidingWindow) ⇒ <code>Iterator</code>
+    * [~trySlidingWindow](#module_sequence..trySlidingWindow)
+    * [~lookahead](#module_sequence..lookahead)
+    * [~mod](#module_sequence..mod) ⇒ <code>T</code>
+    * [~union2](#module_sequence..union2)
+    * [~iter(obj)](#module_sequence..iter) ⇒ <code>Iterator</code>
+    * [~range(start, start)](#module_sequence..range)
+    * [~range0()](#module_sequence..range0)
+    * [~repeat()](#module_sequence..repeat)
+    * [~next(seq)](#module_sequence..next) ⇒ <code>Any</code>
+    * [~tryNext(seq, fallback)](#module_sequence..tryNext) ⇒ <code>Any</code>
+    * [~nth(seq, idx)](#module_sequence..nth) ⇒ <code>Any</code>
+    * [~first(seq)](#module_sequence..first) ⇒ <code>Any</code>
+    * [~second(seq)](#module_sequence..second) ⇒ <code>Any</code>
+    * [~last(seq)](#module_sequence..last) ⇒ <code>Any</code>
+    * [~tryNth(seq, idx, fallback)](#module_sequence..tryNth) ⇒ <code>Any</code>
+    * [~tryFirst(seq, fallback)](#module_sequence..tryFirst) ⇒ <code>Any</code>
+    * [~trySecond(seq, fallback)](#module_sequence..trySecond) ⇒ <code>Any</code>
+    * [~tryLast(seq, fallback)](#module_sequence..tryLast) ⇒ <code>Any</code>
+    * [~each(seq, fn)](#module_sequence..each)
+    * [~find(seq, fn)](#module_sequence..find) ⇒
+    * [~tryFind(seq, fallback, fn)](#module_sequence..tryFind) ⇒
+    * [~contains(seq)](#module_sequence..contains) ⇒ <code>Boolean</code>
+    * [~seqEq(a, b)](#module_sequence..seqEq) ⇒ <code>Boolean</code>
+    * [~count(a)](#module_sequence..count) ⇒ <code>Number</code>
+    * [~list()](#module_sequence..list)
+    * [~uniq()](#module_sequence..uniq)
+    * [~dict()](#module_sequence..dict)
+    * [~obj()](#module_sequence..obj)
+    * [~any()](#module_sequence..any)
+    * [~all()](#module_sequence..all)
+    * [~sum()](#module_sequence..sum)
+    * [~product()](#module_sequence..product)
+    * [~reverse(seq)](#module_sequence..reverse) ⇒ <code>Array</code>
+    * [~enumerate(seq)](#module_sequence..enumerate) ⇒ <code>Iterator</code>
+    * [~takeDef(seq)](#module_sequence..takeDef) ⇒ <code>Iterator</code>
+    * [~flat(seq)](#module_sequence..flat)
+    * [~concat()](#module_sequence..concat)
+    * [~zipLeast(seq)](#module_sequence..zipLeast) ⇒ <code>Iterator</code>
+    * [~zip(seq)](#module_sequence..zip) ⇒ <code>Iterator</code>
+    * [~cartesian(seqs)](#module_sequence..cartesian)
+    * [~union()](#module_sequence..union)
 
-<a name="module_seqeuence..Sequence"></a>
+<a name="module_sequence..Sequence"></a>
 
-### seqeuence~Sequence
+### sequence~Sequence
 Trait for any iterable type.
 
 Uses the `Symbol.iterator` Symbol, so this is implemented for any
 type that implements the iterator protocol.
 
-**Kind**: inner interface of [<code>seqeuence</code>](#module_seqeuence)  
-<a name="module_seqeuence..Into"></a>
+**Kind**: inner interface of [<code>sequence</code>](#module_sequence)  
+<a name="module_sequence..Into"></a>
 
-### seqeuence~Into
+### sequence~Into
 Into can be used to turn sequences back into other types.
 
 into is the inverse of `iter()`, meaning that taking the result
@@ -853,10 +853,10 @@ const seq = concat([[99, 42]], new Map(true, 23), {bar: 13});
 into(seq, Map) # Map( 99 => 42, true => 23, bar => 13 )
 ```
 
-**Kind**: inner interface of [<code>seqeuence</code>](#module_seqeuence)  
-<a name="module_seqeuence..extend"></a>
+**Kind**: inner interface of [<code>sequence</code>](#module_sequence)  
+<a name="module_sequence..extend"></a>
 
-### seqeuence~extend ⇒ <code>Iterator</code>
+### sequence~extend ⇒ <code>Iterator</code>
 Generate a sequence by repeatedly calling the same function on the
 previous value.
 
@@ -871,29 +871,29 @@ const range = (first, last) =>
   takeUntilVal(extend(first, x => x+1), last);
 ```
 
-**Kind**: inner constant of [<code>seqeuence</code>](#module_seqeuence)  
+**Kind**: inner constant of [<code>sequence</code>](#module_sequence)  
 
 | Param | Type |
 | --- | --- |
 | init | <code>Any</code> | 
 | fn | <code>function</code> | 
 
-<a name="module_seqeuence..extend1"></a>
+<a name="module_sequence..extend1"></a>
 
-### seqeuence~extend1 ⇒ <code>Iterator</code>
+### sequence~extend1 ⇒ <code>Iterator</code>
 Like extend(), but the resulting sequence does not contain
 the initial element.
 
-**Kind**: inner constant of [<code>seqeuence</code>](#module_seqeuence)  
+**Kind**: inner constant of [<code>sequence</code>](#module_sequence)  
 
 | Param | Type |
 | --- | --- |
 | init | <code>Any</code> | 
 | fn | <code>function</code> | 
 
-<a name="module_seqeuence..flattenTree"></a>
+<a name="module_sequence..flattenTree"></a>
 
-### seqeuence~flattenTree ⇒ <code>Sequnece</code>
+### sequence~flattenTree ⇒ <code>Sequnece</code>
 Flatten trees of any type into a sequence.
 
 The given function basically has three jobs:
@@ -932,7 +932,7 @@ flattenTree((node, recurse) => {
 });
 ```
 
-**Kind**: inner constant of [<code>seqeuence</code>](#module_seqeuence)  
+**Kind**: inner constant of [<code>sequence</code>](#module_sequence)  
 **Returns**: <code>Sequnece</code> - A sequence containing the actual values from the tree  
 
 | Param | Type | Description |
@@ -940,24 +940,24 @@ flattenTree((node, recurse) => {
 | val | <code>Any</code> | The tree to flatten |
 | fn | <code>function</code> | The function that does the actual flattening |
 
-<a name="module_seqeuence..join"></a>
+<a name="module_sequence..join"></a>
 
-### seqeuence~join
+### sequence~join
 Convert each element from a sequence into a string
 and join them with the given separator.
 
-**Kind**: inner constant of [<code>seqeuence</code>](#module_seqeuence)  
-<a name="module_seqeuence..into"></a>
+**Kind**: inner constant of [<code>sequence</code>](#module_sequence)  
+<a name="module_sequence..into"></a>
 
-### seqeuence~into
+### sequence~into
 Convert values into a given type using the `Into` trait.
 Note that this has inverse parameters compared to the trait
 (sequence first, type second) for currying purposes.
 
-**Kind**: inner constant of [<code>seqeuence</code>](#module_seqeuence)  
-<a name="module_seqeuence..foldl"></a>
+**Kind**: inner constant of [<code>sequence</code>](#module_sequence)  
+<a name="module_sequence..foldl"></a>
 
-### seqeuence~foldl
+### sequence~foldl
 Combine all the values from a sequence into one value.
 
 This function is also often called reduce, because it reduces
@@ -980,91 +980,91 @@ equivalent to `1 + 2 + 3 + 4`.
 have an operation and then just take the operation's neutral element
 as the initial value?)
 
-**Kind**: inner constant of [<code>seqeuence</code>](#module_seqeuence)  
+**Kind**: inner constant of [<code>sequence</code>](#module_sequence)  
 
 | Param | Type | Description |
 | --- | --- | --- |
 | seq | <code>Sequence</code> | The sequence to reduce |
 | Any | <code>initial</code> | The initial value of the reduce operation.   If the sequence is empty, this value will be returned. |
 
-<a name="module_seqeuence..foldr"></a>
+<a name="module_sequence..foldr"></a>
 
-### seqeuence~foldr
+### sequence~foldr
 Like foldl, but right-to-left
 
-**Kind**: inner constant of [<code>seqeuence</code>](#module_seqeuence)  
-<a name="module_seqeuence..map"></a>
+**Kind**: inner constant of [<code>sequence</code>](#module_sequence)  
+<a name="module_sequence..map"></a>
 
-### seqeuence~map ⇒ <code>Iterator</code>
+### sequence~map ⇒ <code>Iterator</code>
 Lazily transform all the values in a sequence.
 
 ```
 into(map([1,2,3,4], n => n*2), Array) # [2,4,6,8]
 ```
 
-**Kind**: inner constant of [<code>seqeuence</code>](#module_seqeuence)  
+**Kind**: inner constant of [<code>sequence</code>](#module_sequence)  
 
 | Param | Type | Description |
 | --- | --- | --- |
 | seq | <code>Sequence</code> | Any sequence for which iter() is defined |
 | fn | <code>function</code> | The function that transforms all the values in the sequence |
 
-<a name="module_seqeuence..filter"></a>
+<a name="module_sequence..filter"></a>
 
-### seqeuence~filter ⇒ <code>Iterator</code>
+### sequence~filter ⇒ <code>Iterator</code>
 Remove values from the sequence based on the given condition.
 
 ```
 filter(range(0,10), x => x%2 == 0) // [2,4,6,8]
 ```
 
-**Kind**: inner constant of [<code>seqeuence</code>](#module_seqeuence)  
+**Kind**: inner constant of [<code>sequence</code>](#module_sequence)  
 
 | Param | Type | Description |
 | --- | --- | --- |
 | seq | <code>Sequence</code> | Any sequence for which iter() is defined |
 | fn | <code>function</code> | The function |
 
-<a name="module_seqeuence..reject"></a>
+<a name="module_sequence..reject"></a>
 
-### seqeuence~reject
+### sequence~reject
 Opposite of filter: Removes values from the sequence if the function
 returns true.
 
-**Kind**: inner constant of [<code>seqeuence</code>](#module_seqeuence)  
-<a name="module_seqeuence..trySkip"></a>
+**Kind**: inner constant of [<code>sequence</code>](#module_sequence)  
+<a name="module_sequence..trySkip"></a>
 
-### seqeuence~trySkip ⇒ <code>Iterator</code>
+### sequence~trySkip ⇒ <code>Iterator</code>
 Like skip, but returns an exhausted iterator if the sequence contains
 less than `no` elements instead of throwing IteratorEnded.
 
-**Kind**: inner constant of [<code>seqeuence</code>](#module_seqeuence)  
+**Kind**: inner constant of [<code>sequence</code>](#module_sequence)  
 **Params**: <code>Number</code> no The number of elements to skip  
 
 | Param | Type | Description |
 | --- | --- | --- |
 | seq | <code>Sequence</code> | Any sequence for which iter() is defined |
 
-<a name="module_seqeuence..skip"></a>
+<a name="module_sequence..skip"></a>
 
-### seqeuence~skip ⇒ <code>Iterator</code>
+### sequence~skip ⇒ <code>Iterator</code>
 Skip elements in a sequence.
 Throws IteratorEnded if the sequence contains less than `no` elements.
 
-**Kind**: inner constant of [<code>seqeuence</code>](#module_seqeuence)  
+**Kind**: inner constant of [<code>sequence</code>](#module_sequence)  
 **Params**: <code>Number</code> no The number of elements to skip  
 
 | Param | Type | Description |
 | --- | --- | --- |
 | seq | <code>Sequence</code> | Any sequence for which iter() is defined |
 
-<a name="module_seqeuence..skipWhile"></a>
+<a name="module_sequence..skipWhile"></a>
 
-### seqeuence~skipWhile ⇒ <code>Iterator</code>
+### sequence~skipWhile ⇒ <code>Iterator</code>
 Skips elements in the given sequences until one is found
 for which the predicate is false.
 
-**Kind**: inner constant of [<code>seqeuence</code>](#module_seqeuence)  
+**Kind**: inner constant of [<code>sequence</code>](#module_sequence)  
 **Returns**: <code>Iterator</code> - The first element for which pred returns false
   plus the rest of the sequence.  
 **Params**: <code>Function</code> pred  
@@ -1073,14 +1073,14 @@ for which the predicate is false.
 | --- | --- | --- |
 | seq | <code>Sequence</code> | Any sequence for which iter() is defined |
 
-<a name="module_seqeuence..tryTake"></a>
+<a name="module_sequence..tryTake"></a>
 
-### seqeuence~tryTake ⇒ <code>Iterator</code>
+### sequence~tryTake ⇒ <code>Iterator</code>
 Yields an iterator of the first `no` elements in the given
 sequence; the resulting iterator may contain less then `no`
 elements if the input sequence was shorter than `no` elements.
 
-**Kind**: inner constant of [<code>seqeuence</code>](#module_seqeuence)  
+**Kind**: inner constant of [<code>sequence</code>](#module_sequence)  
 **Returns**: <code>Iterator</code> - The first element for which pred returns false
   plus the rest of the sequence.  
 
@@ -1089,85 +1089,85 @@ elements if the input sequence was shorter than `no` elements.
 | seq | <code>Sequence</code> | Any sequence for which iter() is defined |
 | no | <code>Number</code> | The number of elements to take |
 
-<a name="module_seqeuence..take"></a>
+<a name="module_sequence..take"></a>
 
-### seqeuence~take ⇒ <code>Array</code>
+### sequence~take ⇒ <code>Array</code>
 Version of tryTake that will throw IteratorEnded
 if the given iterable is too short.
 
-**Kind**: inner constant of [<code>seqeuence</code>](#module_seqeuence)  
-<a name="module_seqeuence..takeWhile"></a>
+**Kind**: inner constant of [<code>sequence</code>](#module_sequence)  
+<a name="module_sequence..takeWhile"></a>
 
-### seqeuence~takeWhile ⇒ <code>Iterator</code>
+### sequence~takeWhile ⇒ <code>Iterator</code>
 Cut off the sequence at the first point where the given condition is no
 longer met.
 
 `list(takeWhile([1,2,3,4,5,6...], x => x < 4))` yields `[1,2,3]`
 
-**Kind**: inner constant of [<code>seqeuence</code>](#module_seqeuence)  
+**Kind**: inner constant of [<code>sequence</code>](#module_sequence)  
 
 | Param | Type | Description |
 | --- | --- | --- |
 | seq | <code>Sequence</code> | Any sequence for which iter() is defined |
 | fn | <code>function</code> | The predicate function |
 
-<a name="module_seqeuence..takeUntilVal"></a>
+<a name="module_sequence..takeUntilVal"></a>
 
-### seqeuence~takeUntilVal ⇒ <code>Iterator</code>
+### sequence~takeUntilVal ⇒ <code>Iterator</code>
 Cut of the sequence at the point where the given value is
 first encountered.
 
-**Kind**: inner constant of [<code>seqeuence</code>](#module_seqeuence)  
+**Kind**: inner constant of [<code>sequence</code>](#module_sequence)  
 
 | Param | Type | Description |
 | --- | --- | --- |
 | seq | <code>Sequence</code> | Any sequence for which iter() is defined |
 
-<a name="module_seqeuence..prepend"></a>
+<a name="module_sequence..prepend"></a>
 
-### seqeuence~prepend
+### sequence~prepend
 Given a sequence and a value, prepend the value to the sequence,
 yielding a new iterator.
 
-**Kind**: inner constant of [<code>seqeuence</code>](#module_seqeuence)  
-<a name="module_seqeuence..append"></a>
+**Kind**: inner constant of [<code>sequence</code>](#module_sequence)  
+<a name="module_sequence..append"></a>
 
-### seqeuence~append
+### sequence~append
 Given a sequence and a value, append the value to the sequence,
 yielding a new iterator.
 
-**Kind**: inner constant of [<code>seqeuence</code>](#module_seqeuence)  
-<a name="module_seqeuence..mapSort"></a>
+**Kind**: inner constant of [<code>sequence</code>](#module_sequence)  
+<a name="module_sequence..mapSort"></a>
 
-### seqeuence~mapSort ⇒ <code>Array</code>
+### sequence~mapSort ⇒ <code>Array</code>
 Sort a sequence.
 The given function must turn map each parameter to a string or
 number. Objects will be sorted based on those numbers.A
 If the given parameters are already numbers/strings, you may
 just use identity as the mapping function.
 
-**Kind**: inner constant of [<code>seqeuence</code>](#module_seqeuence)  
+**Kind**: inner constant of [<code>sequence</code>](#module_sequence)  
 
 | Param | Type | Description |
 | --- | --- | --- |
 | seq | <code>Sequence</code> | Any sequence for which iter() is defined |
 | fn | <code>function</code> |  |
 
-<a name="module_seqeuence..zipLeast2"></a>
+<a name="module_sequence..zipLeast2"></a>
 
-### seqeuence~zipLeast2
+### sequence~zipLeast2
 Curryable version of zipLeast
 
-**Kind**: inner constant of [<code>seqeuence</code>](#module_seqeuence)  
-<a name="module_seqeuence..zip2"></a>
+**Kind**: inner constant of [<code>sequence</code>](#module_sequence)  
+<a name="module_sequence..zip2"></a>
 
-### seqeuence~zip2
+### sequence~zip2
 Curryable version of zip
 
-**Kind**: inner constant of [<code>seqeuence</code>](#module_seqeuence)  
-<a name="module_seqeuence..zipLongest"></a>
+**Kind**: inner constant of [<code>sequence</code>](#module_sequence)  
+<a name="module_sequence..zipLongest"></a>
 
-### seqeuence~zipLongest ⇒ <code>Iterator</code>
+### sequence~zipLongest ⇒ <code>Iterator</code>
 Zip multiple sequences.
 Puts all the first values from sequences into one sublist;
 all the second values, third values and so on...
@@ -1176,21 +1176,21 @@ will have the length of the longest sequence; the missing values
 from the shorter sequences will be substituted with the given
 fallback value.
 
-**Kind**: inner constant of [<code>seqeuence</code>](#module_seqeuence)  
+**Kind**: inner constant of [<code>sequence</code>](#module_sequence)  
 
 | Param | Type | Description |
 | --- | --- | --- |
 | seq | <code>Sequence</code> | A sequence of sequences |
 
-<a name="module_seqeuence..zipLongest2"></a>
+<a name="module_sequence..zipLongest2"></a>
 
-### seqeuence~zipLongest2
+### sequence~zipLongest2
 Curryable version of zipLongest
 
-**Kind**: inner constant of [<code>seqeuence</code>](#module_seqeuence)  
-<a name="module_seqeuence..slidingWindow"></a>
+**Kind**: inner constant of [<code>sequence</code>](#module_sequence)  
+<a name="module_sequence..slidingWindow"></a>
 
-### seqeuence~slidingWindow ⇒ <code>Iterator</code>
+### sequence~slidingWindow ⇒ <code>Iterator</code>
 Forms a sliding window on the underlying iterator.
 
 `slidingWindow([1,2,3,4,5], 3)`
@@ -1199,23 +1199,23 @@ yields `[[1,2,3], [2,3,4], [3,4,5]]`
 Will throw IteratorEnded if the sequence is shorter than
 the given window.
 
-**Kind**: inner constant of [<code>seqeuence</code>](#module_seqeuence)  
+**Kind**: inner constant of [<code>sequence</code>](#module_sequence)  
 **Returns**: <code>Iterator</code> - Iterator of lists  
 
 | Param | Type | Description |
 | --- | --- | --- |
 | seq | <code>Sequence</code> | A sequence of sequences |
 
-<a name="module_seqeuence..trySlidingWindow"></a>
+<a name="module_sequence..trySlidingWindow"></a>
 
-### seqeuence~trySlidingWindow
+### sequence~trySlidingWindow
 Like slidingWindow, but returns an empty sequence if the given
 sequence is too short.
 
-**Kind**: inner constant of [<code>seqeuence</code>](#module_seqeuence)  
-<a name="module_seqeuence..lookahead"></a>
+**Kind**: inner constant of [<code>sequence</code>](#module_sequence)  
+<a name="module_sequence..lookahead"></a>
 
-### seqeuence~lookahead
+### sequence~lookahead
 Almost like trySlidingWindow, but makes sure that
 every element from the sequence gets it's own subarray,
 even the last element. The arrays at the end are filled
@@ -1232,10 +1232,10 @@ lookahead([42, 23], 0, null) # => [[42], [23]]
 Try sliding window would yield an empty array in each of the examples
 above.
 
-**Kind**: inner constant of [<code>seqeuence</code>](#module_seqeuence)  
-<a name="module_seqeuence..mod"></a>
+**Kind**: inner constant of [<code>sequence</code>](#module_sequence)  
+<a name="module_sequence..mod"></a>
 
-### seqeuence~mod ⇒ <code>T</code>
+### sequence~mod ⇒ <code>T</code>
 Modify/Transform the given value.
 
 Applys the given value to the given function; after the return
@@ -1248,22 +1248,22 @@ const z = mod1(s, map(plus(1))); # => new Set([2,3,4,5]),
 assert(z.constructor === Set)
 ```
 
-**Kind**: inner constant of [<code>seqeuence</code>](#module_seqeuence)  
+**Kind**: inner constant of [<code>sequence</code>](#module_sequence)  
 
 | Param | Type | Description |
 | --- | --- | --- |
 | v | <code>T</code> | The value to transform |
 | Fn | <code>function</code> | The transformation function |
 
-<a name="module_seqeuence..union2"></a>
+<a name="module_sequence..union2"></a>
 
-### seqeuence~union2
+### sequence~union2
 Curryable version of union
 
-**Kind**: inner constant of [<code>seqeuence</code>](#module_seqeuence)  
-<a name="module_seqeuence..iter"></a>
+**Kind**: inner constant of [<code>sequence</code>](#module_sequence)  
+<a name="module_sequence..iter"></a>
 
-### seqeuence~iter(obj) ⇒ <code>Iterator</code>
+### sequence~iter(obj) ⇒ <code>Iterator</code>
 Turn any object into an iterator.
 Takes objects that implement the iterator protocol.
 Plain objects are treated as key-value stores and yield
@@ -1274,19 +1274,19 @@ considered to be a `Sequence` for the purpose of this file.
 This term shall be distinguished from `Iterable` in that iterables
 must implement the iterator protocol `iterable[Symbol.iterator]()`.
 
-**Kind**: inner method of [<code>seqeuence</code>](#module_seqeuence)  
+**Kind**: inner method of [<code>sequence</code>](#module_sequence)  
 
 | Param | Type |
 | --- | --- |
 | obj | <code>Object</code> \| <code>Iterable</code> \| <code>Iterator</code> | 
 
-<a name="module_seqeuence..range"></a>
+<a name="module_sequence..range"></a>
 
-### seqeuence~range(start, start)
+### sequence~range(start, start)
 Generates an iterator with the numeric range [start; end[
 Includes start but not end.
 
-**Kind**: inner method of [<code>seqeuence</code>](#module_seqeuence)  
+**Kind**: inner method of [<code>sequence</code>](#module_sequence)  
 **Retunrs**: <code>Iterator</code>  
 
 | Param | Type |
@@ -1294,21 +1294,21 @@ Includes start but not end.
 | start | <code>Number</code> | 
 | start | <code>Number</code> | 
 
-<a name="module_seqeuence..range0"></a>
+<a name="module_sequence..range0"></a>
 
-### seqeuence~range0()
+### sequence~range0()
 Like range(a, b) but always starts at 0
 
-**Kind**: inner method of [<code>seqeuence</code>](#module_seqeuence)  
-<a name="module_seqeuence..repeat"></a>
+**Kind**: inner method of [<code>sequence</code>](#module_sequence)  
+<a name="module_sequence..repeat"></a>
 
-### seqeuence~repeat()
+### sequence~repeat()
 Generates an infinite iterator of the given value.
 
-**Kind**: inner method of [<code>seqeuence</code>](#module_seqeuence)  
-<a name="module_seqeuence..next"></a>
+**Kind**: inner method of [<code>sequence</code>](#module_sequence)  
+<a name="module_sequence..next"></a>
 
-### seqeuence~next(seq) ⇒ <code>Any</code>
+### sequence~next(seq) ⇒ <code>Any</code>
 Extracts the next element from the iterator.
 
 ```
@@ -1322,7 +1322,7 @@ next(it); // throws IteratorEnded
 next(it); // throws IteratorEnded
 ```
 
-**Kind**: inner method of [<code>seqeuence</code>](#module_seqeuence)  
+**Kind**: inner method of [<code>sequence</code>](#module_sequence)  
 **Throws**:
 
 - <code>IteratorEnded</code> If the sequence is empty
@@ -1332,9 +1332,9 @@ next(it); // throws IteratorEnded
 | --- | --- | --- |
 | seq | <code>Sequence</code> | Any sequence for which iter() is defined |
 
-<a name="module_seqeuence..tryNext"></a>
+<a name="module_sequence..tryNext"></a>
 
-### seqeuence~tryNext(seq, fallback) ⇒ <code>Any</code>
+### sequence~tryNext(seq, fallback) ⇒ <code>Any</code>
 Extracts the next element from the iterator.
 
 ```
@@ -1348,16 +1348,16 @@ tryNext(it, null); // => null
 tryNext(it, null); // => null
 ```
 
-**Kind**: inner method of [<code>seqeuence</code>](#module_seqeuence)  
+**Kind**: inner method of [<code>sequence</code>](#module_sequence)  
 
 | Param | Type | Description |
 | --- | --- | --- |
 | seq | <code>Sequence</code> | Any sequence for which iter() is defined |
 | fallback | <code>Any</code> | The value to return if the sequence is empty |
 
-<a name="module_seqeuence..nth"></a>
+<a name="module_sequence..nth"></a>
 
-### seqeuence~nth(seq, idx) ⇒ <code>Any</code>
+### sequence~nth(seq, idx) ⇒ <code>Any</code>
 Extract the nth element from the sequence
 
 ```
@@ -1373,7 +1373,7 @@ fifth(it)  // => 'l'
 nth(it, 10); // throws IteratorEnded
 ```
 
-**Kind**: inner method of [<code>seqeuence</code>](#module_seqeuence)  
+**Kind**: inner method of [<code>sequence</code>](#module_sequence)  
 **Throws**:
 
 - <code>IteratorEnded</code> If the sequence is too short
@@ -1384,9 +1384,9 @@ nth(it, 10); // throws IteratorEnded
 | seq | <code>Sequence</code> | Any sequence for which iter() is defined |
 | idx | <code>Number</code> | The index of the element |
 
-<a name="module_seqeuence..first"></a>
+<a name="module_sequence..first"></a>
 
-### seqeuence~first(seq) ⇒ <code>Any</code>
+### sequence~first(seq) ⇒ <code>Any</code>
 Extract the first element from the sequence; this is effectively
 an alias for next();
 
@@ -1397,7 +1397,7 @@ first([1,2]) // => 1
 first([]); // throws IteratorEnded
 ```
 
-**Kind**: inner method of [<code>seqeuence</code>](#module_seqeuence)  
+**Kind**: inner method of [<code>sequence</code>](#module_sequence)  
 **Throws**:
 
 - <code>IteratorEnded</code> If the sequence is too short
@@ -1407,9 +1407,9 @@ first([]); // throws IteratorEnded
 | --- | --- | --- |
 | seq | <code>Sequence</code> | Any sequence for which iter() is defined |
 
-<a name="module_seqeuence..second"></a>
+<a name="module_sequence..second"></a>
 
-### seqeuence~second(seq) ⇒ <code>Any</code>
+### sequence~second(seq) ⇒ <code>Any</code>
 Extract the second element from the sequence
 
 ```
@@ -1419,7 +1419,7 @@ second([1,2]) // => 2
 second([1]); // throws IteratorEnded
 ```
 
-**Kind**: inner method of [<code>seqeuence</code>](#module_seqeuence)  
+**Kind**: inner method of [<code>sequence</code>](#module_sequence)  
 **Throws**:
 
 - <code>IteratorEnded</code> If the sequence is too short
@@ -1429,9 +1429,9 @@ second([1]); // throws IteratorEnded
 | --- | --- | --- |
 | seq | <code>Sequence</code> | Any sequence for which iter() is defined |
 
-<a name="module_seqeuence..last"></a>
+<a name="module_sequence..last"></a>
 
-### seqeuence~last(seq) ⇒ <code>Any</code>
+### sequence~last(seq) ⇒ <code>Any</code>
 Extract the last element from the sequence
 
 ```
@@ -1441,7 +1441,7 @@ last([1,2,3,4,5]) // => 5
 last([]); // throws IteratorEnded
 ```
 
-**Kind**: inner method of [<code>seqeuence</code>](#module_seqeuence)  
+**Kind**: inner method of [<code>sequence</code>](#module_sequence)  
 **Throws**:
 
 - <code>IteratorEnded</code> If the sequence is empty
@@ -1451,9 +1451,9 @@ last([]); // throws IteratorEnded
 | --- | --- | --- |
 | seq | <code>Sequence</code> | Any sequence for which iter() is defined |
 
-<a name="module_seqeuence..tryNth"></a>
+<a name="module_sequence..tryNth"></a>
 
-### seqeuence~tryNth(seq, idx, fallback) ⇒ <code>Any</code>
+### sequence~tryNth(seq, idx, fallback) ⇒ <code>Any</code>
 Extract the nth element from the sequence
 
 ```
@@ -1468,7 +1468,7 @@ fifth(it)  // => 'l'
 tryNth(it, 10, null); // => null
 ```
 
-**Kind**: inner method of [<code>seqeuence</code>](#module_seqeuence)  
+**Kind**: inner method of [<code>sequence</code>](#module_sequence)  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -1476,9 +1476,9 @@ tryNth(it, 10, null); // => null
 | idx | <code>Number</code> | The index of the element |
 | fallback | <code>Any</code> | The value to return if the sequence is too short |
 
-<a name="module_seqeuence..tryFirst"></a>
+<a name="module_sequence..tryFirst"></a>
 
-### seqeuence~tryFirst(seq, fallback) ⇒ <code>Any</code>
+### sequence~tryFirst(seq, fallback) ⇒ <code>Any</code>
 Extract the first element from the sequence; this is effectively
 an alias for tryNext();
 
@@ -1492,16 +1492,16 @@ const fn = tryFirst(null);
 fn([]); // => null
 ```
 
-**Kind**: inner method of [<code>seqeuence</code>](#module_seqeuence)  
+**Kind**: inner method of [<code>sequence</code>](#module_sequence)  
 
 | Param | Type | Description |
 | --- | --- | --- |
 | seq | <code>Sequence</code> | Any sequence for which iter() is defined |
 | fallback | <code>Any</code> | The value to return if the sequence is too short |
 
-<a name="module_seqeuence..trySecond"></a>
+<a name="module_sequence..trySecond"></a>
 
-### seqeuence~trySecond(seq, fallback) ⇒ <code>Any</code>
+### sequence~trySecond(seq, fallback) ⇒ <code>Any</code>
 Extract the second element from the sequence
 
 ```
@@ -1514,16 +1514,16 @@ const fn = trySecond(null);
 fn([1]); // => null
 ```
 
-**Kind**: inner method of [<code>seqeuence</code>](#module_seqeuence)  
+**Kind**: inner method of [<code>sequence</code>](#module_sequence)  
 
 | Param | Type | Description |
 | --- | --- | --- |
 | seq | <code>Sequence</code> | Any sequence for which iter() is defined |
 | fallback | <code>Any</code> | The value to return if the sequence is too short |
 
-<a name="module_seqeuence..tryLast"></a>
+<a name="module_sequence..tryLast"></a>
 
-### seqeuence~tryLast(seq, fallback) ⇒ <code>Any</code>
+### sequence~tryLast(seq, fallback) ⇒ <code>Any</code>
 Extract the last element from the sequence
 
 ```
@@ -1536,16 +1536,16 @@ const fn = tryLast(null);
 fn([]); // => null
 ```
 
-**Kind**: inner method of [<code>seqeuence</code>](#module_seqeuence)  
+**Kind**: inner method of [<code>sequence</code>](#module_sequence)  
 
 | Param | Type | Description |
 | --- | --- | --- |
 | seq | <code>Sequence</code> | Any sequence for which iter() is defined |
 | fallback | <code>Any</code> | The value to return if the sequence is empty |
 
-<a name="module_seqeuence..each"></a>
+<a name="module_sequence..each"></a>
 
-### seqeuence~each(seq, fn)
+### sequence~each(seq, fn)
 Iterate over sequences: Apply the give function to
 every element in the sequence
 
@@ -1561,16 +1561,16 @@ each([1,2,3], (v) => {
 });
 ```
 
-**Kind**: inner method of [<code>seqeuence</code>](#module_seqeuence)  
+**Kind**: inner method of [<code>sequence</code>](#module_sequence)  
 
 | Param | Type | Description |
 | --- | --- | --- |
 | seq | <code>Sequence</code> | Any sequence for which iter() is defined |
 | fn | <code>function</code> | Function taking a single parameter |
 
-<a name="module_seqeuence..find"></a>
+<a name="module_sequence..find"></a>
 
-### seqeuence~find(seq, fn) ⇒
+### sequence~find(seq, fn) ⇒
 Return the first element in the sequence for which the predicate matches.
 
 ```
@@ -1584,7 +1584,7 @@ find([3,4,1,2]); // => 4
 find([]); // throws IteratorEnded
 ```
 
-**Kind**: inner method of [<code>seqeuence</code>](#module_seqeuence)  
+**Kind**: inner method of [<code>sequence</code>](#module_sequence)  
 **Returns**: Any  
 **Throws**:
 
@@ -1596,9 +1596,9 @@ find([]); // throws IteratorEnded
 | seq | <code>Sequence</code> | Any sequence for which iter() is defined |
 | fn | <code>function</code> | The predicate |
 
-<a name="module_seqeuence..tryFind"></a>
+<a name="module_sequence..tryFind"></a>
 
-### seqeuence~tryFind(seq, fallback, fn) ⇒
+### sequence~tryFind(seq, fallback, fn) ⇒
 Return the first element in the sequence for which the predicate matches.
 
 ```
@@ -1612,7 +1612,7 @@ findEven([1,9,10,14]); // => 10
 findEven([]); // => null
 ```
 
-**Kind**: inner method of [<code>seqeuence</code>](#module_seqeuence)  
+**Kind**: inner method of [<code>sequence</code>](#module_sequence)  
 **Returns**: Any  
 
 | Param | Type | Description |
@@ -1621,9 +1621,9 @@ findEven([]); // => null
 | fallback | <code>Any</code> | The value to return if no element in the sequence matches the predicate |
 | fn | <code>function</code> | The predicate |
 
-<a name="module_seqeuence..contains"></a>
+<a name="module_sequence..contains"></a>
 
-### seqeuence~contains(seq) ⇒ <code>Boolean</code>
+### sequence~contains(seq) ⇒ <code>Boolean</code>
 Test if the given sequence contains a value that matches the predicate.
 
 ```
@@ -1677,15 +1677,15 @@ if (v === nothing) {
 }
 ```
 
-**Kind**: inner method of [<code>seqeuence</code>](#module_seqeuence)  
+**Kind**: inner method of [<code>sequence</code>](#module_sequence)  
 
 | Param | Type | Description |
 | --- | --- | --- |
 | seq | <code>Sequence</code> | Any sequence for which iter() is defined |
 
-<a name="module_seqeuence..seqEq"></a>
+<a name="module_sequence..seqEq"></a>
 
-### seqeuence~seqEq(a, b) ⇒ <code>Boolean</code>
+### sequence~seqEq(a, b) ⇒ <code>Boolean</code>
 Determine whether the items in two sequences are equal.
 
 ```
@@ -1721,16 +1721,16 @@ seqEq(dict(obj), dict(obj))); // => UNDEFINED BEHAVIOUR; could be true or false
 seqEq([{foo: 42, bar: 23}], [{bar: 23, foo: 42}]); // => true
 ```
 
-**Kind**: inner method of [<code>seqeuence</code>](#module_seqeuence)  
+**Kind**: inner method of [<code>sequence</code>](#module_sequence)  
 
 | Param | Type | Description |
 | --- | --- | --- |
 | a | <code>Sequence</code> | Any sequence for which iter() is defined |
 | b | <code>Sequence</code> | Any sequence for which iter() is defined |
 
-<a name="module_seqeuence..count"></a>
+<a name="module_sequence..count"></a>
 
-### seqeuence~count(a) ⇒ <code>Number</code>
+### sequence~count(a) ⇒ <code>Number</code>
 Determine the number of elements in an iterator.
 This will try using trySize(), but fall back to iterating
 over the container and counting the elements this way if necessary.
@@ -1744,109 +1744,109 @@ count(iter([1,2,3])); // => 3; O(n)
 
 See: [https://en.wikipedia.org/wiki/Big_O_notation]()
 
-**Kind**: inner method of [<code>seqeuence</code>](#module_seqeuence)  
+**Kind**: inner method of [<code>sequence</code>](#module_sequence)  
 
 | Param | Type | Description |
 | --- | --- | --- |
 | a | <code>Sequence</code> | Any sequence for which iter() is defined |
 
-<a name="module_seqeuence..list"></a>
+<a name="module_sequence..list"></a>
 
-### seqeuence~list()
+### sequence~list()
 Turns any sequence into a list.
 Shorthand for `Array.from(iter())`.
 This is often utilized to cache a sequence so it can be
 iterated over multiple times.
 
-**Kind**: inner method of [<code>seqeuence</code>](#module_seqeuence)  
-<a name="module_seqeuence..uniq"></a>
+**Kind**: inner method of [<code>sequence</code>](#module_sequence)  
+<a name="module_sequence..uniq"></a>
 
-### seqeuence~uniq()
+### sequence~uniq()
 Turns any sequence into a set.
 Shorthand for new Set(iter()).
 This often finds practical usage as a way of
 removing duplicates elements from a sequence.
 
-**Kind**: inner method of [<code>seqeuence</code>](#module_seqeuence)  
-<a name="module_seqeuence..dict"></a>
+**Kind**: inner method of [<code>sequence</code>](#module_sequence)  
+<a name="module_sequence..dict"></a>
 
-### seqeuence~dict()
+### sequence~dict()
 Turns any sequence into an es6 map
 This is particularly useful for constructing es7 maps from objects...
 
-**Kind**: inner method of [<code>seqeuence</code>](#module_seqeuence)  
-<a name="module_seqeuence..obj"></a>
+**Kind**: inner method of [<code>sequence</code>](#module_sequence)  
+<a name="module_sequence..obj"></a>
 
-### seqeuence~obj()
+### sequence~obj()
 Turns any sequence into an object
 
-**Kind**: inner method of [<code>seqeuence</code>](#module_seqeuence)  
-<a name="module_seqeuence..any"></a>
+**Kind**: inner method of [<code>sequence</code>](#module_sequence)  
+<a name="module_sequence..any"></a>
 
-### seqeuence~any()
+### sequence~any()
 Test whether any element in the given sequence is truthy.
 Returns null if the list is empty.
 
-**Kind**: inner method of [<code>seqeuence</code>](#module_seqeuence)  
-<a name="module_seqeuence..all"></a>
+**Kind**: inner method of [<code>sequence</code>](#module_sequence)  
+<a name="module_sequence..all"></a>
 
-### seqeuence~all()
+### sequence~all()
 Test whether all elements in the given sequence are truthy
 Returns true if the list is empty.
 
-**Kind**: inner method of [<code>seqeuence</code>](#module_seqeuence)  
-<a name="module_seqeuence..sum"></a>
+**Kind**: inner method of [<code>sequence</code>](#module_sequence)  
+<a name="module_sequence..sum"></a>
 
-### seqeuence~sum()
+### sequence~sum()
 Calculate the sum of a list of numbers.
 Returns 0 is the list is empty.
 
-**Kind**: inner method of [<code>seqeuence</code>](#module_seqeuence)  
-<a name="module_seqeuence..product"></a>
+**Kind**: inner method of [<code>sequence</code>](#module_sequence)  
+<a name="module_sequence..product"></a>
 
-### seqeuence~product()
+### sequence~product()
 Calculate the product of a list of numbers.
 Returns 1 is the list is empty.
 
-**Kind**: inner method of [<code>seqeuence</code>](#module_seqeuence)  
-<a name="module_seqeuence..reverse"></a>
+**Kind**: inner method of [<code>sequence</code>](#module_sequence)  
+<a name="module_sequence..reverse"></a>
 
-### seqeuence~reverse(seq) ⇒ <code>Array</code>
+### sequence~reverse(seq) ⇒ <code>Array</code>
 Reverse a given sequence
 
-**Kind**: inner method of [<code>seqeuence</code>](#module_seqeuence)  
+**Kind**: inner method of [<code>sequence</code>](#module_sequence)  
 
 | Param | Type | Description |
 | --- | --- | --- |
 | seq | <code>Sequence</code> | Any sequence for which iter() is defined |
 
-<a name="module_seqeuence..enumerate"></a>
+<a name="module_sequence..enumerate"></a>
 
-### seqeuence~enumerate(seq) ⇒ <code>Iterator</code>
+### sequence~enumerate(seq) ⇒ <code>Iterator</code>
 Extend the given sequences with indexes:
 Takes a sequence of values and generates
 a sequence where each element is a pair [index, element];
 
-**Kind**: inner method of [<code>seqeuence</code>](#module_seqeuence)  
+**Kind**: inner method of [<code>sequence</code>](#module_sequence)  
 
 | Param | Type | Description |
 | --- | --- | --- |
 | seq | <code>Sequence</code> | Any sequence for which iter() is defined |
 
-<a name="module_seqeuence..takeDef"></a>
+<a name="module_sequence..takeDef"></a>
 
-### seqeuence~takeDef(seq) ⇒ <code>Iterator</code>
+### sequence~takeDef(seq) ⇒ <code>Iterator</code>
 Cut of the given sequence at the first undefined or null value.
 
-**Kind**: inner method of [<code>seqeuence</code>](#module_seqeuence)  
+**Kind**: inner method of [<code>sequence</code>](#module_sequence)  
 
 | Param | Type | Description |
 | --- | --- | --- |
 | seq | <code>Sequence</code> | Any sequence for which iter() is defined |
 
-<a name="module_seqeuence..flat"></a>
+<a name="module_sequence..flat"></a>
 
-### seqeuence~flat(seq)
+### sequence~flat(seq)
 Flattens a sequence of sequences.
 
 ```
@@ -1854,22 +1854,22 @@ into(flat([[1,2], [3,4]]), Array) # [1,2,3,4]
 into(flat({foo: 42}), Array) # ["foo", 42]
 ```
 
-**Kind**: inner method of [<code>seqeuence</code>](#module_seqeuence)  
+**Kind**: inner method of [<code>sequence</code>](#module_sequence)  
 
 | Param | Type | Description |
 | --- | --- | --- |
 | seq | <code>Sequence(Sequence)</code> | Any sequence for which iter() is defined |
 
-<a name="module_seqeuence..concat"></a>
+<a name="module_sequence..concat"></a>
 
-### seqeuence~concat()
+### sequence~concat()
 Concatenate any number of sequences.
 This is just a variadic alias for `flat()`
 
-**Kind**: inner method of [<code>seqeuence</code>](#module_seqeuence)  
-<a name="module_seqeuence..zipLeast"></a>
+**Kind**: inner method of [<code>sequence</code>](#module_sequence)  
+<a name="module_sequence..zipLeast"></a>
 
-### seqeuence~zipLeast(seq) ⇒ <code>Iterator</code>
+### sequence~zipLeast(seq) ⇒ <code>Iterator</code>
 Zip multiple sequences.
 Puts all the first values from sequences into one sublist;
 all the second values, third values and so on.
@@ -1877,29 +1877,29 @@ If the sequences are of different length, the output sequence
 will be the length of the *shortest* sequence and discard all
 remaining from the longer sequences...
 
-**Kind**: inner method of [<code>seqeuence</code>](#module_seqeuence)  
+**Kind**: inner method of [<code>sequence</code>](#module_sequence)  
 
 | Param | Type | Description |
 | --- | --- | --- |
 | seq | <code>Sequence</code> | A sequence of sequences |
 
-<a name="module_seqeuence..zip"></a>
+<a name="module_sequence..zip"></a>
 
-### seqeuence~zip(seq) ⇒ <code>Iterator</code>
+### sequence~zip(seq) ⇒ <code>Iterator</code>
 Zip multiple sequences.
 Puts all the first values from sequences into one sublist;
 all the second values, third values and so on.
 If the sequences are of different length, an error will be thrown.
 
-**Kind**: inner method of [<code>seqeuence</code>](#module_seqeuence)  
+**Kind**: inner method of [<code>sequence</code>](#module_sequence)  
 
 | Param | Type | Description |
 | --- | --- | --- |
 | seq | <code>Sequence</code> | A sequence of sequences |
 
-<a name="module_seqeuence..cartesian"></a>
+<a name="module_sequence..cartesian"></a>
 
-### seqeuence~cartesian(seqs)
+### sequence~cartesian(seqs)
 Calculate the cartesian product of the given sequences.
 
 ```
@@ -1914,15 +1914,15 @@ list(cartesian([[1,2], [3,4], [5,6]]));
 list(cartesian([[], [3,4], [5,6]])); // => []
 ```
 
-**Kind**: inner method of [<code>seqeuence</code>](#module_seqeuence)  
+**Kind**: inner method of [<code>sequence</code>](#module_sequence)  
 
 | Param | Type | Description |
 | --- | --- | --- |
 | seqs | <code>Sequence</code> | A sequence of sequences |
 
-<a name="module_seqeuence..union"></a>
+<a name="module_sequence..union"></a>
 
-### seqeuence~union()
+### sequence~union()
 Combine multiple map/set like objects.
 
 The return type is always the type of the first value.
@@ -1935,7 +1935,7 @@ to the original type.
 
 Takes any number of values to combine.
 
-**Kind**: inner method of [<code>seqeuence</code>](#module_seqeuence)  
+**Kind**: inner method of [<code>sequence</code>](#module_sequence)  
 <a name="module_stdtraits"></a>
 
 ## stdtraits
