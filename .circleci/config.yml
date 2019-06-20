@@ -1,10 +1,12 @@
 version: 2.1
 executors:
-  node8:
+  node10:
     docker:
-    - image: circleci/node:8
-    environment:
-      NPM_CONFIG_PREFIX: ~/.npm-global
+      - image: circleci/node:10
+        environment:
+          NPM_CONFIG_PREFIX: "~/.npm-global"
+    working_directory: ~/repo
+
 
 commands:
   setup:
@@ -29,7 +31,7 @@ commands:
 
 jobs:
   build:
-    executor: node8
+    executor: node10
 
     steps:
     - setup
@@ -51,8 +53,8 @@ jobs:
     - store_artifacts:
         path: junit
 
-  publish-pre-release:
-    executor: node8
+  semantic-release:
+    executor: node10
 
     steps:
     - setup
@@ -73,7 +75,7 @@ workflows:
   build:
     jobs:
     - build
-    - publish-pre-release:
+    - semantic-release:
         requires:
         - build
         filters:
