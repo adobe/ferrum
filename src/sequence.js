@@ -28,7 +28,7 @@ const {
 // ITERATOR GENERATORS ///////////////////////////////////////
 
 /**
- * @module seqeuence
+ * @module sequence
  * @description
  * Generic library for advanced utilization of es6 iterators.
  *
