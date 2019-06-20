@@ -83,7 +83,7 @@ const {
  *
  * Examples:
  *
- * # Iteration
+ * #### Iteration
  *
  * ```
  * > for (const v of {foo: 42, bar: 23}) console.log(v);
@@ -92,7 +92,7 @@ const {
  *
  * Does not work because plain objects do not implement the iterator protocol.
  *
- * # Replace With
+ * #### Replace With
  *
  * ```
  * > each([1,2,3,4], console.log);
@@ -116,7 +116,7 @@ const {
  *[ 'foo', 42 ]
  * ```
  *
- * # Array.forEach
+ * #### Array.forEach
  *
  * ```
  * > [1,2,3,4].forEach(console.log)
@@ -131,7 +131,7 @@ const {
  * This behaviour is often unexpected and forces us to define an intermediate
  * function.
  *
- * ## Replace With
+ * #### Replace With
  *
  * ```
  * > each([1,2,3,4], console.log);
@@ -786,15 +786,15 @@ const into = curry('into', (seq, t) => Into.invoke(t, seq));
  * const shallowcopy = (v) => into(v, v.constructor);
  * ```
  *
- * # Interface
+ * #### Interface
  *
  * `(T: Type/Function, v: Sequence) => r: T
  *
- * # Laws
+ * #### Laws
  *
  * * `into(v, type(v)) <=> shallowclone(v)`
  *
- * # Specialization notes
+ * #### Specialization notes
  *
  * String: Uses toString() on each value from the sequence
  *   and concatenates them into one string...
@@ -805,7 +805,7 @@ const into = curry('into', (seq, t) => Into.invoke(t, seq));
  * Map: Same rules as for object.
  * Set: Refer to https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set
  *
- * # Examples
+ * #### Examples
  *
  * Practical uses of into include converting between types; e.g:
  *

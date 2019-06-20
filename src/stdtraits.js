@@ -27,7 +27,7 @@ const {
  * @description
  * Highly generic traits/interfaces.
  *
- * # Laws
+ * ### Laws
  *
  * These apply to all traits in this module.
  *
@@ -302,11 +302,11 @@ const assertUneq = (actual, notExpected, msg) => {
  * strict. Equals is for cases in which the content of two variables
  * or data structures is the same/semantically equivalent.
  *
- * # Interface
+ * #### Interface
  *
  * `(value1: Any, value2: Any) => r: Boolean`
  *
- * # Laws
+ * #### Laws
  *
  * * `Equals.invoke(a, b) <=> Equals.invoke(b, a)`
  *
@@ -330,7 +330,7 @@ const assertUneq = (actual, notExpected, msg) => {
  *   && a.toString() === b.toString());
  * ```
  *
- * # Specialization notes
+ * #### Specialization notes
  *
  * Extra implementations provided for Date, RegExp, URL and typed arrays.
  *
@@ -433,11 +433,11 @@ const empty = what => size(what) === 0;
  *
  * Implemented at least for Object, String, Array, Map, Set.
  *
- * # Interface
+ * #### Interface
  *
  * Invocation takes the form `(c: Container) => i: Integer`
  *
- * # Laws
+ * #### Laws
  *
  * - `i >= 0`
  * - `i !== null && i !== undefined`.
@@ -511,16 +511,16 @@ const shallowclone = a => Shallowclone.invoke(a);
  * assert(b.foo.foo === 5);
  * ```
  *
- * # Interface
+ * #### Interface
  *
  * `(x: TheValue) => r: TheValue`
  *
- * # Laws
+ * #### Laws
  *
  * - `x !== r`
  * - `get(r, k) === get(x, k)` for any k.
  *
- * # Implementation Notes
+ * #### Implementation Notes
  *
  * No-Op implementations are provided for read only primitive types.
  *
@@ -593,11 +593,11 @@ const deepclone = x => Deepclone.invoke(x);
  * assert(b.foo.foo === 42);
  * ```
  *
- * # Interface
+ * #### Interface
  *
  * `(x: TheValue) => r: TheValue`
  *
- * # Laws
+ * #### Laws
  *
  * - `x !== r`
  * - `x equals r` wehre eq is the equals() function.
@@ -606,7 +606,7 @@ const deepclone = x => Deepclone.invoke(x);
  * - `get(r, k) equals get(x, k)` for any k wehre eq is the equals() function.
  * - The above laws apply recursively for any children.
  *
- * # Specialization Notes
+ * #### Specialization Notes
  *
  * No implementation provided for set: In sets keys and values are the
  * same thing.
@@ -731,11 +731,11 @@ const values = function* values(x) {
  * This is different from the `Sequence` trait in `sequence.js`
  * in that this always returns pairs, even for lists, sets, strings...
  *
- * # Interface
+ * #### Interface
  *
  * `(c: Container(k: Key, v: Value)) => r: Sequence([k: Key, v: Value], ...)`.
  *
- * # Specialization Notes
+ * #### Specialization Notes
  *
  * Array like types return index => value, set returns value => value.
  *
@@ -776,12 +776,12 @@ const get = curry('get', (x, k) => Get.invoke(x, k));
  *
  * Implemented for Object, String, Array, Map.
  *
- * # Interface
+ * #### Interface
  *
  * `(c: Container, k: Key) => v: Value|undefined`. Will return undefined
  * if the key could not be found.
  *
- * # Laws
+ * #### Laws
  *
  * - Must not be implemented for set-like data structures
  *
@@ -804,11 +804,11 @@ const has = curry('has', (x, k) => Has.invoke(x, k));
 /**
  * Test if a container holds an entry with the given key.
  *
- * # Interface
+ * #### Interface
  *
  * `(c: Container, k: Key) => b: Boolean`.
  *
- * # Laws
+ * #### Laws
  *
  * - Must not be implemented for set-like data structures
  *
@@ -841,15 +841,15 @@ const assign = curry('assign', (cont, key, value) => {
  *
  * Implemented for Object, String, Array, Map.
  *
- * # Interface
+ * #### Interface
  *
  * `(c: Container, v: Value, k: Key) => void`.
  *
- * # Laws
+ * #### Laws
  *
  * - Must not be implemented for set-like data structures
  *
- * # Specialization Notes
+ * #### Specialization Notes
  *
  * No implementation provided for String since String is read only.
  *
@@ -882,16 +882,16 @@ const del = curry('del', (x, k) => {
 /**
  * Test if a container holds an entry with the given key.
  *
- * # Interface
+ * #### Interface
  *
  * `(c: Container, k: Key) => Void`.
  *
- * # Laws
+ * #### Laws
  *
  * - The value must actually be deleted, not set to `undefined` if possible.
  *   Arrays become sparse if a value in their midst is deleted.
  *
- * # Specialization Notes
+ * #### Specialization Notes
  *
  * No implementation provided for String since String is read only.
  * No implementation for Array since has() disregards sparse slots in arrays
@@ -914,7 +914,7 @@ const setdefault = curry('setdefault', (x, k, v) => Setdefault.invoke(x, k, v));
  *
  * This trait is implicitly implemented if the container implements Has, Get and Set.
  *
- * # Interface
+ * #### Interface
  *
  * `(c: Container, v: Value, k: Key) => r: Value`.
  *
@@ -938,7 +938,7 @@ const replace = curry('replace', (x, k, v) => Replace.invoke(x, k, v));
  *
  * This trait is implicitly implemented if the container implements Get and Set.
  *
- * # Interface
+ * #### Interface
  *
  * `(c: Container, v: Value, k: Key) => r: Value`.
  *

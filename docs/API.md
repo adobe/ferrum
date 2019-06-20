@@ -40,10 +40,10 @@ The emphasis here is on mostly, since sequence.js functions are
 designed to have fewer edge cases that classical es6 pendants and
 therefor make for a smoother coding experience.</p>
 <p>Examples:</p>
-<h1 id="iteration">Iteration</h1>
+<h4 id="iteration">Iteration</h4>
 <pre><code>&gt; for (const v of {foo: 42, bar: 23}) console.log(v);
 TypeError: {(intermediate value)(intermediate value)} is not iterable</code></pre><p>Does not work because plain objects do not implement the iterator protocol.</p>
-<h1 id="replace-with">Replace With</h1>
+<h4 id="replace-with">Replace With</h4>
 <pre><code>&gt; each([1,2,3,4], console.log);
 1
 2
@@ -52,7 +52,7 @@ TypeError: {(intermediate value)(intermediate value)} is not iterable</code></pr
 <pre><code>&gt; each({foo: 42}, v =&gt; console.log(v));
 [ &#39;foo&#39;, 42 ]</code></pre><p>or the following if the full power of a for loop is really required..</p>
 <pre><code>for (const v of iter({foo: 42})) console.log(v);
-[ &#39;foo&#39;, 42 ]</code></pre><h1 id="arrayforeach">Array.forEach</h1>
+[ &#39;foo&#39;, 42 ]</code></pre><h4 id="arrayforeach">Array.forEach</h4>
 <pre><code>&gt; [1,2,3,4].forEach(console.log)
 1 0 [ 1, 2, 3, 4 ]
 2 1 [ 1, 2, 3, 4 ]
@@ -61,7 +61,7 @@ TypeError: {(intermediate value)(intermediate value)} is not iterable</code></pr
 the index in the array as well as the <code>thisArgument</code>.
 This behaviour is often unexpected and forces us to define an intermediate
 function.</p>
-<h2 id="replace-with-1">Replace With</h2>
+<h4 id="replace-with-1">Replace With</h4>
 <pre><code>&gt; each([1,2,3,4], console.log);
 1
 2
@@ -76,7 +76,7 @@ into <code>new Map(...)</code>;</p>
 </dd>
 <dt><a href="#module_stdtraits">stdtraits</a></dt>
 <dd><p>Highly generic traits/interfaces.</p>
-<h1 id="laws">Laws</h1>
+<h3 id="laws">Laws</h3>
 <p>These apply to all traits in this module.</p>
 <ul>
 <li>Arrays, Strings and any list-like data structures are treated
@@ -634,7 +634,7 @@ therefor make for a smoother coding experience.
 
 Examples:
 
-# Iteration
+#### Iteration
 
 ```
 > for (const v of {foo: 42, bar: 23}) console.log(v);
@@ -643,7 +643,7 @@ TypeError: {(intermediate value)(intermediate value)} is not iterable
 
 Does not work because plain objects do not implement the iterator protocol.
 
-# Replace With
+#### Replace With
 
 ```
 > each([1,2,3,4], console.log);
@@ -667,7 +667,7 @@ for (const v of iter({foo: 42})) console.log(v);
 [ 'foo', 42 ]
 ```
 
-# Array.forEach
+#### Array.forEach
 
 ```
 > [1,2,3,4].forEach(console.log)
@@ -682,7 +682,7 @@ the index in the array as well as the `thisArgument`.
 This behaviour is often unexpected and forces us to define an intermediate
 function.
 
-## Replace With
+#### Replace With
 
 ```
 > each([1,2,3,4], console.log);
@@ -802,15 +802,15 @@ a poor mans shallow copy for some types
 const shallowcopy = (v) => into(v, v.constructor);
 ```
 
-# Interface
+#### Interface
 
 `(T: Type/Function, v: Sequence) => r: T
 
-# Laws
+#### Laws
 
 * `into(v, type(v)) <=> shallowclone(v)`
 
-# Specialization notes
+#### Specialization notes
 
 String: Uses toString() on each value from the sequence
   and concatenates them into one string...
@@ -821,7 +821,7 @@ Object: Expects key/value pairs; the keys must be strings;
 Map: Same rules as for object.
 Set: Refer to https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set
 
-# Examples
+#### Examples
 
 Practical uses of into include converting between types; e.g:
 
@@ -1941,7 +1941,7 @@ Takes any number of values to combine.
 ## stdtraits
 Highly generic traits/interfaces.
 
-# Laws
+### Laws
 
 These apply to all traits in this module.
 
@@ -2085,11 +2085,11 @@ This trait should be used only in cases where `===`/`is()` is too
 strict. Equals is for cases in which the content of two variables
 or data structures is the same/semantically equivalent.
 
-# Interface
+#### Interface
 
 `(value1: Any, value2: Any) => r: Boolean`
 
-# Laws
+#### Laws
 
 * `Equals.invoke(a, b) <=> Equals.invoke(b, a)`
 
@@ -2113,7 +2113,7 @@ Equals.impl(String, (a, b) =>
   && a.toString() === b.toString());
 ```
 
-# Specialization notes
+#### Specialization notes
 
 Extra implementations provided for Date, RegExp, URL and typed arrays.
 
@@ -2157,11 +2157,11 @@ empty([1,2]); // => false
 
 Implemented at least for Object, String, Array, Map, Set.
 
-# Interface
+#### Interface
 
 Invocation takes the form `(c: Container) => i: Integer`
 
-# Laws
+#### Laws
 
 - `i >= 0`
 - `i !== null && i !== undefined`.
@@ -2200,16 +2200,16 @@ a.foo.foo = 5;
 assert(b.foo.foo === 5);
 ```
 
-# Interface
+#### Interface
 
 `(x: TheValue) => r: TheValue`
 
-# Laws
+#### Laws
 
 - `x !== r`
 - `get(r, k) === get(x, k)` for any k.
 
-# Implementation Notes
+#### Implementation Notes
 
 No-Op implementations are provided for read only primitive types.
 
@@ -2245,11 +2245,11 @@ a.foo.foo = 5;
 assert(b.foo.foo === 42);
 ```
 
-# Interface
+#### Interface
 
 `(x: TheValue) => r: TheValue`
 
-# Laws
+#### Laws
 
 - `x !== r`
 - `x equals r` wehre eq is the equals() function.
@@ -2258,7 +2258,7 @@ assert(b.foo.foo === 42);
 - `get(r, k) equals get(x, k)` for any k wehre eq is the equals() function.
 - The above laws apply recursively for any children.
 
-# Specialization Notes
+#### Specialization Notes
 
 No implementation provided for set: In sets keys and values are the
 same thing.
@@ -2291,11 +2291,11 @@ list(values(new Bar()); // => [42, 5]
 This is different from the `Sequence` trait in `sequence.js`
 in that this always returns pairs, even for lists, sets, strings...
 
-# Interface
+#### Interface
 
 `(c: Container(k: Key, v: Value)) => r: Sequence([k: Key, v: Value], ...)`.
 
-# Specialization Notes
+#### Specialization Notes
 
 Array like types return index => value, set returns value => value.
 
@@ -2311,12 +2311,12 @@ Trait to get a value from a container like type.
 
 Implemented for Object, String, Array, Map.
 
-# Interface
+#### Interface
 
 `(c: Container, k: Key) => v: Value|undefined`. Will return undefined
 if the key could not be found.
 
-# Laws
+#### Laws
 
 - Must not be implemented for set-like data structures
 
@@ -2326,11 +2326,11 @@ if the key could not be found.
 ### stdtraits~Has
 Test if a container holds an entry with the given key.
 
-# Interface
+#### Interface
 
 `(c: Container, k: Key) => b: Boolean`.
 
-# Laws
+#### Laws
 
 - Must not be implemented for set-like data structures
 
@@ -2342,15 +2342,15 @@ Trait to assign a value in a container like type.
 
 Implemented for Object, String, Array, Map.
 
-# Interface
+#### Interface
 
 `(c: Container, v: Value, k: Key) => void`.
 
-# Laws
+#### Laws
 
 - Must not be implemented for set-like data structures
 
-# Specialization Notes
+#### Specialization Notes
 
 No implementation provided for String since String is read only.
 
@@ -2360,16 +2360,16 @@ No implementation provided for String since String is read only.
 ### stdtraits~Delete
 Test if a container holds an entry with the given key.
 
-# Interface
+#### Interface
 
 `(c: Container, k: Key) => Void`.
 
-# Laws
+#### Laws
 
 - The value must actually be deleted, not set to `undefined` if possible.
   Arrays become sparse if a value in their midst is deleted.
 
-# Specialization Notes
+#### Specialization Notes
 
 No implementation provided for String since String is read only.
 No implementation for Array since has() disregards sparse slots in arrays
@@ -2384,7 +2384,7 @@ Set a default value in a container.
 
 This trait is implicitly implemented if the container implements Has, Get and Set.
 
-# Interface
+#### Interface
 
 `(c: Container, v: Value, k: Key) => r: Value`.
 
@@ -2396,7 +2396,7 @@ Swap out one value in a container for another.
 
 This trait is implicitly implemented if the container implements Get and Set.
 
-# Interface
+#### Interface
 
 `(c: Container, v: Value, k: Key) => r: Value`.
 
@@ -2826,7 +2826,7 @@ size(null) # => 0
 size(document.body) # => 1
 ```
 
-# Traits, an introduction: Very specific interfaces that let you choose your guarantees
+### Traits, an introduction: Very specific interfaces that let you choose your guarantees
 
 This helps to implement a concept known as type classes in haskell,
 traits in rust, protocols in elixir, protocols (like the iteration protocol)
@@ -2853,12 +2853,12 @@ By using the Size trait, the developer providing an implementation specifically 
 'I obey those rules'. There may even be a second trait called `Size` with it's own rules.
 The trait class is written in a way so those two would not interfere.
 
-## Traits do not provide type checks
+#### Traits do not provide type checks
 
 Because we are in javascript, these guarantees are generally not enforced by the type system
 and the dev providing an implementation is still responsible for writing extensive tests.
 
-# Traits provide abstraction: Think about what you want to do, not how you want to do it
+#### Traits provide abstraction: Think about what you want to do, not how you want to do it
 
 One specific feature traits provide is that they let you state what you want to do instead of how
 to do it.
@@ -2868,7 +2868,7 @@ Or you could just use the Size trait and call `size(thing)` which works for all 
 types. This is one of the features traits provide; define an implementation for a trait
 once and you no longer have to think about how to achieve a thing, just what to achieve.
 
-# Implementing traits for third party types
+#### Implementing traits for third party types
 
 This is another feature that makes traits particularly useful! Java for instance
 has interfaces, but the creator of a class/type must think of implementing a specific interface;
@@ -2878,7 +2878,7 @@ either come from the standard library or from that particular library.
 This usually is not very helpful; with traits this is not a problem at all.
 Just use `MyTrait.impl` as in the example above.
 
-# Subclassing the Trait class
+#### Subclassing the Trait class
 
 You may subclass Trait and overwrite any of it's methods.
 
