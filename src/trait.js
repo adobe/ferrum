@@ -143,7 +143,7 @@ class TraitNotImplemented extends Error {}
  * size(document.body) # => 1
  * ```
  *
- * ### Traits, an introduction: Very specific interfaces that let you choose your guarantees
+ * # Traits, an introduction: Very specific interfaces that let you choose your guarantees
  *
  * This helps to implement a concept known as type classes in haskell,
  * traits in rust, protocols in elixir, protocols (like the iteration protocol)
@@ -170,12 +170,12 @@ class TraitNotImplemented extends Error {}
  * 'I obey those rules'. There may even be a second trait called `Size` with it's own rules.
  * The trait class is written in a way so those two would not interfere.
  *
- * #### Traits do not provide type checks
+ * ## Traits do not provide type checks
  *
  * Because we are in javascript, these guarantees are generally not enforced by the type system
  * and the dev providing an implementation is still responsible for writing extensive tests.
  *
- * #### Traits provide abstraction: Think about what you want to do, not how you want to do it
+ * # Traits provide abstraction: Think about what you want to do, not how you want to do it
  *
  * One specific feature traits provide is that they let you state what you want to do instead of how
  * to do it.
@@ -185,7 +185,7 @@ class TraitNotImplemented extends Error {}
  * types. This is one of the features traits provide; define an implementation for a trait
  * once and you no longer have to think about how to achieve a thing, just what to achieve.
  *
- * #### Implementing traits for third party types
+ * # Implementing traits for third party types
  *
  * This is another feature that makes traits particularly useful! Java for instance
  * has interfaces, but the creator of a class/type must think of implementing a specific interface;
@@ -195,7 +195,7 @@ class TraitNotImplemented extends Error {}
  * This usually is not very helpful; with traits this is not a problem at all.
  * Just use `MyTrait.impl` as in the example above.
  *
- * #### Subclassing the Trait class
+ * # Subclassing the Trait class
  *
  * You may subclass Trait and overwrite any of it's methods.
  *
