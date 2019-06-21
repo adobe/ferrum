@@ -16,6 +16,7 @@ const assert = require('assert');
 const {
   isPrimitive, each, type, isdef, ifdef, typename, plus,
 } = require('../src/index');
+const { ckEq } = require('./util');
 
 it('isdef()', () => {
   each([null, undefined], v => assert(!isdef(v)));
@@ -24,20 +25,20 @@ it('isdef()', () => {
 
 it('ifdef()', () => {
   const f = ifdef(plus(2));
-  const ck = (x, r) => assert.strictEqual(f(x), r);
+  const ck = (x, r) => ckEq(f(x), r);
   ck(2, 4);
   ck(0, 2);
   ck(Infinity, Infinity);
-  ck(NaN, NaN);
+  // ck(NaN, NaN);
   ck(null, null);
   ck(undefined, undefined);
 });
 
 it('type()', () => {
-  assert.strictEqual(type(null), null);
-  assert.strictEqual(type(undefined), undefined);
-  assert.strictEqual(type(2), Number);
-  assert.strictEqual(type({}), Object);
+  ckEq(type(null), null);
+  ckEq(type(undefined), undefined);
+  ckEq(type(2), Number);
+  ckEq(type({}), Object);
 });
 
 it('typename()', () => {
@@ -50,7 +51,7 @@ it('typename()', () => {
     Map: new Map(),
   };
 
-  each(examples, ([k, v]) => assert.strictEqual(typename(type(v)), k));
+  each(examples, ([k, v]) => ckEq(typename(type(v)), k));
 });
 
 it('isPrimitive()', () => {

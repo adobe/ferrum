@@ -11,14 +11,13 @@
  */
 
 /* global it */
-const assert = require('assert');
 const {
   and, or, not, nand, nor, xor, xnor, is, aint, plus, mul,
 } = require('../src/op');
-const { ckCurry } = require('./util');
+const { ckCurry, ckEq } = require('./util');
 
 it('and()', () => {
-  const ck = (expect, ...args) => assert.strictEqual(ckCurry(and, ...args), expect);
+  const ck = (expect, ...args) => ckEq(ckCurry(and, ...args), expect);
   ck(null, null, null);
   ck(null, true, null);
   ck(0, 0, true);
@@ -26,7 +25,7 @@ it('and()', () => {
 });
 
 it('or()', () => {
-  const ck = (expect, ...args) => assert.strictEqual(ckCurry(or, ...args), expect);
+  const ck = (expect, ...args) => ckEq(ckCurry(or, ...args), expect);
   ck(null, null, null);
   ck(true, true, true);
   ck(1, 0, 1);
@@ -34,12 +33,12 @@ it('or()', () => {
 });
 
 it('not()', () => {
-  assert.strictEqual(not(1), false);
-  assert.strictEqual(not(null), true);
+  ckEq(not(1), false);
+  ckEq(not(null), true);
 });
 
 it('nand()', () => {
-  const ck = (expect, ...args) => assert.strictEqual(ckCurry(nand, ...args), expect);
+  const ck = (expect, ...args) => ckEq(ckCurry(nand, ...args), expect);
   ck(true, null, null);
   ck(true, true, null);
   ck(true, 0, 1);
@@ -47,7 +46,7 @@ it('nand()', () => {
 });
 
 it('nor()', () => {
-  const ck = (expect, ...args) => assert.strictEqual(ckCurry(nor, ...args), expect);
+  const ck = (expect, ...args) => ckEq(ckCurry(nor, ...args), expect);
   ck(true, null, null);
   ck(false, true, null);
   ck(false, 0, 1);
@@ -55,7 +54,7 @@ it('nor()', () => {
 });
 
 it('xor()', () => {
-  const ck = (expect, ...args) => assert.strictEqual(ckCurry(xor, ...args), expect);
+  const ck = (expect, ...args) => ckEq(ckCurry(xor, ...args), expect);
   ck(false, null, null);
   ck(true, true, null);
   ck(true, 0, 1);
@@ -63,7 +62,7 @@ it('xor()', () => {
 });
 
 it('xnor()', () => {
-  const ck = (expect, ...args) => assert.strictEqual(ckCurry(xnor, ...args), expect);
+  const ck = (expect, ...args) => ckEq(ckCurry(xnor, ...args), expect);
   ck(true, null, null);
   ck(false, true, null);
   ck(false, 0, 1);
@@ -71,7 +70,7 @@ it('xnor()', () => {
 });
 
 it('is()', () => {
-  const ck = (expect, ...args) => assert.strictEqual(ckCurry(is, ...args), expect);
+  const ck = (expect, ...args) => ckEq(ckCurry(is, ...args), expect);
   ck(true, null, null);
   ck(false, true, null);
   ck(false, 0, 1);
@@ -79,7 +78,7 @@ it('is()', () => {
 });
 
 it('aint()', () => {
-  const ck = (expect, ...args) => assert.strictEqual(ckCurry(aint, ...args), expect);
+  const ck = (expect, ...args) => ckEq(ckCurry(aint, ...args), expect);
   ck(false, null, null);
   ck(true, true, null);
   ck(true, 0, 1);
@@ -87,13 +86,13 @@ it('aint()', () => {
 });
 
 it('plus()', () => {
-  const ck = (expect, ...args) => assert.strictEqual(ckCurry(plus, ...args), expect);
+  const ck = (expect, ...args) => ckEq(ckCurry(plus, ...args), expect);
   ck(5, 2, 3);
   ck(0, 1, -1);
 });
 
 it('mul()', () => {
-  const ck = (expect, ...args) => assert.strictEqual(ckCurry(mul, ...args), expect);
+  const ck = (expect, ...args) => ckEq(ckCurry(mul, ...args), expect);
   ck(-2, 2, -1);
   ck(0, 17, 0);
 });

@@ -16,7 +16,7 @@
 const assert = require('assert');
 const {
   and, plus, or, mul, not,
-  size, TraitNotImplemented, _typedArrays, assertEquals,
+  size, TraitNotImplemented, _typedArrays,
   iter, range, range0, repeat, extend, extend1, flattenTree,
   IteratorEnded, next, tryNext, nth, first, second, last, tryNth, tryFirst,
   trySecond, tryLast, seqEq, each, find, tryFind, contains, count, list,
@@ -27,12 +27,12 @@ const {
   slidingWindow, trySlidingWindow, lookahead, mod, union, union2,
   cartesian, cartesian2,
 } = require('../src/index');
-const { ckEqSeq, ckThrows } = require('./util');
+const { ckEq, ckEqSeq, ckThrows } = require('./util');
 
 it('count()', () => {
   const ck = (seq, expect) => {
-    assert.strictEqual(count(seq), expect);
-    assert.strictEqual(count(iter(seq)), expect);
+    ckEq(count(seq), expect);
+    ckEq(count(iter(seq)), expect);
   };
   ck({}, 0);
   ck({ foo: 42, bar: 23 }, 2);
@@ -93,19 +93,19 @@ it('each() can iterate the sequences', () => {
 });
 
 it('enumerate()', () => {
-  assert.deepStrictEqual(
+  ckEq(
     Array.from(enumerate('abc')),
     [[0, 'a'], [1, 'b'], [2, 'c']],
   );
 });
 
 it('range(), range0()', () => {
-  const ck = (a, b, l) => assert.deepStrictEqual(list(range(a, b)), list(l));
+  const ck = (a, b, l) => ckEq(list(range(a, b)), list(l));
   ck(0, 5, [0, 1, 2, 3, 4]);
   ck(0, -1, []);
   ck(0, 0, []);
   ck(7, 9, [7, 8]);
-  assert.deepStrictEqual(list(range0(4)), [0, 1, 2, 3]);
+  ckEq(list(range0(4)), [0, 1, 2, 3]);
 });
 
 it('repeat()', () => {
@@ -151,7 +151,7 @@ it('flattenTree()', () => {
 
 it('next(), first()', () => {
   each([next, first], (fn) => {
-    assert.deepStrictEqual(fn({ foo: 42 }), ['foo', 42]);
+    ckEq(fn({ foo: 42 }), ['foo', 42]);
     each([{}, [], ''], (cont) => {
       ckThrows(IteratorEnded, () => fn(cont));
     });
@@ -160,41 +160,41 @@ it('next(), first()', () => {
 
 it('tryNext(), tryFirst()', () => {
   each([tryNext, tryFirst], (fn) => {
-    assert.deepStrictEqual(fn(null)({ foo: 42 }), ['foo', 42]);
+    ckEq(fn(null)({ foo: 42 }), ['foo', 42]);
     each([{}, [], ''], (cont) => {
-      assertEquals(fn(null)(cont), null);
+      ckEq(fn(null)(cont), null);
     });
   });
 });
 
 it('nth(), tryNth()', () => {
   ckThrows(IteratorEnded, () => nth([1, 2, 3, 4], 10));
-  assertEquals(nth([1, 2, 3, 4], 2), 3);
+  ckEq(nth([1, 2, 3, 4], 2), 3);
 
-  assertEquals(tryNth(null)(5)([1, 2, 3]), null);
-  assertEquals(tryNth(null)(2)([1, 2, 3]), 3);
+  ckEq(tryNth(null)(5)([1, 2, 3]), null);
+  ckEq(tryNth(null)(2)([1, 2, 3]), 3);
 });
 
 it('second(), trySecond', () => {
   ckThrows(IteratorEnded, () => second([4]));
-  assert.strictEqual(second([4, 3]), 3);
+  ckEq(second([4, 3]), 3);
 
-  assertEquals(trySecond(null)([]), null);
-  assertEquals(trySecond(null)([1, 2, 3]), 2);
+  ckEq(trySecond(null)([]), null);
+  ckEq(trySecond(null)([1, 2, 3]), 2);
 });
 
 it('last()', () => {
   ckThrows(IteratorEnded, () => last([]));
-  assert.strictEqual(last([4, 3]), 3);
+  ckEq(last([4, 3]), 3);
 
-  assertEquals(tryLast(null)([]), null);
-  assertEquals(tryLast(null)([1, 2, 3]), 3);
-  assertEquals(tryLast(null)([1, 2, 3, 4]), 4);
+  ckEq(tryLast(null)([]), null);
+  ckEq(tryLast(null)([1, 2, 3]), 3);
+  ckEq(tryLast(null)([1, 2, 3, 4]), 4);
 });
 
 it('into(), list()', () => {
   each([list, into(Array)], (fn) => {
-    assert.deepStrictEqual(fn({ a: 42 }), [['a', 42]]);
+    ckEq(fn({ a: 42 }), [['a', 42]]);
   });
   ckThrows(TraitNotImplemented, () => into([], Number));
 });
@@ -208,54 +208,54 @@ it('into(), uniq()', () => {
 });
 
 it('join()', () => {
-  assert.deepStrictEqual(join(['Hello', 'World'], ' '), 'Hello World');
-  assert.deepStrictEqual(into(String)(['Hello', 'World']), 'HelloWorld');
+  ckEq(join(['Hello', 'World'], ' '), 'Hello World');
+  ckEq(into(String)(['Hello', 'World']), 'HelloWorld');
 });
 
 it('into()', () => {
   each([into(Object), obj], (fn) => {
     const o2 = fn([['foo', 42], ['bar', 23], ['foo', 11]]);
-    assert.strictEqual(o2.foo, 11);
-    assert.strictEqual(o2.bar, 23);
+    ckEq(o2.foo, 11);
+    ckEq(o2.bar, 23);
 
     each([into(Map), dict], (fn2) => {
       const mo = fn2(o2);
-      assert.strictEqual(size(mo), 2);
-      assert.strictEqual(mo.get('foo'), 11);
-      assert.strictEqual(mo.get('bar'), 23);
+      ckEq(size(mo), 2);
+      ckEq(mo.get('foo'), 11);
+      ckEq(mo.get('bar'), 23);
     });
   });
 
   each(_typedArrays, (Typ) => {
     const fn = into(Typ);
-    assertEquals(fn(iter([1, 2])), new Typ([1, 2]));
+    ckEq(fn(iter([1, 2])), new Typ([1, 2]));
   });
 });
 
 it('fold', () => {
   each([any, foldl(null, or), foldl(or)(null)], (fn) => {
-    assert.strictEqual(fn([]), null);
-    assert.strictEqual(fn([1]), 1);
-    assert.strictEqual(fn([1, null]), 1);
-    assert.strictEqual(fn([0, true, null]), true);
+    ckEq(fn([]), null);
+    ckEq(fn([1]), 1);
+    ckEq(fn([1, null]), 1);
+    ckEq(fn([0, true, null]), true);
   });
   each([all, foldl(true, and)], (fn) => {
-    assert.strictEqual(fn([]), true);
-    assert.strictEqual(fn([1]), 1);
-    assert.strictEqual(fn([1, null]), null);
-    assert.strictEqual(fn([null, true, 0]), null);
+    ckEq(fn([]), true);
+    ckEq(fn([1]), 1);
+    ckEq(fn([1, null]), null);
+    ckEq(fn([null, true, 0]), null);
   });
   each([sum, foldl(0, plus)], (fn) => {
-    assert.strictEqual(fn([]), 0);
-    assert.strictEqual(fn([1, 0]), 1);
-    assert.strictEqual(fn([2, 3, 4]), 9);
+    ckEq(fn([]), 0);
+    ckEq(fn([1, 0]), 1);
+    ckEq(fn([2, 3, 4]), 9);
   });
   each([product, foldl(1, mul)], (fn) => {
-    assert.strictEqual(fn([]), 1);
-    assert.strictEqual(fn([1, 0]), 0);
-    assert.strictEqual(fn([2, 3, 4]), 24);
+    ckEq(fn([]), 1);
+    ckEq(fn([1, 0]), 0);
+    ckEq(fn([2, 3, 4]), 24);
   });
-  assert.strictEqual(
+  ckEq(
     foldr(['foo', 'bar'], 'Helo', (a, b) => `${a} ${b}`),
     'Helo bar foo',
   );
@@ -425,11 +425,11 @@ it('mod', () => {
 });
 
 it('find, tryFind, contains', () => {
-  assertEquals(find([1, 2, 3, 4], x => x > 2), 3);
+  ckEq(find([1, 2, 3, 4], x => x > 2), 3);
   ckThrows(IteratorEnded, () => find([1, 2, 3, 4], x => x > 10));
 
-  assertEquals(tryFind([1, 2, 3, 4], null, x => x > 2), 3);
-  assertEquals(tryFind([1, 2, 3, 4], null, x => x > 10), null);
+  ckEq(tryFind([1, 2, 3, 4], null, x => x > 2), 3);
+  ckEq(tryFind([1, 2, 3, 4], null, x => x > 10), null);
 
   const containsFalsy = contains(not);
   assert(!containsFalsy([]));
@@ -446,37 +446,37 @@ it('union/union2', () => {
   const gen2 = () => iter([['c', 22], ['y', 44]]);
 
   const a = union2(o2)(m2);
-  assert.strictEqual(a.constructor, Map);
-  assert.strictEqual(size(a), 5);
-  assert.strictEqual(a.get('x'), 13);
-  assert.strictEqual(a.get('b'), 23);
-  assert.strictEqual(a.get('d'), 14);
+  ckEq(a.constructor, Map);
+  ckEq(size(a), 5);
+  ckEq(a.get('x'), 13);
+  ckEq(a.get('b'), 23);
+  ckEq(a.get('d'), 14);
 
   const b = union(o2, m2, gen2());
-  assert.strictEqual(b.constructor, Object);
-  assert.strictEqual(size(b), 6);
-  assert.strictEqual(b.a, 42);
-  assert.strictEqual(b.b, 99);
-  assert.strictEqual(b.c, 22);
-  assert.strictEqual(b.x, 13);
-  assert.strictEqual(b.y, 44);
+  ckEq(b.constructor, Object);
+  ckEq(size(b), 6);
+  ckEq(b.a, 42);
+  ckEq(b.b, 99);
+  ckEq(b.c, 22);
+  ckEq(b.x, 13);
+  ckEq(b.y, 44);
 
   const c = union2(['a', 2, 13])(new Set([2, 44]));
-  assert.strictEqual(c.constructor, Set);
-  assert.strictEqual(size(c), 4);
+  ckEq(c.constructor, Set);
+  ckEq(size(c), 4);
   assert(c.has('a'));
   assert(c.has(2));
   assert(c.has(13));
   assert(c.has(44));
 
   // o2, m should not have been mutated
-  assert.strictEqual(size(o2), 4);
-  assert.strictEqual(o2.a, 42);
-  assert.strictEqual(o2.b, 23);
-  assert.strictEqual(o2.c, 1);
-  assert.strictEqual(o2.d, 14);
+  ckEq(size(o2), 4);
+  ckEq(o2.a, 42);
+  ckEq(o2.b, 23);
+  ckEq(o2.c, 1);
+  ckEq(o2.d, 14);
 
-  assert.strictEqual(size(m2), 2);
-  assert.strictEqual(m2.get('b'), 99);
-  assert.strictEqual(m2.get('x'), 13);
+  ckEq(size(m2), 2);
+  ckEq(m2.get('b'), 99);
+  ckEq(m2.get('x'), 13);
 });

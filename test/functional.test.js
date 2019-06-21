@@ -16,24 +16,25 @@ const assert = require('assert');
 const {
   exec, identity, pipe, compose, withFunctionName, curry, mul, plus,
 } = require('../src/index');
+const { ckEq, ckThrows } = require('./util');
 
 it('exec()', () => {
-  assert.strictEqual(exec(() => 42), 42);
+  ckEq(exec(() => 42), 42);
 });
 
 it('identity()', () => {
-  assert.deepStrictEqual(identity(2), 2);
+  ckEq(identity(2), 2);
 });
 
 it('withFunctionName()', () => {
   const fn = withFunctionName('ford prefect!', () => null);
-  assert.strictEqual(fn.name, 'ford prefect!');
+  ckEq(fn.name, 'ford prefect!');
 });
 
 it('compose(), pipe()', () => {
   const ck = (ini, fns, expect) => {
-    assert.strictEqual(compose(...fns)(ini), expect);
-    assert.strictEqual(pipe(ini, ...fns), expect);
+    ckEq(compose(...fns)(ini), expect);
+    ckEq(pipe(ini, ...fns), expect);
   };
   ck(2, [], 2);
   ck(null, [], null);
@@ -45,7 +46,7 @@ it('compose(), pipe()', () => {
 it('curry()', () => {
   const fn = curry('foobar', (a, b, c, d) => (a + b * c) * d);
   const ck = (res) => {
-    assert.deepStrictEqual(res, 28);
+    ckEq(res, 28);
   };
 
   ck(fn(1, 2, 3, 4));
@@ -64,5 +65,5 @@ it('curry()', () => {
 
   assert(fn.name.match(/foobar/));
 
-  assert.throws(() => fn(1, 2, 3, 4, 5));
+  ckThrows(Error, () => fn(1, 2, 3, 4, 5));
 });
