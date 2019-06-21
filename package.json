@@ -4,9 +4,9 @@
   "description": "",
   "main": "src/index.js",
   "scripts": {
-    "test": "nyc --reporter=text --reporter=lcov --check-coverage --branches 90 --statements 90 --lines 90 mocha --reporter xunit --reporter-options output=./junit/test-results.xml",
+    "test": "nyc --reporter=text --reporter=lcov --check-coverage --branches 90 --statements 90 --lines 90 mocha --reporter xunit --reporter-options output=./junit/test-results.xml test src",
     "test-ci": "npm run test && codecov",
-    "lint": "./node_modules/.bin/eslint .",
+    "lint": "./node_modules/.bin/eslint src test",
     "semantic-release": "semantic-release",
     "docs": "jsdoc -c .jsdoc.json",
     "commit": "git-cz",
