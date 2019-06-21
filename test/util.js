@@ -12,10 +12,11 @@
 
 const assert = require('assert');
 const {
-  type, typename, assertEquals, list, foldr,
+  type, typename, assertEquals, assertSequenceEquals, foldr,
 } = require('../src/index');
 
-const ckEqSeq = (a, b) => assertEquals(list(a), list(b));
+const ckEq = assertEquals;
+const ckEqSeq = assertSequenceEquals;
 
 const ckThrows = (cls, fn) => {
   let err;
@@ -34,4 +35,6 @@ const ckCurry = (fn, ...args) => {
   return a;
 };
 
-module.exports = { ckEqSeq, ckThrows, ckCurry };
+module.exports = {
+  ckEq, ckEqSeq, ckThrows, ckCurry,
+};

@@ -15,6 +15,8 @@
 // declaraions...
 /* eslint-disable no-use-before-define, no-param-reassign, no-restricted-syntax, no-return-assign */
 
+const assert = require('assert');
+const { inspect } = require('util');
 const { curry, pipe } = require('./functional');
 const {
   plus, or, mul, and,
@@ -695,6 +697,33 @@ const seqEq = (a, b) => pipe(
   map(([x, y]) => eq(x, y)),
   all,
 );
+
+/**
+ * Assert that two finite sequences are equals.
+ * @function
+ * @param {Sequence} a Any sequence for which iter() is defined
+ * @param {Sequence} b Any sequence for which iter() is defined
+ * @param {String|undefined} msg The error message to print
+ * @throws {AssertionError}
+ * @returns {Boolean}
+ */
+const assertSequenceEquals = (a, b, msg) => {
+  const P = v => inspect(v, {
+    depth: null, breakLength: 1, compact: false, sorted: true,
+  });
+
+  a = list(a);
+  b = list(b);
+  if (!eq(a, b)) {
+    throw new assert.AssertionError({
+      message: `The sequences are not equal${msg ? `: ${msg}` : '!'}`,
+      actual: P(a),
+      expected: P(b),
+      operator: 'seqEq()',
+      stackStartFn: assertSequenceEquals,
+    });
+  }
+};
 
 /**
  * Determine the number of elements in an iterator.
@@ -1431,6 +1460,7 @@ module.exports = {
   trySecond,
   tryLast,
   seqEq,
+  assertSequenceEquals,
   each,
   find,
   tryFind,

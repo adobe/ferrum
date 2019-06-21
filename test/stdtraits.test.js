@@ -15,12 +15,12 @@
 const assert = require('assert');
 const {
   compose, _typedArrays, type, HybridWeakMap, TraitNotImplemented,
-  typeIsImmutable, isImmutable, assertEquals, assertUneq, size, empty, Size,
+  typeIsImmutable, isImmutable, assertUneq, size, empty, Size,
   shallowclone, deepclone, pairs, keys, values, get, has, assign, del,
   setdefault, replace, each, dict, uniq, range0, map, all, first, takeDef, zip,
   count, extend,
 } = require('../src/index');
-const { ckEqSeq, ckThrows } = require('./util');
+const { ckEq, ckEqSeq, ckThrows } = require('./util');
 
 
 it('Immutable', () => {
@@ -40,9 +40,9 @@ it('Immutable', () => {
 
 it('size(), empty(), count()', () => {
   const ck = (arg, expect) => {
-    assert.strictEqual(size(arg), expect);
-    assert.strictEqual(count(arg), expect);
-    assert.strictEqual(empty(arg), expect === 0);
+    ckEq(size(arg), expect);
+    ckEq(count(arg), expect);
+    ckEq(empty(arg), expect === 0);
   };
   class Foo {}
   class Bar {
@@ -85,7 +85,7 @@ describe('Equals', () => {
   ];
 
   it('primitive values', () => {
-    each(primitive, v => assertEquals(v, v));
+    each(primitive, v => ckEq(v, v));
   });
 
   it('primitive values non equal', () => {
@@ -115,7 +115,7 @@ describe('Equals', () => {
 
 
   it('complex values', () => {
-    each(complex, fn => assertEquals(fn(), fn()));
+    each(complex, fn => ckEq(fn(), fn()));
   });
 
   it('complex values non equal', () => {
@@ -143,7 +143,7 @@ describe('Equals', () => {
   it('containers', () => {
     each(containers, (contfn) => {
       each(complex, (valfn) => {
-        assertEquals(contfn(valfn()), contfn(valfn()));
+        ckEq(contfn(valfn()), contfn(valfn()));
       });
     });
   });
@@ -163,11 +163,11 @@ describe('Equals', () => {
   it('specific examples', () => {
     const dat = { foo: dict({ bar: [{}] }) };
     const dat2 = { foo: dict({ bar: [{}] }) };
-    assertEquals(dat, dat2);
+    ckEq(dat, dat2);
   });
 
   it('throws', () => {
-    ckThrows(assert.AssertionError, () => assertEquals(1, 2));
+    ckThrows(assert.AssertionError, () => ckEq(1, 2));
     ckThrows(assert.AssertionError, () => assertUneq(1, 1));
   });
 });
@@ -181,7 +181,7 @@ it('Shallowclone', () => {
 
   const ck = (v) => {
     const v2 = shallowclone(v);
-    assertEquals(v, v2);
+    ckEq(v, v2);
     assert(type(v) === type(v2));
     return v2;
   };
@@ -195,15 +195,15 @@ it('Shallowclone', () => {
   assert(get(m, 'foo') === get(m2, 'foo'));
 
   const s2 = ck(s);
-  assert.strictEqual(s, s2);
+  ckEq(s, s2);
 
   const a2 = ck(a);
   assert(a !== a2);
-  assert.strictEqual(a[2], a2[2]);
+  ckEq(a[2], a2[2]);
 
   const se2 = ck(se);
   assert(se !== se2);
-  assert.strictEqual(first(se2), first(se));
+  ckEq(first(se2), first(se));
 
   each(_typedArrays, (Typ) => {
     const orig = new Typ([1, 2, 3, 4]);
@@ -217,14 +217,14 @@ it('Shallowclone', () => {
   });
 
   each([null, undefined, Symbol('')], (val) => {
-    assert.strictEqual(val, shallowclone(val));
+    ckEq(val, shallowclone(val));
   });
 });
 
 it('Deepclone', () => {
   const dat = { foo: dict({ bar: [[{}]] }) };
   const dat2 = deepclone(dat);
-  assertEquals(dat, dat2);
+  ckEq(dat, dat2);
 
   // All values must not be the same recursively
   const g = compose(
@@ -236,26 +236,26 @@ it('Deepclone', () => {
   // Does not clone Map keys
   const m = new Map([[{}, {}]]);
   const m2 = deepclone(m);
-  assertEquals(m, m2);
-  assert.strictEqual(first(keys(m)), first(keys(m2)));
+  ckEq(m, m2);
+  ckEq(first(keys(m)), first(keys(m2)));
 
   each(_typedArrays, (Typ) => {
     const orig = new Typ([1, 2, 3, 4]);
     const nu = deepclone(orig);
-    assert.strictEqual(type(orig), type(nu));
-    assertEquals(orig, nu);
+    ckEq(type(orig), type(nu));
+    ckEq(orig, nu);
     assert(orig !== nu);
   });
 
   each([new Date(), ...map(_typedArrays, Typ => new Typ([1, 2, 3]))], (val) => {
     const nu = deepclone(val);
-    assert.strictEqual(type(val), type(nu));
-    assertEquals(val, nu);
+    ckEq(type(val), type(nu));
+    ckEq(val, nu);
     assert(val !== nu);
   });
 
   each([null, undefined, Symbol('')], (val) => {
-    assert.strictEqual(val, deepclone(val));
+    ckEq(val, deepclone(val));
   });
 });
 
@@ -310,7 +310,7 @@ it('Get', () => {
   const hwm = new HybridWeakMap([['foo', 42]]);
   const wse = new WeakSet([o]);
 
-  const ck = (cont, k, v) => assert.strictEqual(get(cont, k), v);
+  const ck = (cont, k, v) => ckEq(get(cont, k), v);
   ck(o, 'foo', 42);
   ck(m, 'foo', 42);
   ck(wm, o, 42);
@@ -374,25 +374,25 @@ it('Assign', () => {
 
   assign(o, 'foo', 23);
   assign(o, 'bar', 99);
-  assertEquals(o, { foo: 23, bar: 99 });
+  ckEq(o, { foo: 23, bar: 99 });
 
   assign(m, 'foo', 23);
   assign(m, 'bar', 99);
-  assertEquals(m, dict({ foo: 23, bar: 99 }));
+  ckEq(m, dict({ foo: 23, bar: 99 }));
 
   assign(a, 4, 'helo');
-  assertEquals(a, ['foo', 'bar', 42, undefined, 'helo']);
+  ckEq(a, ['foo', 'bar', 42, undefined, 'helo']);
 
   assign(se, 4, 4);
-  assertEquals(se, uniq(['foo', 4]));
+  ckEq(se, uniq(['foo', 4]));
 
   ckThrows(Error, () => assign(se, 4, 5));
-  assertEquals(se, uniq(['foo', 4]));
+  ckEq(se, uniq(['foo', 4]));
 
   each(_typedArrays, (Typ) => {
     const cont = new Typ([42, 23]);
     assign(cont, 0, 22);
-    assertEquals(cont, new Typ([22, 23]));
+    ckEq(cont, new Typ([22, 23]));
   });
 });
 
@@ -412,17 +412,17 @@ it('Del', () => {
 
   ck(o, 'foo');
   del(o, 'bar');
-  assert.strictEqual(size(o), 0);
+  ckEq(size(o), 0);
 
   ck(m, 'foo');
   del(m, 'bar');
-  assert.strictEqual(size(m), 0);
+  ckEq(size(m), 0);
 
   ckThrows(TraitNotImplemented, () => ck(s, 5));
   ckThrows(TraitNotImplemented, () => ck(a, 5));
 
   ck(se, 'foo');
-  assertEquals(se, uniq(['bar']));
+  ckEq(se, uniq(['bar']));
 });
 
 it('Setdefault', () => {
@@ -430,17 +430,17 @@ it('Setdefault', () => {
   const m = new Map([['foo', 42]]);
   const a = ['foo', 'bar', 42];
 
-  assert.strictEqual(setdefault(o, 'foo', 23), 42);
-  assert.strictEqual(setdefault(o, 'bar', 99), 99);
-  assertEquals(o, { foo: 42, bar: 99 });
+  ckEq(setdefault(o, 'foo', 23), 42);
+  ckEq(setdefault(o, 'bar', 99), 99);
+  ckEq(o, { foo: 42, bar: 99 });
 
-  assert.strictEqual(setdefault(m, 'foo', 23), 42);
-  assert.strictEqual(setdefault(m, 'bar', 99), 99);
-  assertEquals(m, dict({ foo: 42, bar: 99 }));
+  ckEq(setdefault(m, 'foo', 23), 42);
+  ckEq(setdefault(m, 'bar', 99), 99);
+  ckEq(m, dict({ foo: 42, bar: 99 }));
 
-  assert.strictEqual(setdefault(a, 2, 23), 42);
-  assert.strictEqual(setdefault(a, 4, 99), 99);
-  assertEquals(a, ['foo', 'bar', 42, undefined, 99]);
+  ckEq(setdefault(a, 2, 23), 42);
+  ckEq(setdefault(a, 4, 99), 99);
+  ckEq(a, ['foo', 'bar', 42, undefined, 99]);
 });
 
 it('Replace', () => {
@@ -448,15 +448,15 @@ it('Replace', () => {
   const m = new Map([['foo', 42]]);
   const a = ['foo', 'bar', 42];
 
-  assert.strictEqual(replace(o, 'foo', 23), 42);
-  assert.strictEqual(replace(o, 'bar', 99), undefined);
-  assertEquals(o, { foo: 23, bar: 99 });
+  ckEq(replace(o, 'foo', 23), 42);
+  ckEq(replace(o, 'bar', 99), undefined);
+  ckEq(o, { foo: 23, bar: 99 });
 
-  assert.strictEqual(replace(m, 'foo', 23), 42);
-  assert.strictEqual(replace(m, 'bar', 99), undefined);
-  assertEquals(m, dict({ foo: 23, bar: 99 }));
+  ckEq(replace(m, 'foo', 23), 42);
+  ckEq(replace(m, 'bar', 99), undefined);
+  ckEq(m, dict({ foo: 23, bar: 99 }));
 
-  assert.strictEqual(replace(a, 2, 23), 42);
-  assert.strictEqual(replace(a, 4, 99), undefined);
-  assertEquals(a, ['foo', 'bar', 23, undefined, 99]);
+  ckEq(replace(a, 2, 23), 42);
+  ckEq(replace(a, 4, 99), undefined);
+  ckEq(a, ['foo', 'bar', 23, undefined, 99]);
 });

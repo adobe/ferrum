@@ -17,7 +17,7 @@ const assert = require('assert');
 const {
   valueSupports, supports, each, type, HybridWeakMap, size, Trait,
 } = require('../src/index');
-const { ckThrows } = require('./util');
+const { ckEq, ckThrows } = require('./util');
 
 it('HybridWeakMap', () => {
   const o1 = {};
@@ -29,16 +29,16 @@ it('HybridWeakMap', () => {
   m.set(null, 24);
   m.set(Function, 49);
 
-  assert.strictEqual(m.get(null), 24);
-  assert.strictEqual(m.get(1), 42);
-  assert.strictEqual(m.get(o1), 13);
-  assert.strictEqual(m.get(Function), 49);
-  assert.strictEqual(m.get(o2), 14);
-  assert.strictEqual(m.get(Object), 99);
-  assert.strictEqual(m.get(2), 32);
-  assert.strictEqual(m.get(44), undefined);
-  assert.strictEqual(m.get({}), undefined);
-  assert.strictEqual(m.get(undefined), undefined);
+  ckEq(m.get(null), 24);
+  ckEq(m.get(1), 42);
+  ckEq(m.get(o1), 13);
+  ckEq(m.get(Function), 49);
+  ckEq(m.get(o2), 14);
+  ckEq(m.get(Object), 99);
+  ckEq(m.get(2), 32);
+  ckEq(m.get(44), undefined);
+  ckEq(m.get({}), undefined);
+  ckEq(m.get(undefined), undefined);
 
   assert(m.has(o1));
   assert(m.has(o2));
@@ -57,7 +57,7 @@ it('HybridWeakMap', () => {
   assert(m.has(o2));
 
   // The rest must be stored in the weak map
-  assert.strictEqual(size(m.primitives), 2);
+  ckEq(size(m.primitives), 2);
 });
 
 describe('Trait', () => {
@@ -146,8 +146,8 @@ describe('Trait', () => {
     it(`yields ${expect} for ${what}`, () => {
       callcount = 0;
       assert(valueSupports(what));
-      assert.strictEqual(Foo.invoke(what), expect);
-      assert.strictEqual(callcount, 1);
+      ckEq(Foo.invoke(what), expect);
+      ckEq(callcount, 1);
     });
   });
 
@@ -161,12 +161,12 @@ describe('Trait', () => {
 
   each([13, new Bang(), null], (what) => {
     const err = ckThrows(Error, () => Foo.invoke(what));
-    assert.strictEqual(err.trait, Foo);
+    ckEq(err.trait, Foo);
   });
 
   it('supports different symbols', () => {
     const s = Symbol('Boom');
     const Boom = new Trait('Boom', s);
-    assert.strictEqual(s, Boom.sym);
+    ckEq(s, Boom.sym);
   });
 });
