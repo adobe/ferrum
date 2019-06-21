@@ -348,6 +348,9 @@ const assertUneq = (actual, notExpected, msg) => {
 const Equals = new Trait('Equals');
 Equals.impl(RegExp, (a, b) => type(b) === RegExp && a.source === b.source && a.flags === b.flags);
 
+// Ensure that eq(NaN, NaN) yields true
+Equals.impl(Number, (a, b) => a === b || (Number.isNaN(a) && Number.isNaN(b)));
+
 // Compare as string
 [Date, ..._maybeURL].map((Typ) => {
   Equals.impl(Typ, (a, b) => type(b) === Typ && a.toString() === b.toString());
