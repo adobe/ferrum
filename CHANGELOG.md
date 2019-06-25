@@ -1,3 +1,15 @@
+# [1.1.0](https://github.com/adobe/ferrum/compare/v1.0.0...v1.1.0) (2019-06-25)
+
+
+### Bug Fixes
+
+* Make sure test & eslint are not run on docs/ ([8cd95d3](https://github.com/adobe/ferrum/commit/8cd95d3))
+
+
+### Features
+
+* Provide assertSequenceEquals ([7c0b4b8](https://github.com/adobe/ferrum/commit/7c0b4b8))
+
 # 1.0.0 (2019-06-20)
 
 
