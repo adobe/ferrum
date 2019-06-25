@@ -1,10 +1,33 @@
+<a name="ferrum"></a>
 # Ferrum
 
 Features from the rust language in javascript: Provides Traits/Type classes & an advanced library for working with sequences/iterators in js.
 
 [Github](https://github.com/adobe/ferrum)  
-[API Documentation](https://ferrumjs.org)
+[API Documentation](https://www.ferrumjs.org)
 
+<a name="table-of-contents"></a>
+## Table of Contents
+
+1. [Introduction](#ferrum)
+2. [Table of Contents](#table-of-contents)
+3. [Status](#status)
+4. [Usage & Features](#usage-features)
+    1. [Sequence/Iterators](#sequence-iterators)
+        1. [Objects as Sequences](#objects-as-sequences)
+        2. [Reverse Currying](#reverse-currying)
+        3. [Pipelining](#pipelining)
+        4. [Lazy Evaluation](#lazy-evaluation)
+    2. [Traits/Typeclasses](#traits-typeclasses)
+    3. [Operators as functions](#operators-as-functions)
+    4. [Typing utilities](#typing-utilities)
+    5. [Functional utilities](#functional-utilities)
+5. [Development](#development)
+    1. [Build](#build)
+    2. [Test](#test)
+    2. [Lint](#lint)
+
+<a name="status"></a>
 ## Status
 
 [![CircleCI](https://img.shields.io/circleci/project/github/adobe/ferrum/master.svg)](https://circleci.com/gh/adobe/ferrum/tree/master)
@@ -14,13 +37,15 @@ Features from the rust language in javascript: Provides Traits/Type classes & an
 [![LGTM Code Quality Grade: JavaScript](https://img.shields.io/lgtm/grade/javascript/g/adobe/ferrum.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/adobe/ferrum)
 [![semantic-release](https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg)](https://github.com/semantic-release/semantic-release)
 
-## Usage
+<a name="usage-features"></a>
+## Usage & Features
 
 ```bash
 $ npm add ferrum
 ```
 
-### Sequence
+<a name="sequence-iterators"></a>
+### Sequence/Iterators
 
 | Feature              | Ferrum | Underscore | Lodash | wu.js |
 | -------------------- | ------ | ---------- | ------ | ----- |
@@ -34,6 +59,7 @@ you would expect like `map`, `filter`, `foldl` and many others. In this regard i
 to libraries like wu.js, lodash or underscore. Ferrum has been written to remedy some of the issues
 in these libraries.
 
+<a name="objects-as-sequences"></a>
 #### Objects as Sequences
 
 `Ferrum/Sequence` has been designed with full iterator support in mind. Generally all functions
@@ -86,6 +112,7 @@ assertSequenceEquals(map(obj, x => x*2), [4, 6]);
 `Lodash` and `Underscore` only support arrays as input & output; `wu.js` supports iterators as input & output but has no
 support for plain objects.
 
+<a name="reverse-currying"></a>
 #### Reverse Currying
 
 `Ferrum/Sequence` provides many higher order functions. These are functions that take other functions as parameters, like `map()` or `filter()`.
@@ -156,6 +183,7 @@ module (not very handy either because it is often useful to mix curried and non 
 has opted to make the function the first parameter, delivering good support for currying and not so good support
 for normal function invocation.
 
+<a name="pipelining"></a>
 #### Pipelining
 
 `Ferrum` provides a function called `pipe()` which – together with currying – can be used to build complex data processing pipelines.
@@ -288,6 +316,7 @@ available and pipelining can be used with arbitrary transformation functions, wh
 chaining can only be used with functions supported by the library, thus pipelining is much
 more generic & extensible.
 
+<a name="lazy-evaluation"></a>
 #### Lazy Evaluation
 
 Like python iterators, sequences support lazy evaluation. They support it, because lazy evaluation
@@ -321,7 +350,8 @@ assertEquals(list(take(5, primes())), [2, 3, 5, 7, 11]);
 Underscore and lodash use arrays instead of iterators, so they have no lazy evaluation support.
 wu uses iterators and thus has full lazy evaluation support.
 
-### Traits
+<a name="traits-typeclasses"></a>
+### Traits/Typeclasses
 
 `Sequence/Traits` is the second big feature this library provides; it is a concept borrowed from
 the Rust language. They let you declare & document a generic interface; like the `sequence` concept
@@ -484,7 +514,8 @@ modifying these types.
 They even let you write generic adapters, implementing traits for entire groups
 of traits at once.
 
-### Ops
+<a name="operators-as-functions"></a>
+### Operators as functions
 
 `Ferrum/Ops` provides all of the JS operators and some extra boolean operators as curryable functions.
 
@@ -498,6 +529,7 @@ is(2, 2); // => True
 xor(True, False); // => True
 ```
 
+<a name="typing-utilities"></a>
 ### Typing utilities
 
 Ferrum provides utilities for working with types that can be safely
@@ -522,6 +554,7 @@ typename(type(undefined)); // => "undefined"
 The usual strategy of using `value.constructor` and `value.constructor.name`
 yields errors for `null` & `undefined`.
 
+<a name="functional-utilities"></a>
 ### Functional Utilities
 
 ```js
@@ -541,20 +574,24 @@ pair(1,2); // => [1,2]
 pair(2)(1); // => [1,2]
 ```
 
+<a name="development"></a>
 ## Development
 
+<a name="build"></a>
 ### Build
 
 ```bash
 $ npm install
 ```
 
+<a name="test"></a>
 ### Test
 
 ```bash
 $ npm test
 ```
 
+<a name="lint"></a>
 ### Lint
 
 ```bash
