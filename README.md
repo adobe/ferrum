@@ -3,7 +3,7 @@
 
 Features from the rust language in javascript: Provides Traits/Type classes & an advanced library for working with sequences/iterators in js.
 
-[Github](https://github.com/adobe/ferrum)  
+[Github](https://github.com/adobe/ferrum)
 [API Documentation](https://www.ferrumjs.org)
 
 <a name="table-of-contents"></a>
@@ -121,10 +121,10 @@ support for plain objects.
 const {map, filter, assertSequenceEquals} = require('ferrum');
 
 // Map is used to change each value in a list/iterable
-assertSequenceEquals(map([1,2,3,4]), x => x*2, [2,4,6,8]);
+assertSequenceEquals(map([1,2,3,4], x => x*2), [2,4,6,8]);
 
 // Filter removes elements in a list/iterable
-assertSequenceEquals(filter([1,2,3,4]), x => x%2 === 0), [2 4]);
+assertSequenceEquals(filter([1,2,3,4], x => x%2 === 0), [2 4]);
 ```
 
 Sometimes it can be useful to create an intermediate function with just a
