@@ -3,7 +3,7 @@
 
 Features from the rust language in javascript: Provides Traits/Type classes & an advanced library for working with sequences/iterators in js.
 
-[Github](https://github.com/adobe/ferrum)
+[Github](https://github.com/adobe/ferrum)  
 [API Documentation](https://www.ferrumjs.org)
 
 <a name="table-of-contents"></a>
