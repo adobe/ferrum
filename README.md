@@ -361,7 +361,7 @@ easier, traits standardize the creation of javascript protocols itself, thereby 
 Indeed the `Sequence` Trait is just a wrapper over the `Iterable` protocol of javascript.
 
 ```js
-const {Size} = require('ferrum');
+const {Trait} = require('ferrum');
 
 // Declaring a trait
 /**
