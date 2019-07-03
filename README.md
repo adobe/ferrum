@@ -414,7 +414,7 @@ Trait also features machinery to implement traits for third party types and even
 like Array, Object, null or undefined. The classic way to implement protocols does not work in these
 cases:
 
-```
+```js
 const Size = Symbol('Size');
 
 // Using just Symbols works perfectly for your own types
