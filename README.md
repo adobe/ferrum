@@ -70,7 +70,7 @@ const {map, assertSequenceEquals} = require('ferrum');
 
 const a = map([1,2,3,4], x => x+2); // a is an iterator
 const b = map(a, x => x*2); // b is also an iterator
-assertSequenceEquals(b, [6, 8, 19, 12]);
+assertSequenceEquals(b, [6, 8, 10, 12]);
 ```
 
 In addition to supporting iterables & iterators, `Ferrum/Sequence` can take objects as input:
