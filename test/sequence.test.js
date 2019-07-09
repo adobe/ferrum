@@ -40,9 +40,10 @@ it('count()', () => {
   ck([1, 2, 3], 3);
 });
 
+const sy = Symbol('foo');
 const str = 'Hello World';
 const arr = [42, 23];
-const o = { foo: 42 };
+const o = { foo: 42, [sy]: 23 };
 const m = new Map([['tardigrade', 'cute']]);
 const richObj = {
   [Symbol.iterator]: function* generate() {
@@ -80,7 +81,7 @@ it('each() can iterate the sequences', () => {
   };
   checkEach(str, Array.from(str));
   checkEach(arr, arr);
-  checkEach(o, [['foo', 42]]);
+  checkEach(o, [['foo', 42], [sy, 23]]);
   checkEach(m, [['tardigrade', 'cute']]);
   checkEach(richObj, [42, 23]);
   checkEach(gen(), [null, undefined, 42]);

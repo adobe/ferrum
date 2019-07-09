@@ -169,6 +169,10 @@ const {
  * This term shall be distinguished from `Iterable` in that iterables
  * must implement the iterator protocol `iterable[Symbol.iterator]()`.
  *
+ * # Version history
+ *
+ * - 1.2.0 Support for objects with Symbol keys.
+ *
  * @param {Object|Iterable|Iterator} obj
  * @returns {Iterator}
  * @yields The data from the given elements
@@ -534,6 +538,10 @@ const tryLast = curry('tryLast', (seq, fallback) => {
  *   console.log(v);
  * });
  * ```
+ *
+ * # Version history
+ *
+ * - 1.2.0 Support for objects with Symbol keys.
  *
  * @function
  * @param {Sequence} seq Any sequence for which iter() is defined

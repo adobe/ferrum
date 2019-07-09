@@ -56,6 +56,8 @@ it('size(), empty(), count()', () => {
   ck([], 0);
   ck({}, 0);
   ck({ foo: 42 }, 1);
+  ck({ [Symbol('foo')]: 42 }, 1);
+  ck({ foo: 42, [Symbol('foo')]: 23 }, 2);
   ck(new Set([1, 2, 3]), 3);
   ck(new Map(), 0);
   ck(new Map([[1, 2]]), 1);
@@ -161,9 +163,14 @@ describe('Equals', () => {
   });
 
   it('specific examples', () => {
-    const dat = { foo: dict({ bar: [{}] }) };
-    const dat2 = { foo: dict({ bar: [{}] }) };
+    const sy = Symbol('foo');
+    const dat = { foo: { [sy]: dict({ fo: [{}] }) } };
+    const dat2 = { foo: { [sy]: dict({ fo: [{}] }) } };
+    const dat3 = { foo: { sy: dict({ fo: [{}] }) } };
+    const dat4 = { foo: {} };
     ckEq(dat, dat2);
+    assertUneq(dat, dat3);
+    assertUneq(dat, dat4);
   });
 
   it('throws', () => {
@@ -173,7 +180,8 @@ describe('Equals', () => {
 });
 
 it('Shallowclone', () => {
-  const o = { foo: {} };
+  const sy = Symbol('foo');
+  const o = { foo: {}, [sy]: {} };
   const m = new Map([['foo', {}]]);
   const s = 'ford prefect';
   const a = ['foo', 'bar', {}];
@@ -189,6 +197,7 @@ it('Shallowclone', () => {
   const o2 = ck(o);
   assert(o !== o2);
   assert(o.foo === o2.foo);
+  assert(o[sy] === o2[sy]);
 
   const m2 = ck(m);
   assert(m !== m2);
@@ -222,7 +231,8 @@ it('Shallowclone', () => {
 });
 
 it('Deepclone', () => {
-  const dat = { foo: dict({ bar: [[{}]] }) };
+  const sy = Symbol('foo');
+  const dat = { foo: { [sy]: dict({ foo: [[{}]] }) } };
   const dat2 = deepclone(dat);
   ckEq(dat, dat2);
 
@@ -262,11 +272,12 @@ it('Deepclone', () => {
 it('Pairs', () => {
   const ar = ['a', 's', 'd', 'f'];
   ar[5] = 'x';
+  const s = Symbol('foo');
   ckEqSeq(pairs(ar), [[0, 'a'], [1, 's'], [2, 'd'], [3, 'f'], [4, undefined], [5, 'x']]);
   ckEqSeq(pairs('asdf'), [[0, 'a'], [1, 's'], [2, 'd'], [3, 'f']]);
   ckEqSeq(pairs(new Set(['foo'])), [['foo', 'foo']]);
-  ckEqSeq(pairs({ hello: 'world' }), [['hello', 'world']]);
-  ckEqSeq(pairs(dict({ hello: 'world' })), [['hello', 'world']]);
+  ckEqSeq(pairs({ hello: 'world', [s]: 'bar' }), [['hello', 'world'], [s, 'bar']]);
+  ckEqSeq(pairs(dict({ hello: 'world', [s]: 'bar' })), [['hello', 'world'], [s, 'bar']]);
 
   each(_typedArrays, (Typ) => {
     ckEqSeq(pairs(new Typ([42, 23])), [[0, 42], [1, 23]]);
@@ -276,11 +287,12 @@ it('Pairs', () => {
 it('keys', () => {
   const ar = ['a', 's', 'd', 'f'];
   ar[5] = 'x';
+  const s = Symbol('foo');
   ckEqSeq(keys(ar), [0, 1, 2, 3, 4, 5]);
   ckEqSeq(keys('asdf'), [0, 1, 2, 3]);
   ckEqSeq(keys(new Set(['foo'])), ['foo']);
-  ckEqSeq(keys({ hello: 'world' }), ['hello']);
-  ckEqSeq(keys(dict({ hello: 'world' })), ['hello']);
+  ckEqSeq(keys({ hello: 'world', [s]: 'bar' }), ['hello', s]);
+  ckEqSeq(keys(dict({ hello: 'world', [s]: 'bar' })), ['hello', s]);
   each(_typedArrays, (Typ) => {
     ckEqSeq(keys(new Typ([42, 23])), [0, 1]);
   });
@@ -289,19 +301,21 @@ it('keys', () => {
 it('values', () => {
   const ar = ['a', 's', 'd', 'f'];
   ar[5] = 'x';
+  const s = Symbol('foo');
   ckEqSeq(values(ar), ['a', 's', 'd', 'f', undefined, 'x']);
   ckEqSeq(values('asdf'), ['a', 's', 'd', 'f']);
   ckEqSeq(values(new Set(['foo'])), ['foo']);
-  ckEqSeq(values({ hello: 'world' }), ['world']);
-  ckEqSeq(values(dict({ hello: 'world' })), ['world']);
+  ckEqSeq(values({ hello: 'world', [s]: 'bar' }), ['world', 'bar']);
+  ckEqSeq(values(dict({ hello: 'world', [s]: 'bar' })), ['world', 'bar']);
   each(_typedArrays, (Typ) => {
     ckEqSeq(values(new Typ([42, 23])), [42, 23]);
   });
 });
 
 it('Get', () => {
-  const o = { foo: 42 };
-  const m = new Map([['foo', 42]]);
+  const sy = Symbol('foo');
+  const o = { foo: 42, [sy]: 23 };
+  const m = new Map([['foo', 42], [sy, 23]]);
   const s = 'ford prefect';
   const a = ['foo', 'bar', 42];
   const se = new Set(['foo']);
@@ -312,7 +326,9 @@ it('Get', () => {
 
   const ck = (cont, k, v) => ckEq(get(cont, k), v);
   ck(o, 'foo', 42);
+  ck(o, sy, 23);
   ck(m, 'foo', 42);
+  ck(m, sy, 23);
   ck(wm, o, 42);
   ck(hwm, 'foo', 42);
   ck(s, 5, 'p');
@@ -334,16 +350,19 @@ it('Get', () => {
 });
 
 it('Has', () => {
-  const o = { foo: 42 };
-  const m = new Map([['foo', 42]]);
+  const sy = Symbol('foo');
+  const o = { foo: 42, [sy]: 23 };
+  const m = new Map([['foo', 42], [sy, 23]]);
   const s = 'ford prefect';
   const a = ['foo', 'bar', 42];
   const se = new Set(['foo']);
   a[6] = 42;
 
   assert(has(o, 'foo'));
+  assert(has(o, sy));
   assert(!has(o, 'bar'));
   assert(has(m, 'foo'));
+  assert(has(m, sy));
   assert(!has(m, 'bar'));
   assert(has(s, 4));
   assert(!has(s, -1));
@@ -367,6 +386,7 @@ it('Has', () => {
 });
 
 it('Assign', () => {
+  const sy = Symbol('foo');
   const o = { foo: 42 };
   const m = new Map([['foo', 42]]);
   const a = ['foo', 'bar', 42];
@@ -374,7 +394,8 @@ it('Assign', () => {
 
   assign(o, 'foo', 23);
   assign(o, 'bar', 99);
-  ckEq(o, { foo: 23, bar: 99 });
+  assign(o, sy, 42);
+  ckEq(o, { foo: 23, bar: 99, [sy]: 42 });
 
   assign(m, 'foo', 23);
   assign(m, 'bar', 99);
@@ -397,7 +418,8 @@ it('Assign', () => {
 });
 
 it('Del', () => {
-  const o = { foo: 42 };
+  const sy = Symbol('foo');
+  const o = { foo: 42, [sy]: 23 };
   const m = new Map([['foo', 42]]);
   const s = 'ford prefect';
   const a = ['foo', 'bar', 42];
@@ -411,6 +433,7 @@ it('Del', () => {
   };
 
   ck(o, 'foo');
+  ck(o, sy);
   del(o, 'bar');
   ckEq(size(o), 0);
 
@@ -426,13 +449,16 @@ it('Del', () => {
 });
 
 it('Setdefault', () => {
+  const sy = Symbol('foo');
   const o = { foo: 42 };
   const m = new Map([['foo', 42]]);
   const a = ['foo', 'bar', 42];
 
   ckEq(setdefault(o, 'foo', 23), 42);
   ckEq(setdefault(o, 'bar', 99), 99);
-  ckEq(o, { foo: 42, bar: 99 });
+  ckEq(setdefault(o, sy, 100), 100);
+  ckEq(setdefault(o, sy, 200), 100);
+  ckEq(o, { foo: 42, bar: 99, [sy]: 100 });
 
   ckEq(setdefault(m, 'foo', 23), 42);
   ckEq(setdefault(m, 'bar', 99), 99);
@@ -444,13 +470,16 @@ it('Setdefault', () => {
 });
 
 it('Replace', () => {
+  const sy = Symbol('foo');
   const o = { foo: 42 };
   const m = new Map([['foo', 42]]);
   const a = ['foo', 'bar', 42];
 
   ckEq(replace(o, 'foo', 23), 42);
   ckEq(replace(o, 'bar', 99), undefined);
-  ckEq(o, { foo: 23, bar: 99 });
+  ckEq(replace(o, sy, 100), undefined);
+  ckEq(replace(o, sy, 200), 100);
+  ckEq(o, { foo: 23, bar: 99, [sy]: 200 });
 
   ckEq(replace(m, 'foo', 23), 42);
   ckEq(replace(m, 'bar', 99), undefined);
