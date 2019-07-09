@@ -1,3 +1,10 @@
+# [1.2.0](https://github.com/adobe/ferrum/compare/v1.1.0...v1.2.0) (2019-07-09)
+
+
+### Features
+
+* Bugfix: Support for objects with sequence ([81ccc8c](https://github.com/adobe/ferrum/commit/81ccc8c))
+
 # [1.1.0](https://github.com/adobe/ferrum/compare/v1.0.0...v1.1.0) (2019-06-25)
 
 
