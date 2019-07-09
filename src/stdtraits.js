@@ -151,6 +151,10 @@ const Immutable = new Trait('Immutable');
  * and it falls back to `===` if none is found.
  * For this reason using eq() is usually preferred over using the Equals trait directly.
  *
+ * # Version history
+ *
+ * - 1.2.0 Support for objects with Symbol keys.
+ *
  * @function
  * @see [Equals](module-stdtraits-Equals.html)
  * @template A
@@ -180,6 +184,10 @@ const eq = curry('eq', (a, b) => {
  * uneq(4, 5); # => true
  * ```
  *
+ * # Version history
+ *
+ * - 1.2.0 Support for objects with Symbol keys.
+ *
  * @function
  * @see [Equals](module-stdtraits-Equals.html) for examples
  * @template A
@@ -197,6 +205,10 @@ const uneq = curry('uneq', (a, b) => !eq(a, b));
  * assertEquals([{foo: 42}], [{foo: 42}]); // OK!
  * assertEquals(1, 2); // AssertionError!
  * ```
+ *
+ * # Version history
+ *
+ * - 1.2.0 Support for objects with Symbol keys.
  *
  * @function
  * @see [Equals](module-stdtraits-Equals.html) for examples
@@ -230,6 +242,10 @@ const assertEquals = (actual, expected, msg) => {
  * assertUneq(1, 2); // OK!
  * assertUneq([{foo: 42}], [{foo: 42}]); // AssertionError!
  * ```
+ *
+ * # Version history
+ *
+ * - 1.2.0 Support for objects with Symbol keys.
  *
  * @function
  * @see [Equals](module-stdtraits-Equals.html) for examples
@@ -385,6 +401,10 @@ Equals.impl(Number, (a, b) => a === b || (Number.isNaN(a) && Number.isNaN(b)));
  * size([1,2,3]); // => 3
  * ```
  *
+ * # Version history
+ *
+ * - 1.2.0 Support for objects with Symbol keys.
+ *
  * @see [Size](module-stdtraits-Size.html) for examples
  * @template T
  * @param {T} what
@@ -400,6 +420,11 @@ const size = what => Size.invoke(what);
  * empty({}); // => true
  * empty("asd"); // => false
  * ```
+ *
+ * # Version history
+ *
+ * - 1.2.0 Support for objects with Symbol keys.
+ *
  *
  * @see [Size](module-stdtraits-Size.html) for examples
  * @template T
@@ -459,7 +484,7 @@ Size.impl(Map, x => x.size);
 Size.impl(Set, x => x.size);
 Size.impl(Object, (x) => {
   let cnt = 0;
-  for (const _ in x) { // eslint-disable-line guard-for-in, no-restricted-syntax
+  for (const _ of pairs(x)) {
     cnt += 1;
   }
   return cnt;
@@ -478,6 +503,10 @@ Size.impl(Object, (x) => {
  * a;  // => {foo: [42]}
  * b;  // => {foo: [42]}
  * ```
+ *
+ * # Version history
+ *
+ * - 1.2.0 Support for objects with Symbol keys.
  *
  * @see [Shallowclone](module-stdtraits-Shallowclone.html) for examples
  * @function
@@ -561,6 +590,11 @@ Shallowclone.implDerived([Immutable], ([_], v) => v);
  * a;  // => {foo: []}
  * b;  // => {foo: [42]}
  * ```
+ *
+ * # Version history
+ *
+ * - 1.2.0 Support for objects with Symbol keys.
+ *
  * @see [Deepclone](module-stdtraits-Deepclone.html) for examples
  * @function
  * @template A
@@ -664,6 +698,10 @@ Deepclone.implDerived([Immutable], ([_], v) => v);
  * list(pairs({foo: 42})); // [['foo', 42]]
  * ```
  *
+ * # Version history
+ *
+ * - 1.2.0 Support for objects with Symbol keys.
+ *
  * @see [Pairs](module-stdtraits-Pairs.html)
  * @template T
  * @param {T} what
@@ -681,6 +719,10 @@ const pairs = x => Pairs.invoke(x);
  * list(keys(new Set[1, 2])); // => [1, 2]
  * list(keys({foo: 42})); // ['foo']
  * ```
+ *
+ * # Version history
+ *
+ * - 1.2.0 Support for objects with Symbol keys.
  *
  * @see [Pairs](module-stdtraits-Pairs.html)
  * @template T
@@ -702,6 +744,10 @@ const keys = function* keys(x) {
  * list(values(new Set[1, 2])); // => [1, 2]
  * list(values({foo: 42})); // [42]
  * ```
+ *
+ * # Version history
+ *
+ * - 1.2.0 Support for objects with Symbol keys.
  *
  * @see [Pairs](module-stdtraits-Pairs.html)
  * @template T
@@ -763,15 +809,23 @@ Pairs.impl(Set, function* impl(x) {
   }
 });
 Pairs.impl(Object, function* impl(x) {
-  // eslint-disable-next-line no-restricted-syntax, guard-for-in
-  for (const k in x) {
+  for (const k of Object.getOwnPropertyNames(x)) {
+    yield [k, x[k]];
+  }
+  for (const k of Object.getOwnPropertySymbols(x)) {
     yield [k, x[k]];
   }
 });
 
 // CONTAINER ACCESS ///////////////////////////////////
 
-/** Given a key, get a value from a container. */
+/**
+ * Given a key, get a value from a container.
+ *
+ * # Version history
+ *
+ * - 1.2.0 Support for objects with Symbol keys.
+ */
 const get = curry('get', (x, k) => Get.invoke(x, k));
 
 /**
@@ -801,7 +855,13 @@ const Get = new Trait('Get');
   Get.impl(Typ, (x, k) => (x.has(k) ? k : undefined));
 });
 
-/** Test if a container includes an entry with the given key */
+/**
+ * Test if a container includes an entry with the given key
+ *
+ * # Version history
+ *
+ * - 1.2.0 Support for objects with Symbol keys.
+ */
 const has = curry('has', (x, k) => Has.invoke(x, k));
 
 /**
@@ -834,6 +894,10 @@ Has.impl(Object, (x, k) => k in x);
 /**
  * Set a value in a container.
  * Always returns the given value.
+ *
+ * # Version history
+ *
+ * - 1.2.0 Support for objects with Symbol keys.
  */
 const assign = curry('assign', (cont, key, value) => {
   Assign.invoke(cont, key, value);
@@ -877,7 +941,13 @@ const Assign = new Trait('Assign');
   });
 });
 
-/** Delete an entry with the given key from a container */
+/**
+ * Delete an entry with the given key from a container
+ *
+ * # Version history
+ *
+ * - 1.2.0 Support for objects with Symbol keys.
+ */
 const del = curry('del', (x, k) => {
   Delete.invoke(x, k);
 });
@@ -909,7 +979,13 @@ Delete.impl(Object, (x, k) => delete x[k]);
   Delete.impl(Typ, (x, k) => x.delete(k));
 });
 
-/** Set a default value in a container. */
+/**
+ * Set a default value in a container.
+ *
+ * # Version history
+ *
+ * - 1.2.0 Support for objects with Symbol keys.
+ */
 const setdefault = curry('setdefault', (x, k, v) => Setdefault.invoke(x, k, v));
 
 /**
@@ -933,7 +1009,13 @@ Setdefault.implDerived([Has, Get, Assign], ([has2, get2, assign2], x, k, v) => {
   }
 });
 
-/** Swap out one value in a container for another  */
+/**
+ * Swap out one value in a container for another
+ *
+ * # Version history
+ *
+ * - 1.2.0 Support for objects with Symbol keys.
+ */
 const replace = curry('replace', (x, k, v) => Replace.invoke(x, k, v));
 
 /**
@@ -944,6 +1026,10 @@ const replace = curry('replace', (x, k, v) => Replace.invoke(x, k, v));
  * # Interface
  *
  * `(c: Container, v: Value, k: Key) => r: Value`.
+ *
+ * # Version history
+ *
+ * - 1.2.0 Support for objects with Symbol keys.
  *
  * @interface
  */

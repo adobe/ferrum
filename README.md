@@ -22,7 +22,8 @@ Features from the rust language in javascript: Provides Traits/Type classes & an
     3. [Operators as functions](#operators-as-functions)
     4. [Typing utilities](#typing-utilities)
     5. [Functional utilities](#functional-utilities)
-5. [Development](#development)
+5. [Change Log](#changelog)
+6. [Development](#development)
     1. [Build](#build)
     2. [Test](#test)
     2. [Lint](#lint)
@@ -573,6 +574,18 @@ const pair = curry('pair', (a, b) => [a, b]);
 pair(1,2); // => [1,2]
 pair(2)(1); // => [1,2]
 ```
+
+<a name="changelog"></a>
+## Change Log
+
+### 1.2.0
+
+* **Bugfix: Support for objects with Symbol keys** – Before this change
+  most functions would disregard Symbol keys in objects. E.g. `size({[Symbol()]: 42})`
+  would return zero. Now the functions
+  `pairs(), keys(), values(), size(), empty(), shallowclone(), deepclone(), iter(),
+   each(), replace(), setdefault(), del(), assign(), has(), get(), eq, uneq,
+   assertEquals, assertUneq` are explicitly tested and with objects containing symbol keys.
 
 <a name="development"></a>
 ## Development
