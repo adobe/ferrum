@@ -1,3 +1,10 @@
+## [1.2.1](https://github.com/adobe/ferrum/compare/v1.2.0...v1.2.1) (2019-07-11)
+
+
+### Bug Fixes
+
+* Remove unnecessary dependency ([7274bf2](https://github.com/adobe/ferrum/commit/7274bf2))
+
 # [1.2.0](https://github.com/adobe/ferrum/compare/v1.1.0...v1.2.0) (2019-07-09)
 
 
