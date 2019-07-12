@@ -88,8 +88,8 @@ const pipe = (val, ...fns) => fns.reduce((v, fn) => fn(v), val);
 /**
  * Function composition.
  *
- * This essentially behaves like `pipe()` without taking the initial argument:#
- * executed left-to-rigt/top-to-bottom.
+ * This essentially behaves like `pipe()` without taking the initial argument:
+ * executed left-to-right/top-to-bottom.
  *
  * ```
  * const {compose} = require('ferrum');
