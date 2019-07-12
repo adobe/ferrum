@@ -523,7 +523,7 @@ of traits at once.
 ```js
 const {plus, and, not, is, xor, map, list} = require('ferrum');
 
-list(map([1,2,3], plus(2))); // => [2,3,4]
+list(map([1,2,3], plus(2))); // => [3,4,5]
 and(True, False);  // => False
 not(1); // => False
 is(2, 2); // => True
