@@ -1,3 +1,18 @@
+# [1.3.0](https://github.com/adobe/ferrum/compare/v1.2.2...v1.3.0) (2019-08-27)
+
+
+### Bug Fixes
+
+* Ensure take supports multiple invocations and zero length ([b5612cb](https://github.com/adobe/ferrum/commit/b5612cb))
+
+
+### Features
+
+* Add function repeatFn() ([81de232](https://github.com/adobe/ferrum/commit/81de232))
+* Provide chunkify functions ([9ff9603](https://github.com/adobe/ferrum/commit/9ff9603))
+* Provide takeShort() & takeWithFallback() ([bafa834](https://github.com/adobe/ferrum/commit/bafa834))
+* slidingWindow now returns an empty sequence if no=0 ([533cff4](https://github.com/adobe/ferrum/commit/533cff4))
+
 ## [1.2.2](https://github.com/adobe/ferrum/compare/v1.2.1...v1.2.2) (2019-07-11)
 
 
