@@ -173,6 +173,7 @@ const {
  *
  * - 1.2.0 Support for objects with Symbol keys.
  *
+ * @function
  * @param {Object|Iterable|Iterator} obj
  * @returns {Iterator}
  * @yields The data from the given elements
@@ -194,9 +195,10 @@ Sequence.impl(Object, pairs);
  * Generates an iterator with the numeric range [start; end[
  * Includes start but not end.
  *
+ * @function
  * @param {Number} start
- * @param {Number} start
- * @retunrs {Iterator}
+ * @param {Number} end
+ * @returns {Iterator}
  */
 function* range(start, end) {
   for (let idx = start; idx < end; idx += 1) {
@@ -204,7 +206,13 @@ function* range(start, end) {
   }
 }
 
-/** Like range(a, b) but always starts at 0 */
+/**
+ * Like range(a, b) but always starts at 0
+ *
+ * @function
+ * @param {Number} end
+ * @returns {Iterator}
+ */
 const range0 = b => range(0, b);
 
 /** Generates an infinite iterator of the given value. */
@@ -228,6 +236,8 @@ function* repeat(val) {
  * const range = (first, last) =>
  *   takeUntilVal(extend(first, x => x+1), last);
  * ```
+ *
+ * @function
  * @param {Any} init
  * @param {Function} fn
  * @return {Iterator}
@@ -243,6 +253,8 @@ const extend = curry('extend', function* extend(init, fn) {
 /**
  * Like extend(), but the resulting sequence does not contain
  * the initial element.
+ *
+ * @function
  * @param {Any} init
  * @param {Function} fn
  * @return {Iterator}
@@ -288,6 +300,7 @@ const extend1 = curry('extend1', (init, fn) => trySkip(extend(init, fn), 1));
  * });
  * ```
  *
+ * @function
  * @param {Any} val The tree to flatten
  * @param {Function} fn The function that does the actual flattening
  * @returns {Sequnece} A sequence containing the actual values from the tree
@@ -761,6 +774,10 @@ const count = (val) => {
  * Shorthand for `Array.from(iter())`.
  * This is often utilized to cache a sequence so it can be
  * iterated over multiple times.
+ *
+ * @function
+ * @param {Sequence} The sequence to convert to a list.
+ * @returns {Array}
  */
 const list = seq => Array.from(iter(seq));
 
@@ -769,12 +786,20 @@ const list = seq => Array.from(iter(seq));
  * Shorthand for new Set(iter()).
  * This often finds practical usage as a way of
  * removing duplicates elements from a sequence.
+ *
+ * @function
+ * @param {Sequence} The sequence to convert to a set.
+ * @returns {Set}
  */
 const uniq = seq => new Set(iter(seq));
 
 /**
  * Turns any sequence into an es6 map
  * This is particularly useful for constructing es7 maps from objects...
+ *
+ * @function
+ * @param {Sequence} The sequence to convert.
+ * @returns {Map}
  */
 const dict = (seq) => {
   const r = new Map();
@@ -785,7 +810,13 @@ const dict = (seq) => {
   return r;
 };
 
-/** Turns any sequence into an object */
+/**
+ * Turns any sequence into an object
+ *
+ * @function
+ * @param {Sequence} The sequence to convert.
+ * @returns {Object}
+ */
 const obj = (seq) => {
   const r = {};
   each(seq, (pair) => {
@@ -799,6 +830,10 @@ const obj = (seq) => {
 /**
  * Convert each element from a sequence into a string
  * and join them with the given separator.
+ *
+ * @function
+ * @param {Sequence} The sequence to convert.
+ * @returns {String}
  */
 const join = curry('join', (seq, sep) => list(seq).join(sep));
 
@@ -806,6 +841,11 @@ const join = curry('join', (seq, sep) => list(seq).join(sep));
  * Convert values into a given type using the `Into` trait.
  * Note that this has inverse parameters compared to the trait
  * (sequence first, type second) for currying purposes.
+ *
+ * @function
+ * @param {Sequence} The sequence to convert.
+ * @param {Type} T
+ * @returns {T}
  */
 const into = curry('into', (seq, t) => Into.invoke(t, seq));
 
@@ -907,9 +947,11 @@ each([Set, Map, WeakSet, WeakMap, ..._typedArrays], (Typ) => {
  * have an operation and then just take the operation's neutral element
  * as the initial value?)
  *
+ * @function
  * @param {Sequence} seq The sequence to reduce
  * @param {initial} Any The initial value of the reduce operation.
  *   If the sequence is empty, this value will be returned.
+ * @returns {Any}
  */
 const foldl = curry('foldl', (seq, initial, fn) => {
   let accu = initial;
@@ -919,30 +961,54 @@ const foldl = curry('foldl', (seq, initial, fn) => {
   return accu;
 });
 
-/** Like foldl, but right-to-left */
+/**
+ * Like foldl, but right-to-left
+ *
+ * @function
+ * @param {Sequence} seq The sequence to reduce
+ * @param {initial} Any The initial value of the reduce operation.
+ *   If the sequence is empty, this value will be returned.
+ * @returns {Any}
+ */
 const foldr = curry('foldr', (seq, ini, fn) => foldl(reverse(seq), ini, fn));
 
 /**
  * Test whether any element in the given sequence is truthy.
  * Returns null if the list is empty.
+ *
+ * @function
+ * @param {Sequence} seq
+ * @returns {Boolean}
  */
 const any = seq => foldl(seq, null, or);
 
 /**
  * Test whether all elements in the given sequence are truthy
  * Returns true if the list is empty.
+ *
+ * @function
+ * @param {Sequence} seq
+ * @returns {Boolean}
  */
 const all = seq => foldl(seq, true, and);
 
 /**
  * Calculate the sum of a list of numbers.
  * Returns 0 is the list is empty.
+ *
+ * @function
+ * @param {Sequence} seq
+ * @returns {Number}
  */
 const sum = seq => foldl(seq, 0, plus);
 
 /**
  * Calculate the product of a list of numbers.
  * Returns 1 is the list is empty.
+ *
+ * @function
+ * @param {Sequence} seq
+ * @returns {Number}
  */
 const product = seq => foldl(seq, 1, mul);
 
@@ -955,6 +1021,7 @@ const product = seq => foldl(seq, 1, mul);
  * into(map([1,2,3,4], n => n*2), Array) # [2,4,6,8]
  * ```
  *
+ * @function
  * @param {Sequence} seq Any sequence for which iter() is defined
  * @param {Function} fn The function that transforms all the values in the sequence
  * @returns {Iterator}
@@ -971,6 +1038,8 @@ const map = curry('map', function* map(seq, fn) {
  * ```
  * filter(range(0,10), x => x%2 == 0) // [2,4,6,8]
  * ```
+ *
+ * @function
  * @param {Sequence} seq Any sequence for which iter() is defined
  * @param {Function} fn The function
  * @returns {Iterator}
@@ -986,11 +1055,18 @@ const filter = curry('filter', function* filter(seq, fn) {
 /**
  * Opposite of filter: Removes values from the sequence if the function
  * returns true.
+ *
+ * @function
+ * @param {Sequence} seq Any sequence for which iter() is defined
+ * @param {Function} fn The function
+ * @returns {Iterator}
  */
 const reject = curry('reject', (seq, fn) => filter(seq, v => !fn(v)));
 
 /**
  * Reverse a given sequence
+ *
+ * @function
  * @param {Sequence} seq Any sequence for which iter() is defined
  * @returns {Array}
  */
@@ -1005,6 +1081,7 @@ const reverse = (seq) => {
  * Takes a sequence of values and generates
  * a sequence where each element is a pair [index, element];
  *
+ * @function
  * @param {Sequence} seq Any sequence for which iter() is defined
  * @returns {Iterator}
  */
@@ -1020,8 +1097,9 @@ function* enumerate(seq) {
  * Like skip, but returns an exhausted iterator if the sequence contains
  * less than `no` elements instead of throwing IteratorEnded.
  *
+ * @function
  * @param {Sequence} seq Any sequence for which iter() is defined
- * @params {Number} no The number of elements to skip
+ * @param {Number} no The number of elements to skip
  * @returns {Iterator}
  */
 const trySkip = curry('trySkip', (seq, no) => {
@@ -1034,8 +1112,9 @@ const trySkip = curry('trySkip', (seq, no) => {
  * Skip elements in a sequence.
  * Throws IteratorEnded if the sequence contains less than `no` elements.
  *
+ * @function
  * @param {Sequence} seq Any sequence for which iter() is defined
- * @params {Number} no The number of elements to skip
+ * @param {Number} no The number of elements to skip
  * @returns {Iterator}
  */
 const skip = curry('skip', (seq, no) => {
@@ -1048,8 +1127,9 @@ const skip = curry('skip', (seq, no) => {
  * Skips elements in the given sequences until one is found
  * for which the predicate is false.
  *
+ * @function
  * @param {Sequence} seq Any sequence for which iter() is defined
- * @params {Function} pred
+ * @param {Function} pred
  * @returns {Iterator} The first element for which pred returns false
  *   plus the rest of the sequence.
  */
@@ -1070,6 +1150,7 @@ const skipWhile = curry('skipWhile', (seq, pred) => {
  * sequence; the resulting iterator may contain less then `no`
  * elements if the input sequence was shorter than `no` elements.
  *
+ * @function
  * @param {Sequence} seq Any sequence for which iter() is defined
  * @param {Number} no The number of elements to take
  * @returns {Iterator} The first element for which pred returns false
@@ -1087,6 +1168,11 @@ const tryTake = curry('tryTake', function* tryTake(seq, no) {
 /**
  * Version of tryTake that will throw IteratorEnded
  * if the given iterable is too short.
+ *
+ * @function
+ * @param {Sequence} seq Any sequence for which iter() is defined
+ * @param {Number} no The number of elements to take
+ * @throws IteratorEndedd
  * @returns {Array}
  */
 const take = curry('take', (seq, no) => {
@@ -1103,6 +1189,7 @@ const take = curry('take', (seq, no) => {
  *
  * `list(takeWhile([1,2,3,4,5,6...], x => x < 4))` yields `[1,2,3]`
  *
+ * @function
  * @param {Sequence} seq Any sequence for which iter() is defined
  * @param {Function} fn The predicate function
  * @returns {Iterator}
@@ -1121,6 +1208,8 @@ const takeWhile = curry('takeWhile', function* takeWhile(seq, fn) {
 /**
  * Cut of the sequence at the point where the given value is
  * first encountered.
+ *
+ * @function
  * @param {Sequence} seq Any sequence for which iter() is defined
  * @returns {Iterator}
  */
@@ -1128,6 +1217,8 @@ const takeUntilVal = curry('takeUntilVal', (seq, val) => takeWhile(seq, x => x !
 
 /**
  * Cut of the given sequence at the first undefined or null value.
+ *
+ * @function
  * @param {Sequence} seq Any sequence for which iter() is defined
  * @returns {Iterator}
  */
@@ -1141,7 +1232,9 @@ const takeDef = seq => takeWhile(seq, v => v !== null && v !== undefined);
  * into(flat({foo: 42}), Array) # ["foo", 42]
  * ```
  *
+ * @function
  * @param {Sequence(Sequence)} seq Any sequence for which iter() is defined
+ * @returns {Sequence}
  */
 function* flat(seq) {
   for (const sub of iter(seq)) {
@@ -1154,18 +1247,32 @@ function* flat(seq) {
 /**
  * Concatenate any number of sequences.
  * This is just a variadic alias for `flat()`
+ *
+ * @function
+ * @param {Sequence...}
+ * @returns {Sequence}
  */
 const concat = (...args) => flat(args);
 
 /**
  * Given a sequence and a value, prepend the value to the sequence,
  * yielding a new iterator.
+ *
+ * @function
+ * @param {Sequence} seq
+ * @param {Any} val
+ * @returns {Seqence}
  */
 const prepend = curry('prepend', (seq, val) => concat([val], seq));
 
 /**
  * Given a sequence and a value, append the value to the sequence,
  * yielding a new iterator.
+ *
+ * @function
+ * @param {Sequence} seq
+ * @param {Any} val
+ * @returns {Sequence}
  */
 const append = curry('prepend', (seq, val) => concat(seq, [val]));
 
@@ -1176,6 +1283,7 @@ const append = curry('prepend', (seq, val) => concat(seq, [val]));
  * If the given parameters are already numbers/strings, you may
  * just use identity as the mapping function.
  *
+ * @function
  * @param {Sequence} seq Any sequence for which iter() is defined
  * @param {Function} fn
  * @returns {Array}
@@ -1208,6 +1316,8 @@ function* zipBase(seqs) {
  * If the sequences are of different length, the output sequence
  * will be the length of the *shortest* sequence and discard all
  * remaining from the longer sequences...
+ *
+ * @funcction
  * @param {Sequence} seq A sequence of sequences
  * @returns {Iterator}
  */
@@ -1218,7 +1328,14 @@ const zipLeast = seqs => pipe(
   map(list),
 );
 
-/** Curryable version of zipLeast */
+/**
+ * Curryable version of zipLeast
+ *
+ * @function
+ * @param {Sequence} a
+ * @param {Sequence} b
+ * @returns {Sequence}
+ */
 const zipLeast2 = curry('zipLeast2', (a, b) => zipLeast([a, b]));
 
 /**
@@ -1226,7 +1343,10 @@ const zipLeast2 = curry('zipLeast2', (a, b) => zipLeast([a, b]));
  * Puts all the first values from sequences into one sublist;
  * all the second values, third values and so on.
  * If the sequences are of different length, an error will be thrown.
+ *
+ * @function
  * @param {Sequence} seq A sequence of sequences
+ * @throws {IteratorEnded}
  * @returns {Iterator}
  */
 function* zip(seqs) {
@@ -1242,7 +1362,15 @@ function* zip(seqs) {
   }
 }
 
-/** Curryable version of zip */
+/**
+ * Curryable version of zip
+ *
+ * @function
+ * @param {Sequence} a
+ * @param {Sequence} b
+ * @throws {IteratorEnded}
+ * @returns {Sequence}
+ */
 const zip2 = curry('zip2', (a, b) => zip([a, b]));
 
 /**
@@ -1253,6 +1381,8 @@ const zip2 = curry('zip2', (a, b) => zip([a, b]));
  * will have the length of the longest sequence; the missing values
  * from the shorter sequences will be substituted with the given
  * fallback value.
+ *
+ * @function
  * @param {Sequence} seq A sequence of sequences
  * @returns {Iterator}
  */
@@ -1263,7 +1393,14 @@ const zipLongest = curry('zipLongest', (seqs, fallback) => pipe(
   map(list),
 ));
 
-/** Curryable version of zipLongest */
+/**
+ * Curryable version of zipLongest
+ *
+ * @function
+ * @param {Sequence} a
+ * @param {Sequence} b
+ * @returns {Sequence}
+ */
 const zipLongest2 = curry('zipLongest2', (a, b, fallback) => zipLongest([a, b], fallback));
 
 /**
@@ -1275,7 +1412,9 @@ const zipLongest2 = curry('zipLongest2', (a, b, fallback) => zipLongest([a, b], 
  * Will throw IteratorEnded if the sequence is shorter than
  * the given window.
  *
+ * @function
  * @param {Sequence} seq A sequence of sequences
+ * @throws {IteratorEnded}
  * @returns {Iterator} Iterator of lists
  */
 const slidingWindow = curry('slidingWindow', (seq, no) => {
@@ -1301,6 +1440,10 @@ const slidingWindow = curry('slidingWindow', (seq, no) => {
 /**
  * Like slidingWindow, but returns an empty sequence if the given
  * sequence is too short.
+ *
+ * @function
+ * @param {Sequence} seq A sequence of sequences
+ * @returns {Iterator} Iterator of lists
  */
 const trySlidingWindow = curry('trySlidingWindow', function* trySlidingWindow(seq, no) {
   const it = iter(seq);
@@ -1337,6 +1480,12 @@ const trySlidingWindow = curry('trySlidingWindow', function* trySlidingWindow(se
  *
  * Try sliding window would yield an empty array in each of the examples
  * above.
+ *
+ * @function
+ * @param {Sequence} seq
+ * @param {Number} no
+ * @param {Any} filler
+ * @returns {Sequence<Array>}
  */
 const lookahead = curry('lookahead', (seq, no, filler) => {
   const filled = concat(seq, take(repeat(filler), no));
@@ -1390,7 +1539,7 @@ const cartesian = function* cartesian(seqs) {
   }
 };
 
-/*
+/**
  * Calculate the cartesian product of two sequences.
  *
  * ```
@@ -1423,6 +1572,7 @@ const cartesian2 = curry('cartesian2', (a, b) => cartesian([a, b]));
  * assert(z.constructor === Set)
  * ```
  *
+ * @function
  * @template T Just any type
  * @param {T} v The value to transform
  * @param {Function} Fn The transformation function
@@ -1442,10 +1592,24 @@ const mod = curry('mod', (v, fn) => into(type(v))(fn(v)));
  * `union(new Set(1,2,3,4), [4,6,99])` => `new Set([1,2,3,4,6,99])`AA
  *
  * Takes any number of values to combine.
+ *
+ * @function
+ * @template T
+ * @param {T} fst
+ * @param {...Any} ...args
+ * @returns {T}
  */
 const union = (fst, ...args) => into(type(fst))(concat(fst, ...args));
 
-/** Curryable version of union */
+/**
+ * Curryable version of union
+ *
+ * @function
+ * @template T
+ * @param {T} a
+ * @param {Any} b
+ * @returns {T}
+ */
 const union2 = curry('union2', (a, b) => union(a, b));
 
 module.exports = {
