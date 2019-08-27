@@ -215,12 +215,29 @@ function* range(start, end) {
  */
 const range0 = b => range(0, b);
 
-/** Generates an infinite iterator of the given value. */
-function* repeat(val) {
+/**
+ * Generates an infinite iterator by invoking the
+ * given function repeatedly.
+ *
+ * @function
+ * @param {Function} fn
+ * @returns {Sequence}
+ */
+function* repeatFn(fn) {
   while (true) {
-    yield val;
+    yield fn();
   }
 }
+
+/**
+ * Generates an infinite iterator of the given value.
+ *
+ * @function
+ * @template T
+ * @param {T} val
+ * @returns {Sequence<T>}
+ */
+const repeat = val => repeatFn(() => val);
 
 /**
  * Generate a sequence by repeatedly calling the same function on the
@@ -1616,6 +1633,7 @@ module.exports = {
   iter,
   range,
   range0,
+  repeatFn,
   repeat,
   extend,
   extend1,
