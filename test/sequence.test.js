@@ -22,6 +22,7 @@ const {
   trySecond, tryLast, seqEq, each, find, tryFind, contains, count, list,
   uniq, join, dict, obj, into, foldl, foldr, any, all, sum, product, map,
   filter, reject, reverse, enumerate, trySkip, skip, skipWhile, tryTake,
+  takeShort, takeWithFallback,
   take, takeWhile, takeUntilVal, takeDef, flat, concat, prepend, append,
   mapSort, zipLeast, zip, zipLongest, zipLeast2, zip2, zipLongest2,
   slidingWindow, trySlidingWindow, lookahead, mod, union, union2,
@@ -309,18 +310,26 @@ it('skipWhile', () => {
 it('take/...', () => {
   ckEqSeq(tryTake(4)(range0(10)), [0, 1, 2, 3]);
   ckEqSeq(tryTake(4)(range0(2)), [0, 1]);
+  ckEqSeq(tryTake(4)([]), []);
+  ckEqSeq(takeWithFallback(4, 99)(range0(2)), [0, 1, 99, 99]);
+  ckEqSeq(takeWithFallback(4, 99)([]), [99, 99, 99, 99]);
   ckEqSeq(take(2)(range0(2)), [0, 1]);
   ckThrows(IteratorEnded, () => take(4)(range0(2)));
 
-  const it = iter(range0(8));
+  const it = iter(range0(12));
   ckEq(take(it, 0), []);
-  ckEq(take(it, 3), [0,1,2]);
-  ckEq(take(it, 2), [3,4]);
+  ckEq(take(it, 3), [0, 1, 2]);
+  ckEq(take(it, 2), [3, 4]);
   ckEq(tryTake(it, 0), []);
-  ckEq(tryTake(it, 1), [5]);
-  ckEq(tryTake(it, 2), [6,7]);
+  ckEq(takeShort(it, 1), [5]);
+  ckEq(tryTake(it, 2), [6, 7]);
+  ckEq(takeWithFallback(it, 0, null), []);
+  ckEq(takeWithFallback(it, 2, null), [8, 9]);
+  ckEq(takeWithFallback(it, 4, null), [10, 11, null, null]);
+  ckEq(takeWithFallback(it, 0, null), []);
   ckEq(take(it, 0), []);
-  ckEq(tryTake(it, 0), []);
+  ckEq(takeShort(it, 0), []);
+  ckEq(takeWithFallback(it, 0, null), []);
 });
 
 it('takeWhile()', () => {

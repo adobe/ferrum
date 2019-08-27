@@ -1168,6 +1168,7 @@ const skipWhile = curry('skipWhile', (seq, pred) => {
  * elements if the input sequence was shorter than `no` elements.
  *
  * @function
+ * @alias takeShort
  * @param {Sequence} seq Any sequence for which iter() is defined
  * @param {Number} no The number of elements to take
  * @returns {Iterator} The first element for which pred returns false
@@ -1179,9 +1180,11 @@ const tryTake = curry('tryTake', (seq, no) => {
     range0(no),
     map(() => tryNext(seq, Nothing)),
     takeUntilVal(Nothing),
-    list
+    list,
   );
 });
+
+const takeShort = tryTake;
 
 /**
  * Version of tryTake that will throw IteratorEnded
@@ -1196,7 +1199,24 @@ const tryTake = curry('tryTake', (seq, no) => {
 const take = curry('take', (seq, no) => pipe(
   range0(no),
   map(() => next(seq)),
-  list
+  list,
+));
+
+/**
+ * Yields an iterator of the first `no` elements in the given
+ * in the sequence. If the sequence is too short, the fallback
+ * parameter will be substituted.
+ *
+ * @function
+ * @param {Sequence} seq Any sequence for which iter() is defined
+ * @param {Number} no The number of elements to take
+ * @param {Any} fallback The value to supply if the input sequence is too short
+ * @returns {Array} The elements taken
+ */
+const takeWithFallback = curry('takeWithFallback', (seq, no, fallback) => pipe(
+  concat(range0(no)),
+  map(() => tryNext(seq, fallback)),
+  list,
 ));
 
 /**
@@ -1676,7 +1696,9 @@ module.exports = {
   skip,
   skipWhile,
   tryTake,
+  takeShort,
   take,
+  takeWithFallback,
   takeWhile,
   takeUntilVal,
   takeDef,
