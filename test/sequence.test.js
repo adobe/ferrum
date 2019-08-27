@@ -17,7 +17,7 @@ const assert = require('assert');
 const {
   and, plus, or, mul, not,
   size, TraitNotImplemented, _typedArrays,
-  iter, range, range0, repeat, extend, extend1, flattenTree,
+  iter, range, range0, repeat, repeatFn, extend, extend1, flattenTree,
   IteratorEnded, next, tryNext, nth, first, second, last, tryNth, tryFirst,
   trySecond, tryLast, seqEq, each, find, tryFind, contains, count, list,
   uniq, join, dict, obj, into, foldl, foldr, any, all, sum, product, map,
@@ -111,6 +111,13 @@ it('range(), range0()', () => {
 
 it('repeat()', () => {
   ckEqSeq(tryTake(repeat(2), 4), [2, 2, 2, 2]);
+
+  let x = 0;
+  const fn = () => {
+    x += 1;
+    return x;
+  };
+  ckEqSeq(tryTake(repeatFn(fn), 4), [1, 2, 3, 4]);
 });
 
 it('extend(), extend1()', () => {
