@@ -405,6 +405,8 @@ it('zipLongest', () => {
 
 it('slidingWindow', () => {
   each([slidingWindow, trySlidingWindow], (fn) => {
+    ckEqSeq(fn(0)([1, 2, 3]), []);
+    ckEqSeq(fn(0)([]), []);
     ckEqSeq(fn(1)([1, 2, 3]), [[1], [2], [3]]);
     ckEqSeq(fn(2)([1, 2, 3]), [[1, 2], [2, 3]]);
     ckEqSeq(fn(3)([1, 2, 3]), [[1, 2, 3]]);
