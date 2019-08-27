@@ -1448,12 +1448,18 @@ const zipLongest2 = curry('zipLongest2', (a, b, fallback) => zipLongest([a, b], 
  * Will throw IteratorEnded if the sequence is shorter than
  * the given window.
  *
+ * Returns an empty sequence if `no == 0`.
+ *
  * @function
  * @param {Sequence} seq A sequence of sequences
  * @throws {IteratorEnded}
  * @returns {Iterator} Iterator of lists
  */
 const slidingWindow = curry('slidingWindow', (seq, no) => {
+  if (no === 0) {
+    return iter([]);
+  }
+
   const it = iter(seq);
   const cache = [];
   each(range0(no), () => cache.push(next(it)));
@@ -1477,11 +1483,17 @@ const slidingWindow = curry('slidingWindow', (seq, no) => {
  * Like slidingWindow, but returns an empty sequence if the given
  * sequence is too short.
  *
+ * Returns an empty sequence if `no == 0`.
+ *
  * @function
  * @param {Sequence} seq A sequence of sequences
  * @returns {Iterator} Iterator of lists
  */
 const trySlidingWindow = curry('trySlidingWindow', function* trySlidingWindow(seq, no) {
+  if (no === 0) {
+    return;
+  }
+
   const it = iter(seq);
   const cache = [];
   for (let idx = 0; idx < no; idx += 1) {
@@ -1519,7 +1531,7 @@ const trySlidingWindow = curry('trySlidingWindow', function* trySlidingWindow(se
  *
  * @function
  * @param {Sequence} seq
- * @param {Number} no
+ * @param {Number} no Number of elements to look ahead to.
  * @param {Any} filler
  * @returns {Sequence<Array>}
  */
