@@ -1173,13 +1173,14 @@ const skipWhile = curry('skipWhile', (seq, pred) => {
  * @returns {Iterator} The first element for which pred returns false
  *   plus the rest of the sequence.
  */
-const tryTake = curry('tryTake', function* tryTake(seq, no) {
-  for (const [idx, v] of enumerate(seq)) {
-    if (idx >= no) {
-      break;
-    }
-    yield v;
-  }
+const tryTake = curry('tryTake', (seq, no) => {
+  const Nothing = Symbol('Nothing');
+  return pipe(
+    range0(no),
+    map(() => tryNext(seq, Nothing)),
+    takeUntilVal(Nothing),
+    list
+  );
 });
 
 /**
@@ -1192,13 +1193,11 @@ const tryTake = curry('tryTake', function* tryTake(seq, no) {
  * @throws IteratorEndedd
  * @returns {Array}
  */
-const take = curry('take', (seq, no) => {
-  const r = list(tryTake(seq, no));
-  if (size(r) < no) {
-    throw new IteratorEnded();
-  }
-  return r;
-});
+const take = curry('take', (seq, no) => pipe(
+  range0(no),
+  map(() => next(seq)),
+  list
+));
 
 /**
  * Cut off the sequence at the first point where the given condition is no
