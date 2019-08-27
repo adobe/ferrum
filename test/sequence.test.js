@@ -306,11 +306,21 @@ it('skipWhile', () => {
   ckEqSeq(skipWhile(x => x < 4)([]), []);
 });
 
-it('take/tryTake', () => {
+it('take/...', () => {
   ckEqSeq(tryTake(4)(range0(10)), [0, 1, 2, 3]);
   ckEqSeq(tryTake(4)(range0(2)), [0, 1]);
   ckEqSeq(take(2)(range0(2)), [0, 1]);
   ckThrows(IteratorEnded, () => take(4)(range0(2)));
+
+  const it = iter(range0(8));
+  ckEq(take(it, 0), []);
+  ckEq(take(it, 3), [0,1,2]);
+  ckEq(take(it, 2), [3,4]);
+  ckEq(tryTake(it, 0), []);
+  ckEq(tryTake(it, 1), [5]);
+  ckEq(tryTake(it, 2), [6,7]);
+  ckEq(take(it, 0), []);
+  ckEq(tryTake(it, 0), []);
 });
 
 it('takeWhile()', () => {
