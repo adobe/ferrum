@@ -915,7 +915,7 @@ const into = curry('into', (seq, t) => Into.invoke(t, seq));
  * ```
  * # Remove odd numbers from a set
  * const st = new Set([1,1,2,2,3,4,5]);
- * into(filter(st, n => n % 2 == 0), Set) # Set(2,4)
+ * into(filter(st, n => n % 2 === 0), Set) # Set(2,4)
  *
  * # Remove a key/value pair from an object
  * const obj = {foo: 42, bar: 5};
@@ -1053,7 +1053,7 @@ const map = curry('map', function* map(seq, fn) {
  * Remove values from the sequence based on the given condition.
  *
  * ```
- * filter(range(0,10), x => x%2 == 0) // [2,4,6,8]
+ * filter(range(0,10), x => x%2 === 0) // [2,4,6,8]
  * ```
  *
  * @function
@@ -1448,7 +1448,7 @@ const zipLongest2 = curry('zipLongest2', (a, b, fallback) => zipLongest([a, b], 
  * Will throw IteratorEnded if the sequence is shorter than
  * the given window.
  *
- * Returns an empty sequence if `no == 0`.
+ * Returns an empty sequence if `no === 0`.
  *
  * @function
  * @param {Sequence} seq A sequence of sequences
@@ -1483,7 +1483,7 @@ const slidingWindow = curry('slidingWindow', (seq, no) => {
  * Like slidingWindow, but returns an empty sequence if the given
  * sequence is too short.
  *
- * Returns an empty sequence if `no == 0`.
+ * Returns an empty sequence if `no === 0`.
  *
  * @function
  * @param {Sequence} seq A sequence of sequences
@@ -1529,6 +1529,8 @@ const trySlidingWindow = curry('trySlidingWindow', function* trySlidingWindow(se
  * Try sliding window would yield an empty array in each of the examples
  * above.
  *
+ * Returns an empty sequence if `no === 0`.
+ *
  * @function
  * @param {Sequence} seq
  * @param {Number} no Number of elements to look ahead to.
@@ -1539,6 +1541,91 @@ const lookahead = curry('lookahead', (seq, no, filler) => {
   const filled = concat(seq, take(repeat(filler), no));
   return trySlidingWindow(filled, no + 1);
 });
+
+/**
+ * Split the given input sequence into chunks of a specific length.
+ * The last chunk may be shorter than the given chunk size if the input
+ * sequence is not long enough.
+ *
+ * ```
+ * const { list, chunkifyShort } = require('ferrum');
+ * list(chunkifyShort([1,2,3,4,5], 2)); // => [[1,2], [3,4], [5]]
+ * ```
+ *
+ * Returns an empty sequence if `no === 0`.
+ *
+ * @function
+ * @param {Sequence} seq A sequence of sequences
+ * @param {Number} len The length of the chunk
+ * @returns {Iterator} Sequence of lists
+ */
+const chunkifyShort = curry('chunkifyShort', (seq, len) => {
+  if (len === 0) {
+    return iter([]);
+  }
+
+  const it = iter(seq);
+  return pipe(
+    repeatFn(() => takeShort(it, len)),
+    takeWhile(chunk => !empty(chunk)),
+  );
+});
+
+/**
+ * Split the given input sequence into chunks of a specific length.
+ * If the length of the sequence is not divisible by the chunk length
+ * IteratorEnded will be thrown.
+ *
+ * ```
+ * const { list, chunkify } = require('ferrum');
+ * list(chunkify([1,2,3,4], 2)); // => [[1,2], [3,4]]
+ * ```
+ *
+ * Returns an empty sequence if `no === 0`.
+ *
+ * @function
+ * @param {Sequence} seq A sequence of sequences
+ * @param {Number} len The length of the chunk
+ * @throws {IteratorEnded}
+ * @returns {Iterator} Sequence of lists
+ */
+const chunkify = curry('chunkify', (seq, len) => pipe(
+  chunkifyShort(seq, len),
+  map((chunk) => {
+    if (size(chunk) === len) {
+      return chunk;
+    } else {
+      throw new IteratorEnded('chunkify() needs sequences of the correct length!');
+    }
+  }),
+));
+
+/**
+ * Split the given input sequence into chunks of a specific length.
+ * If the input sequence is not long enough, the last chunk will be filled
+ * with the given fallback value.
+ *
+ * ```
+ * const { list, chunkifyWithFallback } = require('ferrum');
+ * list(chunkifyWithFallback([1,2,3,4,5], 2), 99); // => [[1,2], [3,4], [5, 99]]
+ * ```
+ *
+ * @function
+ * @param {Sequence} seq A sequence of sequences
+ * @param {Number} len The length of the chunk
+ * @param {Any} fallback The value to use if the input sequence is too short.
+ * @returns {Iterator} Sequence of lists
+ */
+const chunkifyWithFallback = curry('chunkifyWithFallback', (seq, len, fallback) => pipe(
+  chunkifyShort(seq, len),
+  map((chunk) => {
+    if (size(chunk) === len) {
+      return chunk;
+    } else {
+      return take(concat(chunk, repeat(fallback)), len);
+    }
+  }),
+));
 
 /**
  * Calculate the cartesian product of the given sequences.
@@ -1728,6 +1815,9 @@ module.exports = {
   slidingWindow,
   trySlidingWindow,
   lookahead,
+  chunkifyShort,
+  chunkify,
+  chunkifyWithFallback,
   cartesian,
   cartesian2,
   mod,

@@ -15,14 +15,14 @@
 
 const assert = require('assert');
 const {
-  and, plus, or, mul, not,
+  and, plus, or, mul, not, curry,
   size, TraitNotImplemented, _typedArrays,
   iter, range, range0, repeat, repeatFn, extend, extend1, flattenTree,
   IteratorEnded, next, tryNext, nth, first, second, last, tryNth, tryFirst,
   trySecond, tryLast, seqEq, each, find, tryFind, contains, count, list,
   uniq, join, dict, obj, into, foldl, foldr, any, all, sum, product, map,
   filter, reject, reverse, enumerate, trySkip, skip, skipWhile, tryTake,
-  takeShort, takeWithFallback,
+  takeShort, takeWithFallback, chunkifyShort, chunkify, chunkifyWithFallback,
   take, takeWhile, takeUntilVal, takeDef, flat, concat, prepend, append,
   mapSort, zipLeast, zip, zipLongest, zipLeast2, zip2, zipLongest2,
   slidingWindow, trySlidingWindow, lookahead, mod, union, union2,
@@ -424,6 +424,22 @@ it('lookahead', () => {
   ck([42], 3, null, [[42, null, null, null]]);
   ck([42, 23], 3, null, [[42, 23, null, null], [23, null, null, null]]);
   ck([42, 23], 0, null, [[42], [23]]);
+});
+
+it('chunkify/chunkifyShort/chunkifyWithFallback', () => {
+  const withFallback = curry('withFallback', (seq, len) => chunkifyWithFallback(len, null)(seq));
+  each([chunkify, withFallback, chunkifyShort], (fn) => {
+    ckEqSeq(fn(2)([1, 2, 3, 4]), [[1, 2], [3, 4]]);
+    ckEqSeq(fn(2)([]), []);
+    ckEqSeq(fn(1)([1, 2, 3, 4]), [[1], [2], [3], [4]]);
+    ckEqSeq(fn(1)([]), []);
+    ckEqSeq(fn(0)([1, 2, 3, 4]), []);
+    ckEqSeq(fn(0)([]), []);
+  });
+
+  ckEqSeq(chunkifyShort([1, 2, 3, 4], 3), [[1, 2, 3], [4]]);
+  ckEqSeq(chunkifyWithFallback([1, 2, 3, 4], 3, null), [[1, 2, 3], [4, null, null]]);
+  ckThrows(IteratorEnded, () => list(chunkify([1, 2, 3, 4], 3)));
 });
 
 it('cartesian', () => {
