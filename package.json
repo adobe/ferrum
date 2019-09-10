@@ -54,5 +54,20 @@
     "semantic-release": "15.13.24",
     "snyk": "1.226.1"
   },
-  "snyk": true
+  "snyk": true,
+  "renovate": {
+    "extends": [
+      "config:base",
+	    "schedule:earlyMondays"
+    ],
+    "timezone": "Europe/Zurich",
+    "packageRules": [
+      {
+        "packagePatterns": [
+          ".*"
+        ],
+        "groupName": "any"
+      }
+    ]
+  }
 }
