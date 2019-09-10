@@ -37,7 +37,7 @@ const { curry } = require('./functional');
  * @param {T} v
  * @returns {Boolean}
  */
-const isdef = v => v !== undefined && v !== null;
+const isdef = (v) => v !== undefined && v !== null;
 
 /**
  * Apply the given function to the value only if the value is defined
@@ -110,7 +110,7 @@ const ifdef = curry('ifdef', (v, fn) => (isdef(v) ? fn(v) : v));
  * @param {T} v
  * @returns {Function|null|undefined} The type of the given parameter
  */
-const type = v => (isdef(v) ? v.constructor : v);
+const type = (v) => (isdef(v) ? v.constructor : v);
 
 /**
  * Given a type, determine it's name.
@@ -140,7 +140,7 @@ const type = v => (isdef(v) ? v.constructor : v);
  * @param {Function|null|undefined} The type to get the name of
  * @returns {String}
  */
-const typename = t => (isdef(t) ? t.name : `${t}`);
+const typename = (t) => (isdef(t) ? t.name : `${t}`);
 
 /**
  * Test if a value is primitive
@@ -160,7 +160,7 @@ const typename = t => (isdef(t) ? t.name : `${t}`);
  * @param {T} v
  * @returns {Boolean}
  */
-const isPrimitive = v => v !== Object(v);
+const isPrimitive = (v) => v !== Object(v);
 
 module.exports = {
   isdef, ifdef, type, typename, isPrimitive,

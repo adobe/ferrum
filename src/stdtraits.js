@@ -63,7 +63,7 @@ const _maybeURL = typeof URL !== 'undefined' ? [URL] : [];
  * @param {Type} t
  * @returns {Boolean}
  */
-const typeIsImmutable = t => supports(t, Immutable);
+const typeIsImmutable = (t) => supports(t, Immutable);
 
 /**
  * Test whether a given value is immutable.
@@ -79,7 +79,7 @@ const typeIsImmutable = t => supports(t, Immutable);
  * @param {T} v
  * @returns {Boolean}
  */
-const isImmutable = v => valueSupports(v, Immutable);
+const isImmutable = (v) => valueSupports(v, Immutable);
 
 /**
  * This is a flag trait that indicates whether a type is immutable.
@@ -220,7 +220,7 @@ const uneq = curry('uneq', (a, b) => !eq(a, b));
  * @throws {AssertionError}
  */
 const assertEquals = (actual, expected, msg) => {
-  const P = v => inspect(v, {
+  const P = (v) => inspect(v, {
     depth: null, breakLength: 1, compact: false, sorted: true,
   });
 
@@ -257,7 +257,7 @@ const assertEquals = (actual, expected, msg) => {
  * @throws AssertionError
  */
 const assertUneq = (actual, notExpected, msg) => {
-  const P = v => inspect(v, {
+  const P = (v) => inspect(v, {
     depth: null, breakLength: 1, compact: false, sorted: true,
   });
 
@@ -410,7 +410,7 @@ Equals.impl(Number, (a, b) => a === b || (Number.isNaN(a) && Number.isNaN(b)));
  * @param {T} what
  * @returns {Number}
  */
-const size = what => Size.invoke(what);
+const size = (what) => Size.invoke(what);
 
 /**
  * Determine if a container is empty. Uses `size(x) === 0`a
@@ -431,7 +431,7 @@ const size = what => Size.invoke(what);
  * @param {T} what
  * @returns {Boolean}
  */
-const empty = what => size(what) === 0;
+const empty = (what) => size(what) === 0;
 
 /**
  * Trait to determine the size of a container.
@@ -478,10 +478,10 @@ const empty = what => size(what) === 0;
  */
 const Size = new Trait('Size');
 [String, Array, ..._typedArrays].map((Typ) => {
-  Size.impl(Typ, x => x.length);
+  Size.impl(Typ, (x) => x.length);
 });
-Size.impl(Map, x => x.size);
-Size.impl(Set, x => x.size);
+Size.impl(Map, (x) => x.size);
+Size.impl(Set, (x) => x.size);
 Size.impl(Object, (x) => {
   let cnt = 0;
   for (const _ of pairs(x)) {
@@ -514,7 +514,7 @@ Size.impl(Object, (x) => {
  * @param {A} a
  * @returns {A}
  */
-const shallowclone = a => Shallowclone.invoke(a);
+const shallowclone = (a) => Shallowclone.invoke(a);
 
 /**
  * Shallowly clone an object.
@@ -561,11 +561,11 @@ const shallowclone = a => Shallowclone.invoke(a);
  * @interface
  */
 const Shallowclone = new Trait('Shallowclone');
-Shallowclone.impl(Array, x => Array.from(x));
+Shallowclone.impl(Array, (x) => Array.from(x));
 
 // From Constructor
 [Map, Set, ..._maybeURL, Date, ..._typedArrays].map((Typ) => {
-  Shallowclone.impl(Typ, x => new Typ(x));
+  Shallowclone.impl(Typ, (x) => new Typ(x));
 });
 
 Shallowclone.impl(Object, (x) => {
@@ -601,7 +601,7 @@ Shallowclone.implDerived([Immutable], ([_], v) => v);
  * @param {A} a
  * @returns {A}
  */
-const deepclone = x => Deepclone.invoke(x);
+const deepclone = (x) => Deepclone.invoke(x);
 
 /**
  * Recursively clone an object.
@@ -656,7 +656,7 @@ const deepclone = x => Deepclone.invoke(x);
  * @interface
  */
 const Deepclone = new Trait('Pairs');
-Deepclone.impl(Array, x => x.map(v => deepclone(v)));
+Deepclone.impl(Array, (x) => x.map((v) => deepclone(v)));
 
 // Key/Value collections
 [Map, Object].map((Typ) => {
@@ -671,7 +671,7 @@ Deepclone.impl(Array, x => x.map(v => deepclone(v)));
 
 // Use shallowclone for these
 [Set, ..._maybeURL, Date, ..._typedArrays].map((Typ) => {
-  Deepclone.impl(Typ, x => shallowclone(x));
+  Deepclone.impl(Typ, (x) => shallowclone(x));
 });
 
 // Immutables are left as is
@@ -707,7 +707,7 @@ Deepclone.implDerived([Immutable], ([_], v) => v);
  * @param {T} what
  * @yields {Array} Key/Value Pairs
  */
-const pairs = x => Pairs.invoke(x);
+const pairs = (x) => Pairs.invoke(x);
 
 /**
  * Get an iterator over the keys of a container. Uses `pairs(c)`.
@@ -795,7 +795,7 @@ const values = function* values(x) {
  * @interface
  */
 const Pairs = new Trait('Pairs');
-Pairs.impl(Map, x => x.entries());
+Pairs.impl(Map, (x) => x.entries());
 [String, Array, ..._typedArrays].map((Typ) => {
   Pairs.impl(Typ, function* impl(x) {
     for (let i = 0; i < x.length; i += 1) {

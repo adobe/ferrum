@@ -35,7 +35,7 @@
  * });
  * ```
  */
-const exec = fn => fn();
+const exec = (fn) => fn();
 
 /**
  * Just a function that returns it's argument!
@@ -57,7 +57,7 @@ const exec = fn => fn();
  * // => ["asd", "foo"]
  * ```
  */
-const identity = a => a;
+const identity = (a) => a;
 
 /**
  * Pipeline a value through multiple function calls.
@@ -106,7 +106,7 @@ const pipe = (val, ...fns) => fns.reduce((v, fn) => fn(v), val);
  * @param {Function} fns Multiple functions
  * @returns {Function} All the functions in the sequence composed into one
  */
-const compose = (...fns) => val => pipe(val, ...fns);
+const compose = (...fns) => (val) => pipe(val, ...fns);
 
 /**
  * Manually assign a name to a function.

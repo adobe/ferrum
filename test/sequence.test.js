@@ -77,7 +77,7 @@ describe('iter()', () => {
 it('each() can iterate the sequences', () => {
   const checkEach = (seq, expected) => {
     const actual = [];
-    each(seq, v => actual.push(v));
+    each(seq, (v) => actual.push(v));
     ckEqSeq(actual, expected);
   };
   checkEach(str, Array.from(str));
@@ -303,8 +303,8 @@ it('skip', () => {
 });
 
 it('skipWhile', () => {
-  ckEqSeq(skipWhile(x => x < 4)(range0(10)), [4, 5, 6, 7, 8, 9]);
-  ckEqSeq(skipWhile(x => x < 4)([]), []);
+  ckEqSeq(skipWhile((x) => x < 4)(range0(10)), [4, 5, 6, 7, 8, 9]);
+  ckEqSeq(skipWhile((x) => x < 4)([]), []);
 });
 
 it('take/...', () => {
@@ -333,7 +333,7 @@ it('take/...', () => {
 });
 
 it('takeWhile()', () => {
-  ckEqSeq(takeWhile(x => x < 4)(range0(10)), [0, 1, 2, 3]);
+  ckEqSeq(takeWhile((x) => x < 4)(range0(10)), [0, 1, 2, 3]);
 });
 
 it('takeUntilVal', () => {
@@ -348,7 +348,7 @@ it('takeDef', () => {
 });
 
 it('flat(), concat()', () => {
-  each([flat, a => concat(...a)], (fn) => {
+  each([flat, (a) => concat(...a)], (fn) => {
     ckEqSeq(
       fn(iter([iter([1, 2, 3, 4]), { foo: 42 }])),
       [1, 2, 3, 4, ['foo', 42]],
@@ -470,11 +470,11 @@ it('mod', () => {
 });
 
 it('find, tryFind, contains', () => {
-  ckEq(find([1, 2, 3, 4], x => x > 2), 3);
-  ckThrows(IteratorEnded, () => find([1, 2, 3, 4], x => x > 10));
+  ckEq(find([1, 2, 3, 4], (x) => x > 2), 3);
+  ckThrows(IteratorEnded, () => find([1, 2, 3, 4], (x) => x > 10));
 
-  ckEq(tryFind([1, 2, 3, 4], null, x => x > 2), 3);
-  ckEq(tryFind([1, 2, 3, 4], null, x => x > 10), null);
+  ckEq(tryFind([1, 2, 3, 4], null, (x) => x > 2), 3);
+  ckEq(tryFind([1, 2, 3, 4], null, (x) => x > 10), null);
 
   const containsFalsy = contains(not);
   assert(!containsFalsy([]));

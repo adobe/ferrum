@@ -82,7 +82,7 @@ const or = curry('or', (a, b) => a || b);
  * @param {A} a
  * @returns {Boolean}
  */
-const not = a => !a;
+const not = (a) => !a;
 
 /**
  * NAND as a function.

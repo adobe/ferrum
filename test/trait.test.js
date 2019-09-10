@@ -121,7 +121,7 @@ describe('Trait', () => {
   });
 
   const o1 = Function;
-  Foo.implWild(what => (what === o1 ? (() => {
+  Foo.implWild((what) => (what === o1 ? (() => {
     callcount += 1;
     return 'wild_o1';
   }) : undefined));
