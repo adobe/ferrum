@@ -87,7 +87,7 @@ describe('Equals', () => {
   ];
 
   it('primitive values', () => {
-    each(primitive, v => ckEq(v, v));
+    each(primitive, (v) => ckEq(v, v));
   });
 
   it('primitive values non equal', () => {
@@ -112,18 +112,18 @@ describe('Equals', () => {
     () => new Map(),
     () => new Set(),
     () => new Set(['foo', 42]),
-    ...(map(_typedArrays, Typ => () => new Typ([1, 2, 3, 4]))),
+    ...(map(_typedArrays, (Typ) => () => new Typ([1, 2, 3, 4]))),
   ];
 
 
   it('complex values', () => {
-    each(complex, fn => ckEq(fn(), fn()));
+    each(complex, (fn) => ckEq(fn(), fn()));
   });
 
   it('complex values non equal', () => {
     each(range0(size(complex)), (idxa) => {
       const a = complex[idxa];
-      each(primitive, b => assertUneq(a, b));
+      each(primitive, (b) => assertUneq(a, b));
 
       each(range0(size(complex)), (idxb) => {
         if (idxa !== idxb) {
@@ -134,12 +134,12 @@ describe('Equals', () => {
   });
 
   const containers = [
-    v => [v],
-    v => [42, v],
-    v => ({ foo: v }),
-    v => ({ foo: v, bar: 42 }),
-    v => new Map([[42, v]]),
-    v => new Map([[42, v], [32, 23]]),
+    (v) => [v],
+    (v) => [42, v],
+    (v) => ({ foo: v }),
+    (v) => ({ foo: v, bar: 42 }),
+    (v) => new Map([[42, v]]),
+    (v) => new Map([[42, v], [32, 23]]),
   ];
 
   it('containers', () => {
@@ -220,7 +220,7 @@ it('Shallowclone', () => {
     assert(orig !== nu);
   });
 
-  each([new Date(), ...map(_typedArrays, Typ => new Typ([1, 2, 3]))], (val) => {
+  each([new Date(), ...map(_typedArrays, (Typ) => new Typ([1, 2, 3]))], (val) => {
     const nu = ck(val);
     assert(val !== nu);
   });
@@ -238,7 +238,7 @@ it('Deepclone', () => {
 
   // All values must not be the same recursively
   const g = compose(
-    extend(cont => (empty(cont) ? undefined : first(values(cont)))),
+    extend((cont) => (empty(cont) ? undefined : first(values(cont)))),
     takeDef,
   );
   assert(all(map(zip([g(dat), g(dat2)]), ([a, b]) => a !== b)));
@@ -257,7 +257,7 @@ it('Deepclone', () => {
     assert(orig !== nu);
   });
 
-  each([new Date(), ...map(_typedArrays, Typ => new Typ([1, 2, 3]))], (val) => {
+  each([new Date(), ...map(_typedArrays, (Typ) => new Typ([1, 2, 3]))], (val) => {
     const nu = deepclone(val);
     ckEq(type(val), type(nu));
     ckEq(val, nu);

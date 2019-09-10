@@ -178,7 +178,7 @@ const {
  * @returns {Iterator}
  * @yields The data from the given elements
  */
-const iter = v => Sequence.invoke(v);
+const iter = (v) => Sequence.invoke(v);
 
 /**
  * Trait for any iterable type.
@@ -213,7 +213,7 @@ function* range(start, end) {
  * @param {Number} end
  * @returns {Iterator}
  */
-const range0 = b => range(0, b);
+const range0 = (b) => range(0, b);
 
 /**
  * Generates an infinite iterator by invoking the
@@ -237,7 +237,7 @@ function* repeatFn(fn) {
  * @param {T} val
  * @returns {Sequence<T>}
  */
-const repeat = val => repeatFn(() => val);
+const repeat = (val) => repeatFn(() => val);
 
 /**
  * Generate a sequence by repeatedly calling the same function on the
@@ -323,7 +323,7 @@ const extend1 = curry('extend1', (init, fn) => trySkip(extend(init, fn), 1));
  * @returns {Sequnece} A sequence containing the actual values from the tree
  */
 const flattenTree = curry('flattenTree', (val, fn) => fn(val,
-  seq => flat(map(seq, v => flattenTree(v, fn)))));
+  (seq) => flat(map(seq, (v) => flattenTree(v, fn)))));
 
 // VALUE ACCESS //////////////////////////////////////////////
 
@@ -424,7 +424,7 @@ const nth = curry('nth', (seq, idx) => next(skip(seq, idx)));
  * @throws {IteratorEnded} If the sequence is too short
  * @returns {Any}
  */
-const first = seq => next(seq);
+const first = (seq) => next(seq);
 /**
  * Extract the second element from the sequence
  *
@@ -440,7 +440,7 @@ const first = seq => next(seq);
  * @throws {IteratorEnded} If the sequence is too short
  * @returns {Any}
  */
-const second = seq => nth(seq, 1);
+const second = (seq) => nth(seq, 1);
 /**
  * Extract the last element from the sequence
  *
@@ -547,7 +547,7 @@ const trySecond = curry('trySecond', (seq, fallback) => tryNth(seq, 1, fallback)
  */
 const tryLast = curry('tryLast', (seq, fallback) => {
   let r = fallback;
-  each(seq, v => r = v);
+  each(seq, (v) => r = v);
   return r;
 });
 
@@ -746,7 +746,7 @@ const seqEq = (a, b) => pipe(
  * @returns {Boolean}
  */
 const assertSequenceEquals = (a, b, msg) => {
-  const P = v => inspect(v, {
+  const P = (v) => inspect(v, {
     depth: null, breakLength: 1, compact: false, sorted: true,
   });
 
@@ -783,7 +783,7 @@ const assertSequenceEquals = (a, b, msg) => {
  */
 const count = (val) => {
   const impl = Size.lookupValue(val);
-  return impl ? impl(val) : foldl(val, 0, v => v + 1);
+  return impl ? impl(val) : foldl(val, 0, (v) => v + 1);
 };
 
 /**
@@ -796,7 +796,7 @@ const count = (val) => {
  * @param {Sequence} The sequence to convert to a list.
  * @returns {Array}
  */
-const list = seq => Array.from(iter(seq));
+const list = (seq) => Array.from(iter(seq));
 
 /**
  * Turns any sequence into a set.
@@ -808,7 +808,7 @@ const list = seq => Array.from(iter(seq));
  * @param {Sequence} The sequence to convert to a set.
  * @returns {Set}
  */
-const uniq = seq => new Set(iter(seq));
+const uniq = (seq) => new Set(iter(seq));
 
 /**
  * Turns any sequence into an es6 map
@@ -997,7 +997,7 @@ const foldr = curry('foldr', (seq, ini, fn) => foldl(reverse(seq), ini, fn));
  * @param {Sequence} seq
  * @returns {Boolean}
  */
-const any = seq => foldl(seq, null, or);
+const any = (seq) => foldl(seq, null, or);
 
 /**
  * Test whether all elements in the given sequence are truthy
@@ -1007,7 +1007,7 @@ const any = seq => foldl(seq, null, or);
  * @param {Sequence} seq
  * @returns {Boolean}
  */
-const all = seq => foldl(seq, true, and);
+const all = (seq) => foldl(seq, true, and);
 
 /**
  * Calculate the sum of a list of numbers.
@@ -1017,7 +1017,7 @@ const all = seq => foldl(seq, true, and);
  * @param {Sequence} seq
  * @returns {Number}
  */
-const sum = seq => foldl(seq, 0, plus);
+const sum = (seq) => foldl(seq, 0, plus);
 
 /**
  * Calculate the product of a list of numbers.
@@ -1027,7 +1027,7 @@ const sum = seq => foldl(seq, 0, plus);
  * @param {Sequence} seq
  * @returns {Number}
  */
-const product = seq => foldl(seq, 1, mul);
+const product = (seq) => foldl(seq, 1, mul);
 
 // ITERATOR FILTERS //////////////////////////////////////////
 
@@ -1078,7 +1078,7 @@ const filter = curry('filter', function* filter(seq, fn) {
  * @param {Function} fn The function
  * @returns {Iterator}
  */
-const reject = curry('reject', (seq, fn) => filter(seq, v => !fn(v)));
+const reject = curry('reject', (seq, fn) => filter(seq, (v) => !fn(v)));
 
 /**
  * Reverse a given sequence
@@ -1249,7 +1249,7 @@ const takeWhile = curry('takeWhile', function* takeWhile(seq, fn) {
  * @param {Sequence} seq Any sequence for which iter() is defined
  * @returns {Iterator}
  */
-const takeUntilVal = curry('takeUntilVal', (seq, val) => takeWhile(seq, x => x !== val));
+const takeUntilVal = curry('takeUntilVal', (seq, val) => takeWhile(seq, (x) => x !== val));
 
 /**
  * Cut of the given sequence at the first undefined or null value.
@@ -1258,7 +1258,7 @@ const takeUntilVal = curry('takeUntilVal', (seq, val) => takeWhile(seq, x => x !
  * @param {Sequence} seq Any sequence for which iter() is defined
  * @returns {Iterator}
  */
-const takeDef = seq => takeWhile(seq, v => v !== null && v !== undefined);
+const takeDef = (seq) => takeWhile(seq, (v) => v !== null && v !== undefined);
 
 /**
  * Flattens a sequence of sequences.
@@ -1325,7 +1325,7 @@ const append = curry('prepend', (seq, val) => concat(seq, [val]));
  * @returns {Array}
  */
 const mapSort = curry('mapSort', (seq, fn) => {
-  const v = list(map(seq, u => [u, fn(u)]));
+  const v = list(map(seq, (u) => [u, fn(u)]));
   // eslint-disable-next-line no-nested-ternary
   v.sort(([_x, a], [_y, b]) => (a === b ? 0 : (a < b ? -1 : 1)));
   for (const idx of range0(size(v))) {
@@ -1341,7 +1341,7 @@ function* zipBase(seqs) {
     return;
   }
   while (true) {
-    yield list(map(seq2, s => s.next()));
+    yield list(map(seq2, (s) => s.next()));
   }
 }
 
@@ -1357,9 +1357,9 @@ function* zipBase(seqs) {
  * @param {Sequence} seq A sequence of sequences
  * @returns {Iterator}
  */
-const zipLeast = seqs => pipe(
+const zipLeast = (seqs) => pipe(
   zipBase(seqs),
-  takeWhile(elms => all(map(elms, ({ done }) => !done))),
+  takeWhile((elms) => all(map(elms, ({ done }) => !done))),
   map(map(({ value }) => value)),
   map(list),
 );
@@ -1424,7 +1424,7 @@ const zip2 = curry('zip2', (a, b) => zip([a, b]));
  */
 const zipLongest = curry('zipLongest', (seqs, fallback) => pipe(
   zipBase(seqs),
-  takeWhile(elms => any(map(elms, ({ done }) => !done))),
+  takeWhile((elms) => any(map(elms, ({ done }) => !done))),
   map(map(({ value, done }) => (done ? fallback : value))),
   map(list),
 ));
@@ -1567,7 +1567,7 @@ const chunkifyShort = curry('chunkifyShort', (seq, len) => {
   const it = iter(seq);
   return pipe(
     repeatFn(() => takeShort(it, len)),
-    takeWhile(chunk => !empty(chunk)),
+    takeWhile((chunk) => !empty(chunk)),
   );
 });
 

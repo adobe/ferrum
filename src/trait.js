@@ -314,7 +314,7 @@ class Trait {
 
   _lookupTypeDerive(Typ) {
     for (const [traits, fn] of this.derived) {
-      const impls = traits.map(trait => trait.lookupType(Typ));
+      const impls = traits.map((trait) => trait.lookupType(Typ));
       if (impls.reduce((a, b) => a && b, true)) { // All are implemented
         const nuFn = (...args) => fn(impls, ...args);
         this.impl(Typ, nuFn); // Cache the result in the lookup table...
@@ -326,7 +326,7 @@ class Trait {
 
   _lookupValueDerive(what) {
     for (const [traits, fn] of this.derived) {
-      const impls = traits.map(trait => trait.lookupValue(what));
+      const impls = traits.map((trait) => trait.lookupValue(what));
       if (impls.reduce((a, b) => a && b, true)) { // All are implemented
         const nuFn = (...args) => fn(impls, ...args);
         // this.implStatic(what, fn); // Not caching this because it might be very many values

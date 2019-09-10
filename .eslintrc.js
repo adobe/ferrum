@@ -29,6 +29,8 @@ module.exports = {
   'rules': {
     'strict': 0,
 
+    'max-classes-per-file': 'off',
+
     // Allow while (true) infinite loops
     'no-constant-condition': ["error", { "checkLoops": false }],
 

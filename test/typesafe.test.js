@@ -19,8 +19,8 @@ const {
 const { ckEq } = require('./util');
 
 it('isdef()', () => {
-  each([null, undefined], v => assert(!isdef(v)));
-  each([false, [], {}, 0], v => assert(isdef(v)));
+  each([null, undefined], (v) => assert(!isdef(v)));
+  each([false, [], {}, 0], (v) => assert(isdef(v)));
 });
 
 it('ifdef()', () => {
