@@ -38,7 +38,7 @@
     "commitizen": "4.0.3",
     "cz-conventional-changelog": "3.0.2",
     "docdash": "git+https://github.com/koraa/docdash.git",
-    "eslint": "6.2.2",
+    "eslint": "6.3.0",
     "eslint-config-airbnb": "18.0.1",
     "eslint-plugin-header": "3.0.0",
     "eslint-plugin-import": "2.18.2",
@@ -49,10 +49,10 @@
     "lint-staged": "9.2.5",
     "mocha": "6.2.0",
     "mocha-junit-reporter": "1.23.1",
-    "mocha-parallel-tests": "2.2.1",
+    "mocha-parallel-tests": "2.2.2",
     "nyc": "14.1.1",
     "semantic-release": "15.13.24",
-    "snyk": "1.221.0"
+    "snyk": "1.226.1"
   },
   "snyk": true
 }
