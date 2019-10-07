@@ -1,3 +1,10 @@
+# [1.4.0](https://github.com/adobe/ferrum/compare/v1.3.0...v1.4.0) (2019-10-07)
+
+
+### Features
+
+* Add intersperse() ([a6336a8](https://github.com/adobe/ferrum/commit/a6336a8))
+
 # [1.3.0](https://github.com/adobe/ferrum/compare/v1.2.2...v1.3.0) (2019-08-27)
 
 
