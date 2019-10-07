@@ -52,13 +52,13 @@
     "mocha-parallel-tests": "2.2.2",
     "nyc": "14.1.1",
     "semantic-release": "15.13.24",
-    "snyk": "1.231.0"
+    "snyk": "1.232.0"
   },
   "snyk": true,
   "renovate": {
     "extends": [
       "config:base",
-	    "schedule:earlyMondays"
+      "schedule:earlyMondays"
     ],
     "timezone": "Europe/Zurich",
     "packageRules": [
