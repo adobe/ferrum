@@ -1294,7 +1294,7 @@ function* flat(seq) {
  * This is just a variadic alias for `flat()`
  *
  * @function
- * @param {Sequence...}
+ * @param {...Sequence}
  * @returns {Sequence}
  */
 const concat = (...args) => flat(args);
