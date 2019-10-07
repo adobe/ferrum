@@ -578,6 +578,17 @@ pair(2)(1); // => [1,2]
 <a name="changelog"></a>
 ## Change Log
 
+### 1.4.0
+
+*  Add intersperse() ([8d28f73](https://github.com/adobe/ferrum/commit/d28f73))
+
+### 1.3.0
+
+* Add function repeatFn() ([81de232](https://github.com/adobe/ferrum/commit/81de232))
+* Provide chunkify functions ([9ff9603](https://github.com/adobe/ferrum/commit/9ff9603))
+* Provide takeShort() & takeWithFallback() ([bafa834](https://github.com/adobe/ferrum/commit/bafa834))
+* slidingWindow now returns an empty sequence if no=0 ([533cff4](https://github.com/adobe/ferrum/commit/533cff4))
+
 ### 1.2.0
 
 * **Bugfix: Support for objects with Symbol keys** – Before this change
