@@ -26,7 +26,7 @@ const {
   take, takeWhile, takeUntilVal, takeDef, flat, concat, prepend, append,
   mapSort, zipLeast, zip, zipLongest, zipLeast2, zip2, zipLongest2,
   slidingWindow, trySlidingWindow, lookahead, mod, union, union2,
-  cartesian, cartesian2,
+  cartesian, cartesian2, intersperse,
 } = require('../src/index');
 const { ckEq, ckEqSeq, ckThrows } = require('./util');
 
@@ -524,4 +524,11 @@ it('union/union2', () => {
   ckEq(size(m2), 2);
   ckEq(m2.get('b'), 99);
   ckEq(m2.get('x'), 13);
+});
+
+it('intersperse', () => {
+  ckEqSeq(intersperse('', 'x'), '');
+  ckEqSeq(intersperse('a', 'x'), 'a');
+  ckEqSeq(intersperse('ab', 'x'), 'axb');
+  ckEqSeq(intersperse('abc', 'x'), 'axbxc');
 });

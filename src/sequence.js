@@ -1440,6 +1440,29 @@ const zipLongest = curry('zipLongest', (seqs, fallback) => pipe(
 const zipLongest2 = curry('zipLongest2', (a, b, fallback) => zipLongest([a, b], fallback));
 
 /**
+ * Inserts an element between every two elements of the given sequence.
+ *
+ * ```
+ * const { intersperse } = require('ferrum');
+ * assertSequenceEquals(
+ *   intersperse('ABC', '|'),
+ *   ['A', '|', 'B', '|', 'C']);
+ * ```
+ *
+ * @function
+ * @param {Any} what – The element to intersperse
+ * @param {Sequence} a
+ * @returns {Sequence}
+ */
+const intersperse = curry('intersperse', (seq, e) => pipe(
+  seq,
+  map((v) => [e, v]),
+  flat,
+  trySkip(1),
+));
+
+
+/**
  * Forms a sliding window on the underlying iterator.
  *
  * `slidingWindow([1,2,3,4,5], 3)`
@@ -1812,6 +1835,7 @@ module.exports = {
   zipLeast2,
   zip2,
   zipLongest2,
+  intersperse,
   slidingWindow,
   trySlidingWindow,
   lookahead,
