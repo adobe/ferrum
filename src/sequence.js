@@ -848,7 +848,15 @@ const obj = (seq) => {
  * Convert each element from a sequence into a string
  * and join them with the given separator.
  *
+ * ```
+ * const { join, assertEquals } = require('ferrum');
+ * assertEquals(
+ *   join(['Hello', 'World'], ' '),
+ *   'Hello World');
+ * ```
+ *
  * @function
+ * @param {String} The seperator
  * @param {Sequence} The sequence to convert.
  * @returns {String}
  */
@@ -1262,6 +1270,7 @@ const takeDef = (seq) => takeWhile(seq, (v) => v !== null && v !== undefined);
 
 /**
  * Flattens a sequence of sequences.
+ * This function is not recursive (it will just expand the second level into the first).
  *
  * ```
  * into(flat([[1,2], [3,4]]), Array) # [1,2,3,4]
