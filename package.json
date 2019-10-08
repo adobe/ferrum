@@ -1,6 +1,6 @@
 {
   "name": "ferrum",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "description": "Features from the rust language in javascript: Provides Traits/Type classes & an advanced library for working with sequences/iterators in js.",
   "main": "src/index.js",
   "scripts": {

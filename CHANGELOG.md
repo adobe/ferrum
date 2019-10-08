@@ -1,3 +1,10 @@
+## [1.4.1](https://github.com/adobe/ferrum/compare/v1.4.0...v1.4.1) (2019-10-08)
+
+
+### Bug Fixes
+
+* **package:** add descritpion ([f56f59a](https://github.com/adobe/ferrum/commit/f56f59a))
+
 # [1.4.0](https://github.com/adobe/ferrum/compare/v1.3.0...v1.4.0) (2019-10-07)
 
 
