@@ -1,7 +1,7 @@
 <a name="ferrum"></a>
 # Ferrum
 
-Features from the rust language in javascript: Provides Traits/Type classes & an advanced library for working with sequences/iterators in js.
+Features from the Rust language in JavaScript: Provides [Traits](https://doc.rust-lang.org/rust-by-example/trait.html) & an advanced library for working with sequences/iterators in JS.
 
 [Github](https://github.com/adobe/ferrum)  
 [API Documentation](https://www.ferrumjs.org)
@@ -9,24 +9,27 @@ Features from the rust language in javascript: Provides Traits/Type classes & an
 <a name="table-of-contents"></a>
 ## Table of Contents
 
-1. [Introduction](#ferrum)
-2. [Table of Contents](#table-of-contents)
-3. [Status](#status)
-4. [Usage & Features](#usage-features)
-    1. [Sequence/Iterators](#sequence-iterators)
-        1. [Objects as Sequences](#objects-as-sequences)
-        2. [Reverse Currying](#reverse-currying)
-        3. [Pipelining](#pipelining)
-        4. [Lazy Evaluation](#lazy-evaluation)
-    2. [Traits/Typeclasses](#traits-typeclasses)
-    3. [Operators as functions](#operators-as-functions)
-    4. [Typing utilities](#typing-utilities)
-    5. [Functional utilities](#functional-utilities)
-5. [Change Log](#changelog)
-6. [Development](#development)
-    1. [Build](#build)
-    2. [Test](#test)
-    2. [Lint](#lint)
+- [Ferrum](#ferrum)
+  - [Table of Contents](#table-of-contents)
+  - [Status](#status)
+  - [Usage & Features](#usage--features)
+    - [Sequence/Iterators](#sequenceiterators)
+      - [Objects as Sequences](#objects-as-sequences)
+      - [Reverse Currying](#reverse-currying)
+      - [Pipelining](#pipelining)
+      - [Lazy Evaluation](#lazy-evaluation)
+    - [Traits](#traits)
+    - [Operators as functions](#operators-as-functions)
+    - [Typing utilities](#typing-utilities)
+    - [Functional Utilities](#functional-utilities)
+  - [Change Log](#change-log)
+    - [1.4.0](#140)
+    - [1.3.0](#130)
+    - [1.2.0](#120)
+  - [Development](#development)
+    - [Build](#build)
+    - [Test](#test)
+    - [Lint](#lint)
 
 <a name="status"></a>
 ## Status
@@ -159,7 +162,7 @@ assertSequenceEquals(b, [
 ```
 
 You may have noticed, that when currying is used, the arguments are given in reverse order; this is
-why we call it reverse currying. We have decided to use currying this way, because there should nevery
+why we call it reverse currying. We have decided to use currying this way, because there should never
 be extra arguments after the function (otherwise you end up with dangling arguments multiple lines below)
 while the function is usually also the first parameter you want to supply when currying:
 
@@ -179,7 +182,7 @@ each(() => {
 }, [1,2,3]);
 ```
 
-Underscore.js does not support currying at all; lodash provides curryied variants of their functions in an extra
+Underscore.js does not support currying at all; lodash provides curried variants of their functions in an extra
 module (not very handy either because it is often useful to mix curried and non currying invocations) while lodash
 has opted to make the function the first parameter, delivering good support for currying and not so good support
 for normal function invocation.
@@ -188,7 +191,7 @@ for normal function invocation.
 #### Pipelining
 
 `Ferrum` provides a function called `pipe()` which – together with currying – can be used to build complex data processing pipelines.
-Pipelines are conceptually the same as the highly successful pipes in bash; the feature is currently being introduced into the javascript
+Pipelines are conceptually the same as the highly successful pipes in bash; the feature is currently being introduced into the JavaScript
 standard library in the form of the [`|>` operator](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Pipeline_operator).
 
 ```js
@@ -255,8 +258,8 @@ This is much better! The data flow is more clear and substeps can be documented 
 In this version we used temporary variables to get around not having `pipe()` and currying;
 this is much better than just putting everything into one line.
 
-Note how `positiveIntegers` became it's own function while fromTwo and candidates
-became just local variables. Also note how all and map are still in the same expression.
+Note how `positiveIntegers` became its own function while `fromTwo` and `candidates`
+became just local variables. Also note how `all` and `map` are still in the same expression.
 Sometimes this is the more readable variant. We have to decide each time.
 
 This variant still has disadvantages though; first of all the code still looks more
@@ -310,7 +313,7 @@ of advantages; you end up with fewer levels of nesting, can avoid a lot of branc
 and hard to write for loops; pipelining let's you break apart your problem into multiple
 clearly defined transformation steps with obvious data flow and obvious intention.
 
-Underscore, lodash and wu all allow you to do something similar with chaining which does work quite well.
+Underscore, lodash and wu.js all allow you to do something similar with chaining which does work quite well.
 They do require a bit more boilerplate since values need to be wrapped before chaining and unwrapped
 after chaining has finished. Pipelining will have even less boilerplate when the `|>` becomes
 available and pipelining can be used with arbitrary transformation functions, while
@@ -320,10 +323,10 @@ more generic & extensible.
 <a name="lazy-evaluation"></a>
 #### Lazy Evaluation
 
-Like python iterators, sequences support lazy evaluation. They support it, because lazy evaluation
-is a core feature of javascript es6 iterators.
+Like Python iterators, sequences support lazy evaluation. They support it, because lazy evaluation
+is a core feature of JavaScript ES6 iterators.
 
-This means that the values in iterators/sequences are only evaluated only once they
+This means that the values in iterators/sequences are only evaluated once they
 are needed:
 
 ```js
@@ -349,17 +352,17 @@ assertEquals(list(take(5, primes())), [2, 3, 5, 7, 11]);
 ```
 
 Underscore and lodash use arrays instead of iterators, so they have no lazy evaluation support.
-wu uses iterators and thus has full lazy evaluation support.
+wu.js uses iterators and thus has full lazy evaluation support.
 
-<a name="traits-typeclasses"></a>
-### Traits/Typeclasses
+<a name="traits"></a>
+### Traits
 
 `Sequence/Traits` is the second big feature this library provides; it is a concept borrowed from
 the Rust language. They let you declare & document a generic interface; like the `sequence` concept
 above they are not an entirely new concept; while sequence is a library designed to make working
-with the [javascript iteration protocols](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols)
-easier, traits standardize the creation of javascript protocols itself, thereby reducing boilerplate.
-Indeed the `Sequence` Trait is just a wrapper over the `Iterable` protocol of javascript.
+with the [JavaScript iteration protocols](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols)
+easier, traits standardize the creation of JavaScript protocols itself, thereby reducing boilerplate.
+Indeed the `Sequence` Trait is just a wrapper over the `Iterable` protocol of JavaScript.
 
 ```js
 const {Trait} = require('ferrum');
@@ -412,7 +415,7 @@ implementations of the trait should abide by, like the (soft) law that `Size` im
 should be quick to compute.
 
 Trait also features machinery to implement traits for third party types and even built in types
-like Array, Object, null or undefined. The classic way to implement protocols does not work in these
+like `Array`, `Object`, `null` or `undefined`. The classic way to implement protocols does not work in these
 cases:
 
 ```js
@@ -446,7 +449,7 @@ Object.prototype[Size] = () => {
 null[Size] = () => 0;
 ```
 
-The oldest pre-es6 way of implementing just used method names; this strategy is very
+The oldest pre-ES6 implementation just used method names; this strategy is very
 problematic, since two different interfaces may use the same method name:
 
 ```js
@@ -466,7 +469,7 @@ class MyLocalTable {
 In the hypothetical example above, one size() method returns an integer, while
 the other returns a promise resolving an integer (which makes total sense since
 it's the size of some database table). Even though each method makes sense for itself,
-there is no way distinguishing; they developer may write a function, expecting an integer…
+there is no way to distinguish between them; the developer may write a function, expecting an integer…
 
 Since the method name `size()` is already taken, we cannot even implement the async
 size interface for `MyLocalTable`.
@@ -504,13 +507,13 @@ AsyncSize.implDerived([Size], ([size], v) => Promise.resolve(size(v)));
 ```
 
 This example above illustrates how – using traits – we can not only deal with
-name collisions by just renaming traits on the fly, we where also able to write
+name collisions by just renaming traits on the fly, we were also able to write
 a generic adapter that automatically implements `AsyncSize` for all types supporting `Size`.
 
 To sum up, using Traits provides a number of advantages: Traits let you avoid
 some boilerplate code, they allow you to specify and implement generic interfaces
 without the danger of name collisions; they let you provide implementations for third
-party types, built in types and even null, undefined and plain objects without
+party types, built-in types and even `null`, `undefined` and plain `Object` without
 modifying these types.
 They even let you write generic adapters, implementing traits for entire groups
 of traits at once.
