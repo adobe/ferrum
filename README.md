@@ -159,7 +159,7 @@ assertSequenceEquals(b, [
 ```
 
 You may have noticed, that when currying is used, the arguments are given in reverse order; this is
-why we call it reverse currying. We have decided to use currying this way, because there should nevery
+why we call it reverse currying. We have decided to use currying this way, because there should never
 be extra arguments after the function (otherwise you end up with dangling arguments multiple lines below)
 while the function is usually also the first parameter you want to supply when currying:
 
