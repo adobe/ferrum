@@ -128,7 +128,7 @@ const {map, filter, assertSequenceEquals} = require('ferrum');
 assertSequenceEquals(map([1,2,3,4], x => x*2), [2,4,6,8]);
 
 // Filter removes elements in a list/iterable
-assertSequenceEquals(filter([1,2,3,4], x => x%2 === 0), [2 4]);
+assertSequenceEquals(filter([1,2,3,4], x => x%2 === 0), [2, 4]);
 ```
 
 Sometimes it can be useful to create an intermediate function with just a
