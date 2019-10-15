@@ -112,7 +112,7 @@ const compose = (...fns) => (val) => pipe(val, ...fns);
  * Manually assign a name to a function.
  * @param {String} name The new name of the function.
  * @param {Function} fn The function to assign a name to
- * @param {Function} Just returns `fn` again.
+ * @returns {Function} Just returns `fn` again.
  */
 const withFunctionName = (name, fn) => {
   Object.defineProperty(fn, 'name', { value: name });
