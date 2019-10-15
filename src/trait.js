@@ -149,7 +149,7 @@ class TraitNotImplemented extends Error {}
  * traits in rust, protocols in elixir, protocols (like the iteration protocol)
  * in javascript.
  * This helper is not supposed to replace ES6 protocols, instead it is supposed
- * to expand on them and make them more powerfull.
+ * to expand on them and make them more powerful.
  *
  * Basically this allows you to declare an interface, similar to interfaces in
  * C++ or C# or Java. You declare the interface; anyone implementing this generic
