@@ -633,7 +633,7 @@ const tryFind = curry('tryFind', (seq, fallback, fn) => tryNext(filter(seq, fn),
  * ```
  * const {contains, eq, is, not} = require('ferrum');
  *
- * const containsEven = contains(x => x%2 === 0);#
+ * const containsEven = contains(x => x%2 === 0);
  * containsEven([1,2,3,4]); // => true
  * containsEven([1,3,5,7]); // => false
  *
