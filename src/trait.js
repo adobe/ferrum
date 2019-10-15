@@ -238,7 +238,7 @@ class Trait {
    * - Implementations added with `implWild` in the order…
    * - Implementations added with `implWildStatic` in the order…
    *
-   * This function can be used directly in order to avoid a double lookiup
+   * This function can be used directly in order to avoid a double lookup
    * of the implementation:
    *
    * ```
