@@ -473,7 +473,7 @@ const last = (seq) => {
  * const {iter, next, tryNth} = require('ferrum');
  *
  * const it = iter('hello world');
- * tryNth(it, null, 3);  // => 'l'
+ * tryNth(it, 3, null);  // => 'l'
  * next(it);    // => 'o'
  *
  * const fifth = nth(4, null);
