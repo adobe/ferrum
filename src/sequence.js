@@ -912,31 +912,31 @@ const into = curry('into', (seq, t) => Into.invoke(t, seq));
  * Practical uses of into include converting between types; e.g:
  *
  * ```
- * into({foo:  42, bar: 23}, Map) # Map { 'foo' => 42, 'bar' }
- * into(["foo", " bar"], String) # "foo bar"
- * into([1,1,2,3,4,2], Set) # Set(1,2,3,4)
+ * into({foo:  42, bar: 23}, Map) // Map { 'foo' => 42, 'bar' }
+ * into(["foo", " bar"], String) // "foo bar"
+ * into([1,1,2,3,4,2], Set) // Set(1,2,3,4)
  * ```
  *
  * Into is also useful to transform values using the functions
  * in this class:
  *
  * ```
- * # Remove odd numbers from a set
+ * // Remove odd numbers from a set
  * const st = new Set([1,1,2,2,3,4,5]);
- * into(filter(st, n => n % 2 === 0), Set) # Set(2,4)
+ * into(filter(st, n => n % 2 === 0), Set) // Set(2,4)
  *
- * # Remove a key/value pair from an object
+ * // Remove a key/value pair from an object
  * const obj = {foo: 42, bar: 5};
  * into(filter(obj, ([k, v]) => k !== 'foo'), Obj)
- * # yields {bar: 5}
+ * // yields {bar: 5}
  * ```
  *
  * It can be even used for more complex use cases:
  *
  * ```
- * # Merge multiple key/value containers into one sequence:
+ * // Merge multiple key/value containers into one sequence:
  * const seq = concat([[99, 42]], new Map(true, 23), {bar: 13});
- * into(seq, Map) # Map( 99 => 42, true => 23, bar => 13 )
+ * into(seq, Map) // Map( 99 => 42, true => 23, bar => 13 )
  * ```
  *
  * @interface
@@ -1043,7 +1043,7 @@ const product = (seq) => foldl(seq, 1, mul);
  * Lazily transform all the values in a sequence.
  *
  * ```
- * into(map([1,2,3,4], n => n*2), Array) # [2,4,6,8]
+ * into(map([1,2,3,4], n => n*2), Array) // [2,4,6,8]
  * ```
  *
  * @function
@@ -1273,8 +1273,8 @@ const takeDef = (seq) => takeWhile(seq, (v) => v !== null && v !== undefined);
  * This function is not recursive (it will just expand the second level into the first).
  *
  * ```
- * into(flat([[1,2], [3,4]]), Array) # [1,2,3,4]
- * into(flat({foo: 42}), Array) # ["foo", 42]
+ * into(flat([[1,2], [3,4]]), Array) // [1,2,3,4]
+ * into(flat({foo: 42}), Array) // ["foo", 42]
  * ```
  *
  * @function
@@ -1552,10 +1552,10 @@ const trySlidingWindow = curry('trySlidingWindow', function* trySlidingWindow(se
  * length.
  *
  * ```
- * lookahead([], 3, null) # => []
- * lookahead([42], 3, null) # => [[42, null, null, null]]
- * lookahead([42, 23], 3, null) # => [[42, 23, null, null], [23, null, null, null]]
- * lookahead([42, 23], 0, null) # => [[42], [23]]
+ * lookahead([], 3, null) // => []
+ * lookahead([42], 3, null) // => [[42, null, null, null]]
+ * lookahead([42, 23], 3, null) // => [[42, 23, null, null], [23, null, null, null]]
+ * lookahead([42, 23], 0, null) // => [[42], [23]]
  * ```
  *
  * Try sliding window would yield an empty array in each of the examples
