@@ -81,7 +81,7 @@ const {
  * standard js6.
  * The emphasis here is on mostly, since sequence.js functions are
  * designed to have fewer edge cases that classical es6 pendants and
- * therefor make for a smoother coding experience.
+ * therefore make for a smoother coding experience.
  *
  * Examples:
  *
