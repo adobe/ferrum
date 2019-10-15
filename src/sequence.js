@@ -793,7 +793,7 @@ const count = (val) => {
  * iterated over multiple times.
  *
  * @function
- * @param {Sequence} The sequence to convert to a list.
+ * @param {Sequence} a The sequence to convert to a list.
  * @returns {Array}
  */
 const list = (seq) => Array.from(iter(seq));
@@ -805,7 +805,7 @@ const list = (seq) => Array.from(iter(seq));
  * removing duplicates elements from a sequence.
  *
  * @function
- * @param {Sequence} The sequence to convert to a set.
+ * @param {Sequence} a The sequence to convert to a set.
  * @returns {Set}
  */
 const uniq = (seq) => new Set(iter(seq));
@@ -815,7 +815,7 @@ const uniq = (seq) => new Set(iter(seq));
  * This is particularly useful for constructing es7 maps from objects...
  *
  * @function
- * @param {Sequence} The sequence to convert.
+ * @param {Sequence} a The sequence to convert.
  * @returns {Map}
  */
 const dict = (seq) => {
@@ -831,7 +831,7 @@ const dict = (seq) => {
  * Turns any sequence into an object
  *
  * @function
- * @param {Sequence} The sequence to convert.
+ * @param {Sequence} a The sequence to convert.
  * @returns {Object}
  */
 const obj = (seq) => {
@@ -856,8 +856,8 @@ const obj = (seq) => {
  * ```
  *
  * @function
- * @param {String} The seperator
- * @param {Sequence} The sequence to convert.
+ * @param {String} sep The seperator
+ * @param {Sequence} seq The sequence to convert.
  * @returns {String}
  */
 const join = curry('join', (seq, sep) => list(seq).join(sep));
@@ -868,7 +868,7 @@ const join = curry('join', (seq, sep) => list(seq).join(sep));
  * (sequence first, type second) for currying purposes.
  *
  * @function
- * @param {Sequence} The sequence to convert.
+ * @param {Sequence} a The sequence to convert.
  * @param {Type} T
  * @returns {T}
  */
@@ -974,7 +974,7 @@ each([Set, Map, WeakSet, WeakMap, ..._typedArrays], (Typ) => {
  *
  * @function
  * @param {Sequence} seq The sequence to reduce
- * @param {initial} Any The initial value of the reduce operation.
+ * @param {Any} initial The initial value of the reduce operation.
  *   If the sequence is empty, this value will be returned.
  * @returns {Any}
  */
@@ -991,7 +991,7 @@ const foldl = curry('foldl', (seq, initial, fn) => {
  *
  * @function
  * @param {Sequence} seq The sequence to reduce
- * @param {initial} Any The initial value of the reduce operation.
+ * @param {Any} initial The initial value of the reduce operation.
  *   If the sequence is empty, this value will be returned.
  * @returns {Any}
  */
@@ -1294,7 +1294,7 @@ function* flat(seq) {
  * This is just a variadic alias for `flat()`
  *
  * @function
- * @param {...Sequence}
+ * @param {...Sequence} seq
  * @returns {Sequence}
  */
 const concat = (...args) => flat(args);
@@ -1742,7 +1742,7 @@ const cartesian2 = curry('cartesian2', (a, b) => cartesian([a, b]));
  * @function
  * @template T Just any type
  * @param {T} v The value to transform
- * @param {Function} Fn The transformation function
+ * @param {Function} fn The transformation function
  * @returns {T}
  */
 const mod = curry('mod', (v, fn) => into(type(v))(fn(v)));
@@ -1763,7 +1763,7 @@ const mod = curry('mod', (v, fn) => into(type(v))(fn(v)));
  * @function
  * @template T
  * @param {T} fst
- * @param {...Any} ...args
+ * @param {...Any} args
  * @returns {T}
  */
 const union = (fst, ...args) => into(type(fst))(concat(fst, ...args));
