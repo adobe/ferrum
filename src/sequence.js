@@ -81,7 +81,7 @@ const {
  * standard js6.
  * The emphasis here is on mostly, since sequence.js functions are
  * designed to have fewer edge cases that classical es6 pendants and
- * therefor make for a smoother coding experience.
+ * therefore make for a smoother coding experience.
  *
  * Examples:
  *
@@ -291,7 +291,7 @@ const extend1 = curry('extend1', (init, fn) => trySkip(extend(init, fn), 1));
  * a sequence with all the values from the tree.
  *
  * The function must return a sequence of values! It is given the current
- * node as well as a callback that that takes a list of child nodes and flattens
+ * node as well as a callback that takes a list of child nodes and flattens
  * the given subnodes.
  *
  * Use the following return values:
@@ -473,7 +473,7 @@ const last = (seq) => {
  * const {iter, next, tryNth} = require('ferrum');
  *
  * const it = iter('hello world');
- * tryNth(it, null, 3);  // => 'l'
+ * tryNth(it, 3, null);  // => 'l'
  * next(it);    // => 'o'
  *
  * const fifth = nth(4, null);
@@ -633,7 +633,7 @@ const tryFind = curry('tryFind', (seq, fallback, fn) => tryNext(filter(seq, fn),
  * ```
  * const {contains, eq, is, not} = require('ferrum');
  *
- * const containsEven = contains(x => x%2 === 0);#
+ * const containsEven = contains(x => x%2 === 0);
  * containsEven([1,2,3,4]); // => true
  * containsEven([1,3,5,7]); // => false
  *
@@ -793,7 +793,7 @@ const count = (val) => {
  * iterated over multiple times.
  *
  * @function
- * @param {Sequence} The sequence to convert to a list.
+ * @param {Sequence} a The sequence to convert to a list.
  * @returns {Array}
  */
 const list = (seq) => Array.from(iter(seq));
@@ -805,7 +805,7 @@ const list = (seq) => Array.from(iter(seq));
  * removing duplicates elements from a sequence.
  *
  * @function
- * @param {Sequence} The sequence to convert to a set.
+ * @param {Sequence} a The sequence to convert to a set.
  * @returns {Set}
  */
 const uniq = (seq) => new Set(iter(seq));
@@ -815,7 +815,7 @@ const uniq = (seq) => new Set(iter(seq));
  * This is particularly useful for constructing es7 maps from objects...
  *
  * @function
- * @param {Sequence} The sequence to convert.
+ * @param {Sequence} a The sequence to convert.
  * @returns {Map}
  */
 const dict = (seq) => {
@@ -831,7 +831,7 @@ const dict = (seq) => {
  * Turns any sequence into an object
  *
  * @function
- * @param {Sequence} The sequence to convert.
+ * @param {Sequence} a The sequence to convert.
  * @returns {Object}
  */
 const obj = (seq) => {
@@ -856,8 +856,8 @@ const obj = (seq) => {
  * ```
  *
  * @function
- * @param {String} The seperator
- * @param {Sequence} The sequence to convert.
+ * @param {String} sep The seperator
+ * @param {Sequence} seq The sequence to convert.
  * @returns {String}
  */
 const join = curry('join', (seq, sep) => list(seq).join(sep));
@@ -868,7 +868,7 @@ const join = curry('join', (seq, sep) => list(seq).join(sep));
  * (sequence first, type second) for currying purposes.
  *
  * @function
- * @param {Sequence} The sequence to convert.
+ * @param {Sequence} a The sequence to convert.
  * @param {Type} T
  * @returns {T}
  */
@@ -912,31 +912,31 @@ const into = curry('into', (seq, t) => Into.invoke(t, seq));
  * Practical uses of into include converting between types; e.g:
  *
  * ```
- * into({foo:  42, bar: 23}, Map) # Map { 'foo' => 42, 'bar' }
- * into(["foo", " bar"], String) # "foo bar"
- * into([1,1,2,3,4,2], Set) # Set(1,2,3,4)
+ * into({foo:  42, bar: 23}, Map) // Map { 'foo' => 42, 'bar' }
+ * into(["foo", " bar"], String) // "foo bar"
+ * into([1,1,2,3,4,2], Set) // Set(1,2,3,4)
  * ```
  *
  * Into is also useful to transform values using the functions
  * in this class:
  *
  * ```
- * # Remove odd numbers from a set
+ * // Remove odd numbers from a set
  * const st = new Set([1,1,2,2,3,4,5]);
- * into(filter(st, n => n % 2 === 0), Set) # Set(2,4)
+ * into(filter(st, n => n % 2 === 0), Set) // Set(2,4)
  *
- * # Remove a key/value pair from an object
+ * // Remove a key/value pair from an object
  * const obj = {foo: 42, bar: 5};
  * into(filter(obj, ([k, v]) => k !== 'foo'), Obj)
- * # yields {bar: 5}
+ * // yields {bar: 5}
  * ```
  *
  * It can be even used for more complex use cases:
  *
  * ```
- * # Merge multiple key/value containers into one sequence:
+ * // Merge multiple key/value containers into one sequence:
  * const seq = concat([[99, 42]], new Map(true, 23), {bar: 13});
- * into(seq, Map) # Map( 99 => 42, true => 23, bar => 13 )
+ * into(seq, Map) // Map( 99 => 42, true => 23, bar => 13 )
  * ```
  *
  * @interface
@@ -974,7 +974,7 @@ each([Set, Map, WeakSet, WeakMap, ..._typedArrays], (Typ) => {
  *
  * @function
  * @param {Sequence} seq The sequence to reduce
- * @param {initial} Any The initial value of the reduce operation.
+ * @param {Any} initial The initial value of the reduce operation.
  *   If the sequence is empty, this value will be returned.
  * @returns {Any}
  */
@@ -991,7 +991,7 @@ const foldl = curry('foldl', (seq, initial, fn) => {
  *
  * @function
  * @param {Sequence} seq The sequence to reduce
- * @param {initial} Any The initial value of the reduce operation.
+ * @param {Any} initial The initial value of the reduce operation.
  *   If the sequence is empty, this value will be returned.
  * @returns {Any}
  */
@@ -1043,7 +1043,7 @@ const product = (seq) => foldl(seq, 1, mul);
  * Lazily transform all the values in a sequence.
  *
  * ```
- * into(map([1,2,3,4], n => n*2), Array) # [2,4,6,8]
+ * into(map([1,2,3,4], n => n*2), Array) // [2,4,6,8]
  * ```
  *
  * @function
@@ -1273,8 +1273,8 @@ const takeDef = (seq) => takeWhile(seq, (v) => v !== null && v !== undefined);
  * This function is not recursive (it will just expand the second level into the first).
  *
  * ```
- * into(flat([[1,2], [3,4]]), Array) # [1,2,3,4]
- * into(flat({foo: 42}), Array) # ["foo", 42]
+ * into(flat([[1,2], [3,4]]), Array) // [1,2,3,4]
+ * into(flat({foo: 42}), Array) // ["foo", 42]
  * ```
  *
  * @function
@@ -1294,7 +1294,7 @@ function* flat(seq) {
  * This is just a variadic alias for `flat()`
  *
  * @function
- * @param {...Sequence}
+ * @param {...Sequence} seq
  * @returns {Sequence}
  */
 const concat = (...args) => flat(args);
@@ -1552,10 +1552,10 @@ const trySlidingWindow = curry('trySlidingWindow', function* trySlidingWindow(se
  * length.
  *
  * ```
- * lookahead([], 3, null) # => []
- * lookahead([42], 3, null) # => [[42, null, null, null]]
- * lookahead([42, 23], 3, null) # => [[42, 23, null, null], [23, null, null, null]]
- * lookahead([42, 23], 0, null) # => [[42], [23]]
+ * lookahead([], 3, null) // => []
+ * lookahead([42], 3, null) // => [[42, null, null, null]]
+ * lookahead([42, 23], 3, null) // => [[42, 23, null, null], [23, null, null, null]]
+ * lookahead([42, 23], 0, null) // => [[42], [23]]
  * ```
  *
  * Try sliding window would yield an empty array in each of the examples
@@ -1639,7 +1639,7 @@ const chunkify = curry('chunkify', (seq, len) => pipe(
  *
  * ```
  * const { list, chunkifyWithFallback } = require('ferrum');
- * list(chunkifyWithFallback([1,2,3,4,5], 2), 99); // => [[1,2], [3,4], [5, 99]]
+ * list(chunkifyWithFallback([1,2,3,4,5], 2, 99)); // => [[1,2], [3,4], [5, 99]]
  * ```
  *
  * @function
@@ -1742,7 +1742,7 @@ const cartesian2 = curry('cartesian2', (a, b) => cartesian([a, b]));
  * @function
  * @template T Just any type
  * @param {T} v The value to transform
- * @param {Function} Fn The transformation function
+ * @param {Function} fn The transformation function
  * @returns {T}
  */
 const mod = curry('mod', (v, fn) => into(type(v))(fn(v)));
@@ -1763,7 +1763,7 @@ const mod = curry('mod', (v, fn) => into(type(v))(fn(v)));
  * @function
  * @template T
  * @param {T} fst
- * @param {...Any} ...args
+ * @param {...Any} args
  * @returns {T}
  */
 const union = (fst, ...args) => into(type(fst))(concat(fst, ...args));
