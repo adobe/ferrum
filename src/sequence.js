@@ -1639,7 +1639,7 @@ const chunkify = curry('chunkify', (seq, len) => pipe(
  *
  * ```
  * const { list, chunkifyWithFallback } = require('ferrum');
- * list(chunkifyWithFallback([1,2,3,4,5], 2), 99); // => [[1,2], [3,4], [5, 99]]
+ * list(chunkifyWithFallback([1,2,3,4,5], 2, 99)); // => [[1,2], [3,4], [5, 99]]
  * ```
  *
  * @function
