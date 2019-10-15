@@ -291,7 +291,7 @@ const extend1 = curry('extend1', (init, fn) => trySkip(extend(init, fn), 1));
  * a sequence with all the values from the tree.
  *
  * The function must return a sequence of values! It is given the current
- * node as well as a callback that that takes a list of child nodes and flattens
+ * node as well as a callback that takes a list of child nodes and flattens
  * the given subnodes.
  *
  * Use the following return values:
