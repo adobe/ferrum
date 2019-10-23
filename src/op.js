@@ -258,7 +258,7 @@ const aint = curry('aint', (a, b) => a !== b);
  * const {plus, list, map, pipe} = require('ferrum');
  *
  * plus(3, 4) // => 7
- * plus(3, -4) // => -1; Can also be used for substraction
+ * plus(3, -4) // => -1; Can also be used for subtraction
  * plus("foo", "bar") // => "foobar"
  *
  * plus(3)(4) // => 7
@@ -294,7 +294,7 @@ const plus = curry('plus', (a, b) => a + b);
  * mul(3, 1/10) // => -1; Can also be used for s
  *
  * plus(3)(4) // => 7
- * plus(3)(-4) // => -1; Can also be used for substraction
+ * plus(3)(-4) // => -1; Can also be used for subtraction
  *
  * // Divide each element in the list by ten
  * pipe(

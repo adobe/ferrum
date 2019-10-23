@@ -434,7 +434,7 @@ class MyType {
 Array.prototype[Size] = () => this.length;
 
 // Using symbols for Object, is a very bad idea as the implementation
-// will be inheritaed by all other classes…this implementation obviously
+// will be inherited by all other classes…this implementation obviously
 // is the wrong one for Set for instance.
 // This also illustrates why it is generally a bad idea to enable inheritance
 // for third party types

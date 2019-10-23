@@ -51,7 +51,7 @@ const {
  * each(map(sequence, (x) => x*2), console.log)
  * ```
  *
- * A disadvantage of lazyness is that side effects (e.g. a console.log inside a map())
+ * A disadvantage of laziness is that side effects (e.g. a console.log inside a map())
  * are not executed, before the resulting sequence is actually being consumed by a
  * for loop or each() or fold() or similar functions…
  * So if you need to perform side effects, remember to use one of these
@@ -320,7 +320,7 @@ const extend1 = curry('extend1', (init, fn) => trySkip(extend(init, fn), 1));
  * @function
  * @param {Any} val The tree to flatten
  * @param {Function} fn The function that does the actual flattening
- * @returns {Sequnece} A sequence containing the actual values from the tree
+ * @returns {Sequence} A sequence containing the actual values from the tree
  */
 const flattenTree = curry('flattenTree', (val, fn) => fn(val,
   (seq) => flat(map(seq, (v) => flattenTree(v, fn)))));
@@ -856,7 +856,7 @@ const obj = (seq) => {
  * ```
  *
  * @function
- * @param {String} sep The seperator
+ * @param {String} sep The separator
  * @param {Sequence} seq The sequence to convert.
  * @returns {String}
  */
@@ -1201,7 +1201,7 @@ const takeShort = tryTake;
  * @function
  * @param {Sequence} seq Any sequence for which iter() is defined
  * @param {Number} no The number of elements to take
- * @throws IteratorEndedd
+ * @throws IteratorEnded
  * @returns {Array}
  */
 const take = curry('take', (seq, no) => pipe(
@@ -1306,7 +1306,7 @@ const concat = (...args) => flat(args);
  * @function
  * @param {Sequence} seq
  * @param {Any} val
- * @returns {Seqence}
+ * @returns {Sequence}
  */
 const prepend = curry('prepend', (seq, val) => concat([val], seq));
 
@@ -1362,7 +1362,7 @@ function* zipBase(seqs) {
  * will be the length of the *shortest* sequence and discard all
  * remaining from the longer sequences...
  *
- * @funcction
+ * @function
  * @param {Sequence} seq A sequence of sequences
  * @returns {Iterator}
  */
@@ -1729,7 +1729,7 @@ const cartesian2 = curry('cartesian2', (a, b) => cartesian([a, b]));
 /**
  * Modify/Transform the given value.
  *
- * Applys the given value to the given function; after the return
+ * Applies the given value to the given function; after the return
  * value is known, that return value is converted into the type
  * of the given parameter.
  *
