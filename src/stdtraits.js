@@ -637,10 +637,10 @@ const deepclone = (x) => Deepclone.invoke(x);
  * # Laws
  *
  * - `x !== r`
- * - `x equals r` wehre eq is the equals() function.
+ * - `x equals r` where eq is the equals() function.
  * - `get(r, k) !== get(x, k)` for any k.
  * - `has(r, k) implies has(x, k)` for any k.
- * - `get(r, k) equals get(x, k)` for any k wehre eq is the equals() function.
+ * - `get(r, k) equals get(x, k)` for any k where eq is the equals() function.
  * - The above laws apply recursively for any children.
  *
  * # Specialization Notes

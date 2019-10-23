@@ -113,7 +113,7 @@ class TraitNotImplemented extends Error {}
  *
  * // This implementation will be used if the underlying type/value
  * // implements the magnitude trait
- * Size.implDerived([Magnitued], ([magnitude], v) => magnitude(v));
+ * Size.implDerived([Magnitude], ([magnitude], v) => magnitude(v));
  *
  * // This will be called as a last resort, so this must be very fast!
  * // This example would implement the `size` trait for any even number.
