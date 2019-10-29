@@ -63,10 +63,6 @@ jobs:
         command: git checkout -- package-lock.json
 
     - run:
-        name: configure npm registry
-        command: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> ~/.npmrc
-
-    - run:
         name: Semantic Release
         command: npm run semantic-release
 
