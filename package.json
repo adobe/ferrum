@@ -51,7 +51,7 @@
     "mocha-junit-reporter": "1.23.1",
     "mocha-parallel-tests": "2.2.2",
     "nyc": "14.1.1",
-    "semantic-release": "15.13.30",
+    "semantic-release": "15.13.31",
     "snyk": "1.248.0"
   },
   "snyk": true,
