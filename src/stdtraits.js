@@ -10,7 +10,7 @@
  * governing permissions and limitations under the License.
  */
 
-/* eslint-disable no-use-before-define, no-param-reassign, array-callback-return */
+/* eslint-disable no-use-before-define, array-callback-return */
 
 const assert = require('assert');
 const { inspect } = require('util');
@@ -119,7 +119,7 @@ const isImmutable = (v) => valueSupports(v, Immutable);
  * Since javascript has not real way to enforce absolute immutability
  * this trait considers anything immutable that is hard to mutate
  * or really not supposed to be mutated.
- * Function is considered immutable despite it being possible to assign
+ * Function is considered immutable despite it being possible to set
  * parameters to functions...
  *
  * This is used in a couple paces; specifically it is used as a list of types
@@ -688,7 +688,7 @@ Deepclone.impl(Array, (x) => x.map((v) => deepclone(v)));
   Deepclone.impl(Typ, (x) => {
     const nu = new Typ();
     for (const [k, v] of pairs(x)) {
-      assign(nu, k, deepclone(v));
+      set(nu, k, deepclone(v));
     }
     return nu;
   });
@@ -923,14 +923,90 @@ Has.impl(Object, (x, k) => k in x);
  *
  * # Version history
  *
+ * - 2.0.0 Renamed from assign
  * - 1.2.0 Support for objects with Symbol keys.
  */
-const assign = curry('assign', (cont, key, value) => {
-  Assign.invoke(cont, key, value);
+const set = curry('set', (cont, key, value) => {
+  SetTrait.invoke(cont, key, value);
 });
 
 /**
- * Trait to assign a value in a container like type.
+ * Assign all the properties from the sources to the target.
+ *
+ * This is very similar to `Object.assign` and should work as a drop-in
+ * replacement in most cases.
+ *
+ * Note that Object.assign should still be used in cases where you wish
+ * to copy from or into a custom class:
+ *
+ * ```js
+ * const ferrum = require('ferrum');
+ *
+ * class MyClass {}
+ * const a = new MyClass();
+ * const b = new MyClass();
+ * a.foo = 42;
+ * a.bar = 50;
+ *
+ * ferrum.assign(b, a); // Invalid, throws "Trait not implemented"
+ * Object.assign(b, a); // Correct
+ * ```
+ *
+ * This implementation however while `Object.assign` can only copy from
+ * Objects/Arrays to Objects/Arrays, this implementation
+ * is designed to copy generically between containers.
+ *
+ * Specifically, this assign implementation can copy from any container
+ * implementing the Sequence Trait and to any container implementing the
+ * Set trait.
+ *
+ * For instance you can copy from Sequences, es6 Maps, Objects, Lists of
+ * Key/Value pairs and into es6 Maps, Objects and more.
+ *
+ * # Version History
+ *
+ * - 2.0.0 Initial implementation (previously the Set trait was called Assign)
+ *
+ * @example
+ * const { assign, assign2 } = require('ferrum');
+ *
+ * const m = assign(new Map(), // into es6 map
+ *   [['Hello', 'World']], // from a list of key value pairs
+ *   new Map([['Ferrum', 'Iron']]), // from an es6 map
+ *   { foo: 42 }, // from an object
+ * );
+ * assertEquals(new Map([
+ *  ['Hello', 'World'],
+ *  ['']
+ * ]));
+ */
+const assign = (trg, ...sources) => {
+  // eslint-disable-next-line global-require
+  const { each } = require('./sequence');
+  each(sources, (src) => {
+    each(src, ([key, val]) => {
+      set(trg, key, val);
+    });
+  });
+  return trg;
+};
+
+/**
+ * Curryable version of assign.
+ *
+ * # Version History
+ *
+ * - 2.0.0 Initially added
+ *
+ * @function
+ * @param {Set} trg
+ * @param {Sequence) src
+ * @retunrs {Set} trg
+ */
+const assign2 = curry('assign2', (trg, src) => assign(trg, src));
+
+/**
+ * Trait to set a value in a container like type.
  *
  * Implemented for Object, String, Array, Map.
  *
@@ -946,19 +1022,49 @@ const assign = curry('assign', (cont, key, value) => {
  *
  * No implementation provided for String since String is read only.
  *
+ * Note that this property collides with the `Set` type, so you probably
+ * want to alias the property like this:
+ *
+ * ```
+ * const { assertEquals, set, Set: SetTrait } = require('ferrum');
+ *
+ * class MyClass {
+ *   constructor() {
+ *     this.values = {};
+ *   }
+ *
+ *   [SetTrait.sym](key, val) {
+ *     this.values[key] = val;
+ *   }
+ * };
+ *
+ * const myVal = new MyClass();
+ * set(myVal, 'foo', 42);
+ * assertEquals(myVal.values, { foo: 42 });
+ * ```
+ *
+ * # Version History
+ *
+ * - 2.0.0 Use `Object.assign` instead of `=` (the assignment operator)
+ *   for object and array assignment: This way an error will be thrown
+ *   when trying to assign to frozen or sealed objects/arrays.
+ * - 2.0.0 Renamed from Assign to Set
+ *
  * @interface
+ * @name Set
  */
-const Assign = new Trait('Assign');
+const SetTrait = new Trait('Set');
 [Object, Array, ..._typedArrays].map((Typ) => {
-  Assign.impl(Typ, (x, k, v) => {
+  SetTrait.impl(Typ, (x, k, v) => {
+    Object.assign(x, { [k]: v });
     x[k] = v;
   });
 });
 [Map, WeakMap, HybridWeakMap].map((Typ) => {
-  Assign.impl(Typ, (x, k, v) => x.set(k, v));
+  SetTrait.impl(Typ, (x, k, v) => x.set(k, v));
 });
 [Set, WeakSet].map((Typ) => {
-  Assign.impl(Typ, (x, k, v) => {
+  SetTrait.impl(Typ, (x, k, v) => {
     if (v === k) {
       x.add(v);
     } else {
@@ -994,7 +1100,7 @@ const del = curry('del', (x, k) => {
  *
  * No implementation provided for String since String is read only.
  * No implementation for Array since has() disregards sparse slots in arrays
- * (so a delete op would be the same as assign(myArray, idx, undefined)) which
+ * (so a delete op would be the same as set(myArray, idx, undefined)) which
  * would be inconsistent.
  *
  * @interface
@@ -1026,11 +1132,11 @@ const setdefault = curry('setdefault', (x, k, v) => Setdefault.invoke(x, k, v));
  * @interface
  */
 const Setdefault = new Trait('Setdefault');
-Setdefault.implDerived([Has, Get, Assign], ([has2, get2, assign2], x, k, v) => {
+Setdefault.implDerived([Has, Get, SetTrait], ([has2, get2, set2], x, k, v) => {
   if (has2(x, k)) {
     return get2(x, k);
   } else {
-    assign2(x, k, v);
+    set2(x, k, v);
     return v;
   }
 });
@@ -1060,9 +1166,9 @@ const replace = curry('replace', (x, k, v) => Replace.invoke(x, k, v));
  * @interface
  */
 const Replace = new Trait('Replace');
-Replace.implDerived([Get, Assign], ([get2, assign2], x, k, v) => {
+Replace.implDerived([Get, SetTrait], ([get2, set2], x, k, v) => {
   const r = get2(x, k);
-  assign2(x, k, v);
+  set2(x, k, v);
   return r;
 });
 
@@ -1100,8 +1206,10 @@ module.exports = {
   Get,
   has,
   Has,
+  set,
+  Set: SetTrait,
   assign,
-  Assign,
+  assign2,
   del,
   Delete,
   setdefault,
