@@ -1233,7 +1233,12 @@ const takeWithFallback = curry('takeWithFallback', (seq, no, fallback) => pipe(
  *
  * `list(takeWhile([1,2,3,4,5,6...], x => x < 4))` yields `[1,2,3]`
  *
+ * # Version History
+ *
+ * - 2.0.0 Add alias flatten()
+ *
  * @function
+ * @alias flatten
  * @param {Sequence} seq Any sequence for which iter() is defined
  * @param {Function} fn The predicate function
  * @returns {Iterator}
@@ -1288,6 +1293,8 @@ function* flat(seq) {
     }
   }
 }
+
+const flatten = flat;
 
 /**
  * Concatenate any number of sequences.
@@ -1834,6 +1841,7 @@ module.exports = {
   takeUntilVal,
   takeDef,
   flat,
+  flatten,
   concat,
   prepend,
   append,
