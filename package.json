@@ -27,18 +27,18 @@
     "lodash.isplainobject": "4.0.6"
   },
   "devDependencies": {
-    "@semantic-release/changelog": "3.0.5",
+    "@semantic-release/changelog": "3.0.6",
     "@semantic-release/commit-analyzer": "6.3.3",
     "@semantic-release/git": "7.0.18",
     "@semantic-release/github": "5.5.5",
     "@semantic-release/npm": "5.3.4",
-    "@semantic-release/release-notes-generator": "7.3.3",
+    "@semantic-release/release-notes-generator": "7.3.4",
     "ajv": "6.10.2",
     "codecov": "3.6.1",
     "commitizen": "4.0.3",
     "cz-conventional-changelog": "3.0.2",
     "docdash": "git+https://github.com/koraa/docdash.git",
-    "eslint": "6.6.0",
+    "eslint": "6.7.0",
     "eslint-config-airbnb": "18.0.1",
     "eslint-plugin-header": "3.0.0",
     "eslint-plugin-import": "2.18.2",
@@ -52,7 +52,7 @@
     "mocha-parallel-tests": "2.2.2",
     "nyc": "14.1.1",
     "semantic-release": "15.13.31",
-    "snyk": "1.248.0"
+    "snyk": "1.251.0"
   },
   "snyk": true,
   "renovate": {
