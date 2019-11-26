@@ -15,12 +15,8 @@
 const assert = require('assert');
 const { inspect } = require('util');
 const { curry } = require('./functional');
-const {
-  type, typename, isdef, isPrimitive,
-} = require('./typesafe');
-const {
-  HybridWeakMap, TraitNotImplemented, Trait, valueSupports, supports,
-} = require('./trait');
+const { type } = require('./typesafe');
+const { HybridWeakMap, Trait, valueSupports, supports } = require('./trait');
 
 /**
  * @module stdtraits
@@ -277,9 +273,7 @@ const uneq = curry('uneq', (a, b) => !eq(a, b));
  * @throws {AssertionError}
  */
 const assertEquals = (actual, expected, msg) => {
-  const P = (v) => inspect(v, {
-    depth: null, breakLength: 1, compact: false, sorted: true,
-  });
+  const P = (v) => inspect(v, { depth: null, breakLength: 1, compact: false, sorted: true });
 
   if (!eq(actual, expected)) {
     throw new assert.AssertionError({
@@ -317,9 +311,7 @@ const assertEquals = (actual, expected, msg) => {
  * @throws AssertionError
  */
 const assertUneq = (actual, notExpected, msg) => {
-  const P = (v) => inspect(v, {
-    depth: null, breakLength: 1, compact: false, sorted: true,
-  });
+  const P = (v) => inspect(v, { depth: null, breakLength: 1, compact: false, sorted: true });
 
   if (eq(actual, notExpected)) {
     throw new assert.AssertionError({
@@ -415,6 +407,7 @@ const assertUneq = (actual, notExpected, msg) => {
  * @interface
  */
 const Equals = new Trait('Equals');
+
 Equals.impl(RegExp, (a, b) => type(b) === RegExp && a.source === b.source && a.flags === b.flags);
 
 // Ensure that eq(NaN, NaN) yields true
@@ -1306,15 +1299,7 @@ Replace.implDerived([Get, Assign], ([get2, assign2], x, k, v) => {
 
 module.exports = {
   _typedArrays,
-  isdef,
-  type,
-  typename,
-  isPrimitive,
-  HybridWeakMap,
-  TraitNotImplemented,
-  Trait,
-  supports,
-  valueSupports,
+  _maybeURL,
   typeIsImmutable,
   isImmutable,
   Immutable,

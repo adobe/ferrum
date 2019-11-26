@@ -10,15 +10,26 @@
  * governing permissions and limitations under the License.
  */
 
-/* eslint-disable global-require */
+/* global it */
 
-module.exports = {
-  ...require('./typesafe'),
-  ...require('./functional'),
-  ...require('./op'),
-  ...require('./trait'),
-  ...require('./stdtraits'),
-  ...require('./sequence'),
-  ...require('./string'),
-  ...require('./hashing'),
-};
+const { builder } = require('../src/index');
+const { ckEq } = require('./util');
+
+it('construct()', () => {
+  class Foo {
+    // eslint-disable-next-line no-unused-vars, no-useless-constructor, no-empty-function
+    constructor(a, b) {}
+  }
+
+  const cfoo = builder(Foo);
+  const cnull = builder(null);
+  const cundef = builder(undefined);
+
+  ckEq(cfoo.name, 'Foo');
+  ckEq(cnull.name, 'null');
+  ckEq(cundef.name, 'undefined');
+
+  ckEq(cfoo.length, 2);
+  ckEq(cnull.length, 0);
+  ckEq(cundef.length, 0);
+});

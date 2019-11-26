@@ -11,12 +11,13 @@
  */
 
 const assert = require('assert');
-const {
-  type, typename, assertEquals, assertSequenceEquals, foldr,
-} = require('../src/index');
+const { type, typename, assertEquals, assertSequenceEquals, foldr, assertUneq } = require('../src/index');
 
 const ckEq = assertEquals;
+const ckUneq = assertUneq;
 const ckEqSeq = assertSequenceEquals;
+const ckIs = assert.strictEqual;
+const ckAint = assert.notStrictEqual;
 
 const ckThrows = (cls, fn) => {
   let err;
@@ -35,6 +36,4 @@ const ckCurry = (fn, ...args) => {
   return a;
 };
 
-module.exports = {
-  ckEq, ckEqSeq, ckThrows, ckCurry,
-};
+module.exports = { ckEq, ckEqSeq, ckIs, ckAint, ckThrows, ckCurry, ckUneq };

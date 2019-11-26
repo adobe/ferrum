@@ -18,14 +18,10 @@
 const assert = require('assert');
 const { inspect } = require('util');
 const { curry, pipe } = require('./functional');
-const {
-  plus, or, mul, and, is,
-} = require('./op');
+const { plus, or, mul, and, is } = require('./op');
 const { type } = require('./typesafe');
 const { Trait } = require('./trait');
-const {
-  size, Size, pairs, eq, empty, _typedArrays, setdefault,
-} = require('./stdtraits');
+const { size, Size, pairs, eq, empty, _typedArrays, setdefault } = require('./stdtraits');
 
 // ITERATOR GENERATORS ///////////////////////////////////////
 
@@ -981,9 +977,7 @@ const seqEq = (a, b) => pipe(
 * @returns {Boolean}
 */
 const assertSequenceEquals = (a, b, msg) => {
-  const P = (v) => inspect(v, {
-    depth: null, breakLength: 1, compact: false, sorted: true,
-  });
+  const P = (v) => inspect(v, { depth: null, breakLength: 1, compact: false, sorted: true });
 
   a = list(a);
   b = list(b);
@@ -2149,6 +2143,7 @@ module.exports = {
   dict,
   obj,
   into,
+  Into, // TODO ADD TESTS FOR FIX
   foldl,
   foldr,
   any,

@@ -13,6 +13,8 @@ Features from the Rust language in JavaScript: Provides [Traits](https://doc.rus
   - [Table of Contents](#table-of-contents)
   - [Status](#status)
   - [Usage & Features](#usage--features)
+    - [Hashing](#hashing)
+    - [Testing of examples in Documentation](#doctest)
     - [Sequence/Iterators](#sequenceiterators)
       - [Objects as Sequences](#objects-as-sequences)
       - [Reverse Currying](#reverse-currying)
@@ -23,6 +25,10 @@ Features from the Rust language in JavaScript: Provides [Traits](https://doc.rus
     - [Typing utilities](#typing-utilities)
     - [Functional Utilities](#functional-utilities)
   - [Change Log](#change-log)
+    - [1.8.0](#180)
+    - [1.7.0](#170)
+    - [1.6.0](#160)
+    - [1.5.0](#150)
     - [1.4.0](#140)
     - [1.3.0](#130)
     - [1.2.0](#120)
@@ -47,6 +53,44 @@ Features from the Rust language in JavaScript: Provides [Traits](https://doc.rus
 ```bash,notest
 $ npm add ferrum
 ```
+<a name="hashing"></a>
+### Hashing & Hash Tables
+
+Ferrum features an extensible, reliable infrastructure for object hashing
+including an implementation of
+[HashMap](https://www.ferrumjs.org/module-hashing-HashMap.html) and
+[HashSet](https://www.ferrumjs.org/module-hashing-HashSet.html).
+
+It supports [user defined hash functions]() (e.g. blake2 instead of xxhash).
+Support for all of the standard types is provided out of the box and
+[support for user defined types](https://www.ferrumjs.org/module-hashing-Hashable.html)
+or third party types can be provided via the trait infrastructure.
+
+You could even integrate the
+[object-hash](https://www.npmjs.com/package/object-hash) package to add support
+for hashing arbitrary third party types! See "Sophisticated hasher integrating
+object hash"  in the
+[hasher trait](https://www.ferrumjs.org/module-hashing-Hasher.html) documentation.
+
+```js
+const assert = require('assert');
+const { HashMap } = require('ferrum');
+
+const m = new Map([[{}, 42], [7, "seven"]]);
+assert.strictEqual(m.get(7), "seven");
+assert.strictEqual(m.get({}), undefined); // Identity based lookup
+
+const hm = new HashMap([[{}, 42], [7, "seven"]]);
+assert.strictEqual(m.get(7), "seven");
+assert.strictEqual(m.get({}), 42); // Content based lookup
+```
+
+<a name="doctest"></a>
+### Testing of Examples
+
+Have you ever found out that some of the examples in your api documentation
+or readme contained bugs? You can now use the [Ferrum Doctest](https://github.com/adobe/ferrum.doctest)
+companion package to run your examples as part of your regular test harness!
 
 <a name="sequence-iterators"></a>
 ### Sequence/Iterators
@@ -598,6 +642,27 @@ assertEquals(pair(2)(1), /* => */ [1,2]);
 
 <a name="changelog"></a>
 ## Change Log
+
+### Features
+
+### 1.8.0
+
+* Move many tests into the documentation examples ([c033897](https://github.com/adobe/ferrum/commit/c033897fc9bc224))
+
+### 1.7.0
+
+* Use ferrum.doctest to make sure examples are valid js code ([b0f9d45](https://github.com/adobe/ferrum/commit/b0f9d45))
+
+
+### 1.6.0
+
+*  Add mutate(), apply() ([8d28f73](https://github.com/adobe/ferrum/commit/d4e3a7a750afe58696097b5f75117c555291d01b))
+
+### 1.5.0
+
+* Alias flatten() -> flat() ([2abad3f](https://github.com/adobe/ferrum/commit/2abad3f4cc72bbad7ee19da8f59d4917))
+* group(), multiline() and takeUntil() ([0bc0ca0](https://github.com/adobe/ferrum/commit/0bc0ca0059b6a7f8f61cf))
+
 
 ### 1.4.0
 
