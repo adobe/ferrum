@@ -24,7 +24,9 @@
   },
   "homepage": "https://github.com/adobe/ferrum#readme",
   "dependencies": {
-    "lodash.isplainobject": "4.0.6"
+    "jsdoc-api": "^5.0.4",
+    "lodash.isplainobject": "4.0.6",
+    "markdown-it": "^10.0.0"
   },
   "devDependencies": {
     "@semantic-release/changelog": "3.0.5",
