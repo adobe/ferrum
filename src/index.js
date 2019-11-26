@@ -19,4 +19,5 @@ module.exports = {
   ...require('./trait'),
   ...require('./stdtraits'),
   ...require('./sequence'),
+  ...require('./hashing'),
 };

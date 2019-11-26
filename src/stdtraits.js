@@ -47,6 +47,33 @@ const _typedArrays = [
 // URL is not available in some environments
 const _maybeURL = typeof URL !== 'undefined' ? [URL] : [];
 
+// OBJECT ID ///////////////////////////////////////
+
+const oid = (val) => ObjectID.invoke(val);
+
+const ObjectID = Trait('ObjectID');
+
+// Builtin types
+ObjectID.implStatic(String,    () => '5899abe2-bf54-4d10-bb24-d935fc67e9b5');
+ObjectID.implStatic(Number,    () => 'f72d7d79-c57a-4163-b506-19291592daee');
+ObjectID.implStatic(Boolean,   () => 'd1671549-2ec8-4f4b-94e9-4be21ad4558e');
+ObjectID.implStatic(RegExp,    () => 'd9298597-c3a0-4afb-b8d9-9f68b6d2d96c');
+ObjectID.implStatic(Date,      () => '9f8b32f8-2309-4f29-a67e-705ad5a88169');
+ObjectID.implStatic(Symbol,    () => 'b004cad6-8826-4a64-b893-d6bdedacd4b5');
+ObjectID.implStatic(Function,  () => 'bcdaa415-987f-4453-bb49-aa47a257bc29');
+ObjectID.implStatic(Map,       () => '935bda9e-24f8-488f-a443-d561fce4b231');
+ObjectID.implStatic(Set,       () => '01b83115-a42b-4587-bca4-e67d52a6252f');
+ObjectID.implStatic(Object,    () => '4cbcdd2b-2db1-485f-a6ef-c786e0a2a005');
+ObjectID.implStatic(Array,     () => '7c426923-00ff-4806-b1c9-83df3cd7dafe');
+ObjectID.implStatic(undefined, () => 'cd3e8eb5-64ce-43de-8b07-fa6a78400eef');
+ObjectID.implStatic(null,      () => 'b8854990-8247-4206-ac33-4bd140104d22');
+ObjectID.implStatic(true,      () => 'cfd38e52-80c2-4b9f-869a-f3c9cb937a4d');
+ObjectID.implStatic(false,     () => 'cb7db702-2883-42ed-9ca9-5c54df5653b7');
+
+// Primitive ferrum types
+TraitNotImplemented[ObjectID.sym] = () => '625b871a-d630-4bb4-a10f-55a59575fc05';
+HybridWeakMap[ObjectID.sym]       = () => '526eb952-50e8-4c87-8894-a22dbbbf3258';
+
 // IMMUTABLE TRAIT ////////////////////////////////////
 
 /**
@@ -362,6 +389,7 @@ const assertUneq = (actual, notExpected, msg) => {
  * @interface
  */
 const Equals = new Trait('Equals');
+
 Equals.impl(RegExp, (a, b) => type(b) === RegExp && a.source === b.source && a.flags === b.flags);
 
 // Ensure that eq(NaN, NaN) yields true
@@ -1148,15 +1176,9 @@ Replace.implDerived([Get, SetTrait], ([get2, set2], x, k, v) => {
 
 module.exports = {
   _typedArrays,
-  isdef,
-  type,
-  typename,
-  isPrimitive,
-  HybridWeakMap,
-  TraitNotImplemented,
-  Trait,
-  supports,
-  valueSupports,
+  _maybeURL,
+  ObjectID,
+  oid,
   typeIsImmutable,
   isImmutable,
   Immutable,
