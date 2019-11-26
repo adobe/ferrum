@@ -12,9 +12,7 @@
 
 const { pipe } = require('./functional');
 const { size } = require('./stdtraits');
-const {
-  filter, map, count, foldl, join,
-} = require('./sequence');
+const { filter, map, count, foldl, join } = require('./sequence');
 
 /**
  * Helpers for working with strings.

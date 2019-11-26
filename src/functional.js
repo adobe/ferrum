@@ -15,6 +15,15 @@
  * @description Generic library for functional programming & working with functions.
  */
 
+// Circular require resolution
+const _seq = () => {
+  if (!_seq.cache) {
+    // eslint-disable-next-line global-require
+    _seq.cache = require('./sequence');
+  }
+  return _seq.cache;
+};
+
 /**
  * Immediately execute the given function.
  *
@@ -285,6 +294,8 @@ curry.impl = (name, fn, arity, got) => withFunctionName(`${name} [CURRY]`, (...a
  * @param {Array} args
  * @param {Function} fn The function to apply to
  * @returns {*} Whatever the function returns
+ * @see [apply1()](module-functional.html#~apply1)
+ * @see [call()](module-functional.html#~call)
  */
 const apply = curry('apply', (args, fn) => fn(...args));
 
@@ -326,6 +337,240 @@ const apply = curry('apply', (args, fn) => fn(...args));
 /* eslint-disable-next-line */ // (using the comma operator here)
 const mutate = curry('mutate', (v, fn) => (fn(v), v));
 
+/**
+ * Calls a function with a single parameter.
+ *
+ * ```js
+ * const assert = require('assert');
+ * const { plus, apply1, let_in, exec, apply, pipe, mul } = require('ferrum');
+ *
+ * assert.strictEqual(apply1(3, plus(2)), 5);
+ *
+ * // As you may imagine, this function is a bit useless,
+ * // because javascript has syntax sugar for function application
+ * // which is called…function application.
+ * assert.strictEqual(plus(2)(3), 5);
+ * assert.strictEqual(plus(3, 2), 5);
+ *
+ * // In pretty much any situation you could use apply1,
+ * // you could also just apply the function directly.
+ * // However, in some situations, apply1 actually looks nicer.
+ * // E.g. you can use apply1 like a let … in statement.
+ * // Which is why apply1 is aliased as let_in
+ * assert.strictEqual(
+ *  let_in(14, (a) =>
+ *    let_in(32, (b) =>
+ *      (a*a) + (b*b) + (2*a*b))),
+ *  2116) // (14 + 32)**2 = 2166;
+ *
+ * // Which looks much nicer than this, even with nicer indentation
+ * assert.strictEqual(
+ *  ((a) =>
+ *    ((b) =>
+ *      (a*a) + (b*b) + (2*a*b)
+ *    )(32)
+ *  )(14),
+ *  2116) // (14 + 32)**2 = 2166;
+ *
+ * // Of course you could always just use variables normally;
+ * // e.g. use exec() to open a scope so the variables do not
+ * // leak outside where they are needed.
+ * assert.strictEqual(
+ *   exec(() => {
+ *     const a = 14;
+ *     const b = 32;
+ *     return (a*a) + (b*b) + (2*a*b);
+ *   }),
+ *   2116);
+ *
+ * // You could even use apply as a more concise let…in statement;
+ * // which version you like most is of course up to you, but I quite
+ * // like the let_in variant because it is written in a functional style,
+ * // does not leak variables, very concise and still easy to read. But
+ * // that is a matter of taste.
+ * assert.strictEqual(
+ *  apply([14, 32], (a, b) =>
+ *    (a*a) + (b*b) + (2*a*b)),
+ *  2116); // (14 + 32)**2 = 2166;
+ *
+ * // Finally, another place where this can come in handy
+ * // is inside a pipe to apply some custom function to the
+ * // value.
+ * assert.strictEqual(
+ *   pipe(
+ *     2,
+ *     mul(3), // 6
+ *     apply1((x) => x**x), // Raise X to itself
+ *     plus(-1)),
+ *   46655);
+ *
+ * // Of course it perfectly works to just supply the function
+ * // itself directly, it just looks a bit odd and operator precedence
+ * // looks a bit odd
+ * assert.strictEqual(
+ *   pipe(
+ *     2,
+ *     mul(3), // 6
+ *     (x) => x**x, // Raise X to itself
+ *     plus(-1)),
+ *   46655);
+ *
+ * // This is especially relevant for multi line functions,
+ * // e.g. you could supply debug output like this!
+ * assert.strictEqual(
+ *   pipe(
+ *     2,
+ *     mul(3), // 6
+ *     apply1((x) => x**x), // Raise X to itself
+ *     plus(-1)),
+ *   46655);
+ * ```
+ *
+ * # Version history
+ *
+ * - 1.9.0 Initial implementation
+ *
+ * @function
+ * @param {*} arg
+ * @param {Function} fn
+ * @returns {Any} Whatever the function returns
+ * @see [apply()](module-functional.html#~apply)
+ */
+const apply1 = curry('apply1', (arg, fn) => fn(arg));
+
+/**
+ * Temporarily define a variable in the scope of an expression.
+ *
+ * This really is just an alias for [apply1()](module-functional.html#~apply1)
+ * which in turn is just syntax sugar function application. Check out
+ * the apply1 documentation.
+ *
+ * ```js
+ * const assert = require('assert');
+ * const { let_in } = require('ferrum');
+ *
+ * // Using let_in allows you to define a variable that
+ * // does not leak outside an expression.
+ * const y = let_in(6, (x) => x**x + x)
+ * assert.strictEqual(y, 46662);
+ *
+ * // Without let_in this could be written like this; which
+ * // is suboptimal if x is not being used again…
+ * const x = 6;
+ * const y2 = x**x + x;
+ * assert.strictEqual(y2, 46662);
+ *
+ * // You could also use it as syntax sugar to avoid a function
+ * // body; e.g. here preprocessing is used to turn x into a number
+ * const fx = (xString) =>
+ *   let_in(Number(xString), (x) =>
+ *     x**x + x);
+ * assert.strictEqual(fx("6"), 46662);
+ *
+ * // Which desugars into a function with a const variable
+ * // and a return statement; which is a bit more verbose,
+ * // but will look much more familliar to javascript developers
+ * const fx2 = (xString) => {
+ *   const x = Number(xString);
+ *   return x**x + x;
+ * };
+ * assert.strictEqual(fx2("6"), 46662);
+ * ```
+ *
+ * # Version history
+ *
+ * - 1.9.0 Initial implementation
+ *
+ * @function
+ * @param {*} arg
+ * @param {Function} fn
+ * @returns {Any} Whatever the function returns
+ * @see [apply1()](module-functional.html#~apply1)
+ */
+// eslint-disable-next-line camelcase
+const let_in = curry('let_in', (arg, fn) => fn(arg));
+
+/**
+ * Calls a function.
+ *
+ * ```js
+ * const assert = require('assert');
+ * const {
+ *   call, apply, plus, mul, apply1, each, get, map,
+ *   assertSequenceEquals, compose, pipe,
+ * } = require('ferrum');
+ *
+ * // Arguments are given as a sequence
+ * assert.strictEqual(call(plus, [2,3]), 5)
+ *
+ * // This is the same as apply(), but with reversed parameters
+ * // Partial application on apply turns a function into one that
+ * // takes a sequence of arguments, while partial application on
+ * // call stores a list of arguments for reuse.
+ * assert.strictEqual(apply([2,3], plus), 5);
+ *
+ * // call() can be partially applied; this is basically storing
+ * // a list of arguments, that can be applied to different functions.
+ * const a2_5 = call([2, 5]);
+ * assertSequenceEquals(
+ *   map(
+ *     [plus, mul, (x, y) => x**y],
+ *     a2_5),
+ *   [7, 10, 32]); // 2+5, 2*5, 2^5
+ *
+ * // This pattern could be used to invoke event handlers
+ * const handlers = [];
+ * const fire = (param) => each(handlers, call([param]));
+ *
+ * // In classic javascript this would look something like this
+ * const fire2 = (param) => {
+ *   handlers.map((fn) => fn(param));
+ * };
+ *
+ * // Or without Array::map
+ * const fire3 = (param) => {
+ *   for (const fn of handlers) {
+ *     fn(param);
+ *   }
+ * };
+ *
+ * // You could also use this as part of a pipeline to invoke
+ * // a function.
+ * const ops = {
+ *   plus,
+ *   mul,
+ *   pow: (a, b) => a**b,
+ * };
+ * const evaluate = (op, a, b) => pipe(
+ *   get(ops, op),
+ *   call([Number(a), Number(b)]));
+ * assert.strictEqual(evaluate("plus", 2, 3), 5);
+ * assert.strictEqual(evaluate("mul", 2, 3), 6);
+ * assert.strictEqual(evaluate("pow", 2, 3), 8);
+ * ```
+ *
+ * # Version history
+ *
+ * - 1.9.0 Initial implementation
+ *
+ * @function
+ * @param {Function} fn
+ * @param {Sequence} args
+ * @returns {*} Whatever the function returns
+ * @see [apply()](module-functional.html#~apply)
+ */
+const call = curry('call', (fn, args) => apply(args, fn));
+
 module.exports = {
-  exec, identity, pipe, compose, withFunctionName, curry, apply, mutate,
+  exec,
+  identity,
+  pipe,
+  compose,
+  withFunctionName,
+  curry,
+  apply,
+  apply1,
+  call,
+  mutate,
+  let_in,
 };

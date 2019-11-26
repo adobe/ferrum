@@ -309,6 +309,4 @@ const plus = curry('plus', (a, b) => a + b);
  */
 const mul = curry('mul', (a, b) => a * b);
 
-module.exports = {
-  and, or, not, nand, nor, xor, xnor, is, aint, plus, mul,
-};
+module.exports = { and, or, not, nand, nor, xor, xnor, is, aint, plus, mul };

@@ -462,9 +462,7 @@ it('find, tryFind, contains', () => {
 });
 
 it('union/union2', () => {
-  const o2 = {
-    a: 42, b: 23, c: 1, d: 14,
-  };
+  const o2 = { a: 42, b: 23, c: 1, d: 14 };
   const m2 = dict({ b: 99, x: 13 });
   const gen2 = () => iter([['c', 22], ['y', 44]]);
 

@@ -14,9 +14,7 @@
 
 /* global it, describe */
 const assert = require('assert');
-const {
-  valueSupports, supports, each, type, HybridWeakMap, size, Trait,
-} = require('../src/index');
+const { valueSupports, supports, each, type, HybridWeakMap, size, Trait } = require('../src/index');
 const { ckEq, ckThrows } = require('./util');
 
 it('HybridWeakMap', () => {

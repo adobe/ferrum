@@ -12,9 +12,7 @@
 
 const isPlainObject = require('lodash.isplainobject');
 const { curry } = require('./functional');
-const {
-  isPrimitive, type, typename, isdef,
-} = require('./typesafe');
+const { isPrimitive, type, typename, isdef } = require('./typesafe');
 
 /**
  * @module trait
@@ -502,6 +500,4 @@ const supports = curry('supports', (Typ, trait) => Boolean(trait.lookupType(Typ)
  */
 const valueSupports = curry('valueSupports', (val, trait) => Boolean(trait.lookupValue(val)));
 
-module.exports = {
-  HybridWeakMap, Trait, TraitNotImplemented, supports, valueSupports,
-};
+module.exports = { HybridWeakMap, Trait, TraitNotImplemented, supports, valueSupports };

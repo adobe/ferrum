@@ -62,6 +62,13 @@ module.exports = {
     'no-continue': 'off',
     'no-plusplus': 'off',
 
+    // More elements in one line
+    'object-curly-newline': ['error', { multiline: true }],
+
+    // Functional style
+    'no-confusing-arrow': 'off',
+    'implicit-arrow-linebreak': 'off',
+
     // enforce license header (todo: improve plugin to support patterns for multi-lines)
     'header/header': [2, 'block', ['',
       ' * Copyright 2019 Adobe. All rights reserved.',
