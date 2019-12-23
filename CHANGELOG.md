@@ -1,3 +1,11 @@
+# [1.5.0](https://github.com/adobe/ferrum/compare/v1.4.1...v1.5.0) (2019-12-23)
+
+
+### Features
+
+* Alias flatten() -> flat() ([2abad3f](https://github.com/adobe/ferrum/commit/2abad3f4cc72bbad7ee19da8f59d4917504134c6))
+* group(), multiline() and takeUntil() ([0bc0ca0](https://github.com/adobe/ferrum/commit/0bc0ca0059b6a7f8f61cf5e66b0ed1adea345a54))
+
 ## [1.4.1](https://github.com/adobe/ferrum/compare/v1.4.0...v1.4.1) (2019-10-08)
 
 
