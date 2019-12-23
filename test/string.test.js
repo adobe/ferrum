@@ -10,14 +10,32 @@
  * governing permissions and limitations under the License.
  */
 
-/* eslint-disable global-require */
+/* eslint-env mocha */
 
-module.exports = {
-  ...require('./typesafe'),
-  ...require('./functional'),
-  ...require('./op'),
-  ...require('./trait'),
-  ...require('./stdtraits'),
-  ...require('./sequence'),
-  ...require('./string'),
-};
+const assert = require('assert');
+const { multiline } = require('../src/index');
+
+describe('String tests', () => {
+  it('multiline()', () => {
+    const ck = (ref, str) => assert.strictEqual(multiline(str), ref);
+
+    ck('', '');
+    ck('Hello', 'Hello');
+    ck('Hello', `
+    Hello`);
+    ck('Hello', `
+      Hello`);
+    ck('Hello\nWorld', `
+      Hello
+      World`);
+    ck('Hello\nWorld', `
+      Hello
+      World
+  `);
+    ck('Hello\n  Foo\nWorld', `
+      Hello
+        Foo
+      World
+  `);
+  });
+});

@@ -19,12 +19,12 @@ const assert = require('assert');
 const { inspect } = require('util');
 const { curry, pipe } = require('./functional');
 const {
-  plus, or, mul, and,
+  plus, or, mul, and, is,
 } = require('./op');
 const { type } = require('./typesafe');
 const { Trait } = require('./trait');
 const {
-  size, Size, pairs, eq, empty, _typedArrays,
+  size, Size, pairs, eq, empty, _typedArrays, setdefault,
 } = require('./stdtraits');
 
 // ITERATOR GENERATORS ///////////////////////////////////////
@@ -1250,6 +1250,18 @@ const takeWhile = curry('takeWhile', function* takeWhile(seq, fn) {
 });
 
 /**
+ * Cut off the sequence at the first point where the given condition is met.
+ *
+ * `list(takeUntil([1,2,3,4,5,6...], x => x > 4))` yields `[1,2,3,4]`
+ *
+ * @function
+ * @param {Sequence} seq Any sequence for which iter() is defined
+ * @param {Function} fn The predicate function
+ * @returns {Iterator}
+ */
+const takeUntil = curry('takeUntil', (seq, fn) => takeWhile(seq, (v) => !fn(v)));
+
+/**
  * Cut of the sequence at the point where the given value is
  * first encountered.
  *
@@ -1257,7 +1269,7 @@ const takeWhile = curry('takeWhile', function* takeWhile(seq, fn) {
  * @param {Sequence} seq Any sequence for which iter() is defined
  * @returns {Iterator}
  */
-const takeUntilVal = curry('takeUntilVal', (seq, val) => takeWhile(seq, (x) => x !== val));
+const takeUntilVal = curry('takeUntilVal', (seq, val) => takeUntil(seq, is(val)));
 
 /**
  * Cut of the given sequence at the first undefined or null value.
@@ -1660,6 +1672,64 @@ const chunkifyWithFallback = curry('chunkifyWithFallback', (seq, len, fallback) 
 ));
 
 /**
+ * Group the elements of the user defined sequence using a custom container.
+ *
+ * This will:
+ *
+ * - Calculate the key for every element in the given sequence by
+ *   applying the key function
+ * - Create a bucket (array) for every key calculated
+ * - Insert each element into the bucket associated with
+ *   it's calculated key in order
+ *
+ * ```js,test
+ * const { group, assertEquals } = require('ferrum');
+ *
+ * const seq = [
+ *   { foo: 42, bar: 22 },
+ *   { foo: 13, bar: 22 },
+ *   { foo: 42, bar: 99 },
+ * ];
+ *
+ * // Group by `foo`
+ * assertEquals(
+ *  group(seq, ({foo}) => foo),
+ *  new Map([
+ *    [42, [
+ *      { foo: 42, bar: 22 }, // Note that the order in here is well defined
+ *      { foo: 42, bar: 99 }]],
+ *    [13, [
+ *      { foo: 13, bar: 22 }]]
+ *  ])
+ * );
+ *
+ * // Group by `bar`
+ * assertEquals(
+ *  group(seq, ({bar}) => bar),
+ *  new Map([
+ *    [22, [
+ *      { foo: 42, bar: 22 },
+ *      { foo: 13, bar: 22 }]],
+ *    [42, [
+ *      { foo: 42, bar: 99 }]]
+ *  ])
+ * );
+ * ```
+ *
+ * @function
+ * @sourcecode
+ * @param {Sequence} seq
+ * @param {Function} keyfn
+ * @returns {Map} The es6 map containing the keys.
+ */
+const group = curry('group', (seq, keyfn) => {
+  const cont = new Map();
+  each(seq, (elm) => setdefault(cont, keyfn(elm), []).push(elm));
+  return cont;
+});
+
+
+/**
  * Calculate the cartesian product of the given sequences.
  *
  * ```
@@ -1831,6 +1901,7 @@ module.exports = {
   take,
   takeWithFallback,
   takeWhile,
+  takeUntil,
   takeUntilVal,
   takeDef,
   flat,
@@ -1851,6 +1922,7 @@ module.exports = {
   chunkifyShort,
   chunkify,
   chunkifyWithFallback,
+  group,
   cartesian,
   cartesian2,
   mod,
