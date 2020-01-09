@@ -4,7 +4,7 @@
   "description": "Features from the rust language in javascript: Provides Traits/Type classes & an advanced library for working with sequences/iterators in js.",
   "main": "src/index.js",
   "scripts": {
-    "test": "nyc --reporter=text --reporter=lcov --check-coverage --branches 90 --statements 90 --lines 90 mocha --reporter mocha-multi-reporters --reporter-options configFile=.mochaReportersConfig.json test",
+    "test": "ferrum.doctest exec -s src --mdsrc README.md -c 'nyc --reporter=text --reporter=lcov --check-coverage --branches 90 --statements 90 --lines 90 mocha --reporter mocha-multi-reporters --reporter-options configFile=.mochaReportersConfig.json --require source-map-support/register -t 20000 \"$DOCTEST_FILE\" test'",
     "test-ci": "npm run test && codecov",
     "lint": "./node_modules/.bin/eslint src test",
     "semantic-release": "semantic-release",
@@ -44,6 +44,7 @@
     "eslint-plugin-import": "2.20.0",
     "eslint-plugin-jsx-a11y": "6.2.3",
     "eslint-plugin-react": "7.17.0",
+    "ferrum.doctest": "0.1.0",
     "jsdoc": "3.6.3",
     "junit-report-builder": "1.3.3",
     "lint-staged": "9.5.0",

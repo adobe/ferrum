@@ -44,7 +44,7 @@ Features from the Rust language in JavaScript: Provides [Traits](https://doc.rus
 <a name="usage-features"></a>
 ## Usage & Features
 
-```bash
+```bash,notest
 $ npm add ferrum
 ```
 
@@ -88,9 +88,10 @@ assertSequenceEquals(b, [88, 90]);
 
 const obj = {foo: 23, bar: 24};
 const log = [];
-for (const [key, value] in iter(obj)) {
+for (const [key, value] of iter(obj)) {
   log.push(`${key} | ${value}`);
 }
+
 assertEquals(log, [
   'foo | 23',
   'bar | 24',
@@ -135,6 +136,8 @@ Sometimes it can be useful to create an intermediate function with just a
 few arguments instead of calling the function right away:
 
 ```js
+const { map, plus, list, assertSequenceEquals } = require('ferrum');
+
 const myList = [
   [1,2,3],
   [4,5,6],
@@ -145,7 +148,7 @@ const myList = [
 // This example uses currying twice: in the `plus(2)`
 // and in the `map()`
 const a = map(myList, map(plus(2)));
-assertSequenceEquals(a, [
+assertSequenceEquals(map(a, list), [
   [3,4,5],
   [6,7,8],
   [9,10,11]
@@ -154,7 +157,7 @@ assertSequenceEquals(a, [
 // This is what the code would look like without currying:
 // A lot less convenient and harder to read
 const b = map(myList, (sublist) => map(sublist, (b) => plus(b, 2)));
-assertSequenceEquals(b, [
+assertSequenceEquals(map(b, list), [
   [3,4,5],
   [6,7,8],
   [9,10,11]
@@ -166,7 +169,7 @@ why we call it reverse currying. We have decided to use currying this way, becau
 be extra arguments after the function (otherwise you end up with dangling arguments multiple lines below)
 while the function is usually also the first parameter you want to supply when currying:
 
-```js
+```js,notest
 const {each} = require('ferrum');
 
 // This is much more handy
@@ -196,8 +199,10 @@ standard library in the form of the [`|>` operator](https://developer.mozilla.or
 
 ```js
 const {sqrt} = Math;
-const {pipe, filter, uniq, map, mul, mapSort, identity, pipe,
-       prepend, takeWhile, all, range} = require('ferrum');
+const {
+  pipe, filter, uniq, map, mul, mapSort, identity,
+  prepend, takeWhile, all, range, assertSequenceEquals,
+} = require('ferrum');
 
 const a = pipe(
   [5,1,6,7,10,11,1,3,4],
@@ -205,7 +210,7 @@ const a = pipe(
   uniq,                   // Get rid of duplicates
   map(mul(3)),            // Multiply each element by three
   mapSort(identity));     // Sort all numbers
-assertSequenceEquals(q, [3,9,12,15,18,21,30,33]);
+assertSequenceEquals(a, [3,9,15,21,33]);
 
 // Very simple primality test
 const isPrime = (v) => v > 1 && pipe(
@@ -330,7 +335,7 @@ This means that the values in iterators/sequences are only evaluated once they
 are needed:
 
 ```js
-const {map, plus} = require('ferrum');
+const {map, plus, list} = require('ferrum');
 const a = map([1,2,3], plus(2)); // At this point, no calculations have been performed
 const b = list(a); // This will actually cause the values of the a iterator to be calculated
 ```
@@ -342,13 +347,23 @@ sequences, like the `primes()` sequence above. It can be more efficient as well,
 values that are not needed are not computed.
 
 ```js
-const {take, list, assertEquals} = require('ferrum');
+const {take, list, assertSequenceEquals} = require('ferrum');
 
-// Even though primes() is infinite, this just works because only the
-// first five primes are actually calculated.
-// Note that just list(primes()) would crash the program since that would
+function* fibonacci() {
+  let a=0, b=1;
+  while (true) {
+    yield a;
+    yield b;
+    a += b;
+    b += a;
+  }
+}
+
+// Even though fibonacci() is infinite, this just works because only the
+// first five fibonacci numbers are actually generated
+// Note that just list(fibonacci()) would crash the program since that would
 // require infinite memory and infinite time
-assertEquals(list(take(5, primes())), [2, 3, 5, 7, 11]);
+assertSequenceEquals(take(fibonacci(), 5), [0, 1, 1, 2, 3]);
 ```
 
 Underscore and lodash use arrays instead of iterators, so they have no lazy evaluation support.
@@ -446,7 +461,8 @@ Object.prototype[Size] = () => {
 
 // Using symbols on values like null or undefined will just lead to a TypeError
 // being thrown
-null[Size] = () => 0;
+
+//null[Size] = () => 0; // throws TypeError
 ```
 
 The oldest pre-ES6 implementation just used method names; this strategy is very
@@ -478,7 +494,7 @@ Using traits we can actually encapsulate this relationship well:
 
 ```js
 // dbtable.js
-const { Trait } = require('ferrum');
+const { Trait, Size: SyncSize } = require('ferrum');
 const Size = new Trait('Size');
 
 class DbTable {
@@ -487,23 +503,13 @@ class DbTable {
   }
 };
 
-module.exports = {Size, DbTable};
-```
-
-```js
-// localtable.js
-const { Trait } = require('ferrum');
-const {Size: AsyncSize} = require('./dbtable.js')
-
-const Size = new Trait('Size');
-
 class MyLocalTable {
   [Size.sym]() {
     return this._payload.length;
   }
 }
 
-AsyncSize.implDerived([Size], ([size], v) => Promise.resolve(size(v)));
+Size.implDerived([SyncSize], ([size], v) => Promise.resolve(size(v)));
 ```
 
 This example above illustrates how – using traits – we can not only deal with
@@ -527,10 +533,10 @@ of traits at once.
 const {plus, and, not, is, xor, map, list} = require('ferrum');
 
 list(map([1,2,3], plus(2))); // => [3,4,5]
-and(True, False);  // => False
-not(1); // => False
-is(2, 2); // => True
-xor(True, False); // => True
+and(true, false);  // => false
+not(1); // => false
+is(2, 2); // => true
+xor(true, false); // => true
 ```
 
 <a name="typing-utilities"></a>
@@ -540,7 +546,7 @@ Ferrum provides utilities for working with types that can be safely
 used with null and undefined.
 
 ```js
-class {isdef, type, typename} = require('ferrum');
+const {isdef, type, typename} = require('ferrum');
 
 isdef(0); // => true
 isdef(null); // => false
@@ -607,20 +613,20 @@ pair(2)(1); // => [1,2]
 <a name="build"></a>
 ### Build
 
-```bash
+```bash,notest
 $ npm install
 ```
 
 <a name="test"></a>
 ### Test
 
-```bash
+```bash,notest
 $ npm test
 ```
 
 <a name="lint"></a>
 ### Lint
 
-```bash
+```bash,notest
 $ npm run lint
 ```

@@ -48,7 +48,8 @@ const {
  * In practice the `x*2` would be calculated immediately before the result is printed.
  *
  * ```
- * each(map(sequence, (x) => x*2), console.log)
+ * const { each, map } = require('ferrum');
+ * each(map([1,2,3], (x) => x*2), console.log);
  * ```
  *
  * A disadvantage of laziness is that side effects (e.g. a console.log inside a map())
@@ -60,8 +61,9 @@ const {
  * sequence.js functions also support passing functions as the last argument:
  *
  * ```
- * each(seq, (elm) => {
- *   doSomething(elm);
+ * const { each } = require('ferrum');
+ * each([1,2,3,4], (elm) => {
+ *   // doSomething(elm);
  *   console.log(elm);
  * });
  * ```
@@ -71,10 +73,14 @@ const {
  * grow long!
  *
  * ```
+ * const each = (fn, seq) => {
+ *   for (const val of seq) fn(val);
+ * };
+ *
  * each((elm) => {
- *   doSomething(elm);
+ *   // doSomething(elm);
  *   console.log(elm);
- * }, seq);
+ * }, [1,2,3,4]);
  * ```
  *
  * Some of the utilities in here can *mostly* be implemented with
@@ -87,9 +93,9 @@ const {
  *
  * # Iteration
  *
- * ```
- * > for (const v of {foo: 42, bar: 23}) console.log(v);
- * TypeError: {(intermediate value)(intermediate value)} is not iterable
+ * ```notest
+ * for (const v of {foo: 42, bar: 23}) console.log(v);
+ * // throws TypeError: {(intermediate value)(intermediate value)} is not iterable
  * ```
  *
  * Does not work because plain objects do not implement the iterator protocol.
@@ -97,35 +103,39 @@ const {
  * # Replace With
  *
  * ```
- * > each([1,2,3,4], console.log);
- * 1
- * 2
- * 3
- * 4
+ * const { each } = require('ferrum');
+ * each([1,2,3,4], console.log);
+ * // 1
+ * // 2
+ * // 3
+ * // 4
  * ```
  *
  * or
  *
  * ```
- * > each({foo: 42}, v => console.log(v));
- * [ 'foo', 42 ]
+ * const { each } = require('ferrum');
+ * each({foo: 42}, v => console.log(v));
+ * // [ 'foo', 42 ]
  * ```
  *
  * or the following if the full power of a for loop is really required..
  *
  * ```
+ * const { each, iter } = require('ferrum');
  * for (const v of iter({foo: 42})) console.log(v);
- *[ 'foo', 42 ]
+ * // [ 'foo', 42 ]
  * ```
  *
  * # Array.forEach
  *
  * ```
- * > [1,2,3,4].forEach(console.log)
- * 1 0 [ 1, 2, 3, 4 ]
- * 2 1 [ 1, 2, 3, 4 ]
- * 3 2 [ 1, 2, 3, 4 ]
- * 4 3 [ 1, 2, 3, 4 ]
+ * const { each } = require('ferrum');
+ * [1,2,3,4].forEach(console.log)
+ * // 1 0 [ 1, 2, 3, 4 ]
+ * // 2 1 [ 1, 2, 3, 4 ]
+ * // 3 2 [ 1, 2, 3, 4 ]
+ * // 4 3 [ 1, 2, 3, 4 ]
  * ```
  *
  * Unexpectedly yields a lot of output; that is because forEach also passes
@@ -136,19 +146,21 @@ const {
  * ## Replace With
  *
  * ```
- * > each([1,2,3,4], console.log);
- * 1
- * 2
- * 3
- * 4
+ * const { each } = require('ferrum');
+ * each([1,2,3,4], console.log);
+ * // 1
+ * // 2
+ * // 3
+ * // 4
  * ```
  *
  * If the index is really needed, `enumerate()` may be used:
  *
  * ```
+ * const { each, enumerate } = require('ferrum');
  * each(enumerate([42, 23]), console.log)
- * [ 0, 42 ]
- * [ 1, 23 ]
+ * // [ 0, 42 ]
+ * // [ 1, 23 ]
  * ```
  *
  * As a sidenote this also effortlessly fits the concept of a key/value
@@ -247,8 +259,11 @@ const repeat = (val) => repeatFn(() => val);
  * a non-infinite sequence.
  *
  * ```
+ * const { extend, takeUntilVal } = require('ferrum');
+ *
  * // Generate an infinite list of all positive integers
  * extend(0, x => x+1);
+ *
  * // Generate the range of integers [first; last[
  * const range = (first, last) =>
  *   takeUntilVal(extend(first, x => x+1), last);
@@ -297,6 +312,8 @@ const extend1 = curry('extend1', (init, fn) => trySkip(extend(init, fn), 1));
  * Use the following return values:
  *
  * ```
+ * const { flattenTree } = require('ferrum');
+ *
  * flattenTree((node, recurse) => {
  *   if (isEmptyLeaf()) {
  *     return [];
@@ -313,7 +330,6 @@ const extend1 = curry('extend1', (init, fn) => trySkip(extend(init, fn), 1));
  *   } else if (isLeafAndNode(node)) {
  *     return concat([node.value], recurse(node.childNodes));
  *   }
- *  }
  * });
  * ```
  *
@@ -339,8 +355,8 @@ class IteratorEnded extends Error {}
  * next(it); // => 1
  * next(it); // => 2
  * next(it); // => 3
- * next(it); // throws IteratorEnded
- * next(it); // throws IteratorEnded
+ * //next(it); // throws IteratorEnded
+ * //next(it); // throws IteratorEnded
  * ```
  *
  * @function
@@ -398,7 +414,7 @@ const tryNext = curry('tryNext', (seq, fallback) => {
  *
  * const fifth = nth(4);
  * fifth(it)  // => 'l'
- * nth(it, 10); // throws IteratorEnded
+ * //nth(it, 10); // throws IteratorEnded
  * ```
  *
  * @function
@@ -408,6 +424,7 @@ const tryNext = curry('tryNext', (seq, fallback) => {
  * @returns {Any}
  */
 const nth = curry('nth', (seq, idx) => next(skip(seq, idx)));
+
 /**
  * Extract the first element from the sequence; this is effectively
  * an alias for next();
@@ -416,7 +433,7 @@ const nth = curry('nth', (seq, idx) => next(skip(seq, idx)));
  * const {first} = require('ferrum');
  *
  * first([1,2]) // => 1
- * first([]); // throws IteratorEnded
+ * //first([]); // throws IteratorEnded
  * ```
  *
  * @function
@@ -425,6 +442,7 @@ const nth = curry('nth', (seq, idx) => next(skip(seq, idx)));
  * @returns {Any}
  */
 const first = (seq) => next(seq);
+
 /**
  * Extract the second element from the sequence
  *
@@ -432,7 +450,7 @@ const first = (seq) => next(seq);
  * const {second} = require('ferrum');
  *
  * second([1,2]) // => 2
- * second([1]); // throws IteratorEnded
+ * //second([1]); // throws IteratorEnded
  * ```
  *
  * @function
@@ -441,14 +459,15 @@ const first = (seq) => next(seq);
  * @returns {Any}
  */
 const second = (seq) => nth(seq, 1);
+
 /**
  * Extract the last element from the sequence
  *
  * ```
  * const {last} = require('ferrum');
  *
- * last([1,2,3,4,5]) // => 5
- * last([]); // throws IteratorEnded
+ * last([1,2,3,4,5]); // => 5
+ * //last([]); // throws IteratorEnded
  * ```
  *
  * @function
@@ -470,14 +489,14 @@ const last = (seq) => {
  * Extract the nth element from the sequence
  *
  * ```
- * const {iter, next, tryNth} = require('ferrum');
+ * const { iter, next, tryNth, nth } = require('ferrum');
  *
  * const it = iter('hello world');
  * tryNth(it, 3, null);  // => 'l'
  * next(it);    // => 'o'
  *
- * const fifth = nth(4, null);
- * fifth(it)  // => 'l'
+ * const fifth = tryNth(4, null);
+ * fifth(it);  // => 'l'
  * tryNth(it, 10, null); // => null
  * ```
  *
@@ -488,6 +507,7 @@ const last = (seq) => {
  * @returns {Any}
  */
 const tryNth = curry('tryNth', (seq, idx, fallback) => tryNext(trySkip(seq, idx), fallback));
+
 /**
  * Extract the first element from the sequence; this is effectively
  * an alias for tryNext();
@@ -508,6 +528,7 @@ const tryNth = curry('tryNth', (seq, idx, fallback) => tryNext(trySkip(seq, idx)
  * @returns {Any}
  */
 const tryFirst = curry('tryFirst', (seq, fallback) => tryNext(seq, fallback));
+
 /**
  * Extract the second element from the sequence
  *
@@ -527,6 +548,7 @@ const tryFirst = curry('tryFirst', (seq, fallback) => tryNext(seq, fallback));
  * @returns {Any}
  */
 const trySecond = curry('trySecond', (seq, fallback) => tryNth(seq, 1, fallback));
+
 /**
  * Extract the last element from the sequence
  *
@@ -590,11 +612,11 @@ const each = curry('each', (seq, fn) => {
  * const {find} = require('ferrum');
  *
  * find([1,2,3,4], v => v>2); // => 3
- * find([1,2,3,4], v => v>10); // throws IteratorEnded
+ * //find([1,2,3,4], v => v>10); // throws IteratorEnded
  *
  * const findEven = find(v => v % 2 === 0);
  * find([3,4,1,2]); // => 4
- * find([]); // throws IteratorEnded
+ * // find([]); // throws IteratorEnded
  * ```
  *
  * @function
@@ -653,6 +675,8 @@ const tryFind = curry('tryFind', (seq, fallback, fn) => tryNext(filter(seq, fn),
  * of a value should be tested for:
  *
  * ```
+ * const { tryFind, contains, is, not } = require('ferrum');
+ *
  * // The usual pattern checking whether a value is contained would be this:
  * tryFind([1,2,3,4], null, is(3)); // => 3 (truthy)
  * tryFind([1,2,4,5], null, is(3)); // => null (falsy)
@@ -693,7 +717,7 @@ const contains = curry('contains', (seq, fn) => {
  * Determine whether the items in two sequences are equal.
  *
  * ```
- * const {seqEq, eq} = require('ferrum');
+ * const { seqEq, eq, dict } = require('ferrum');
  *
  * seqEq([1,2,3,4], [1,2,3,4]); // => true
  * seqEq([1,2,3,4], [1,2,3]); // => false
@@ -718,7 +742,7 @@ const contains = curry('contains', (seq, fn) => {
  * seqEq(obj, obj); // UNDEFINED BEHAVIOUR; could be true or false
  *
  * // Same goes of course for es6 Maps created from objects
- * seqEq(dict(obj), dict(obj))); // => UNDEFINED BEHAVIOUR; could be true or false
+ * seqEq(dict(obj), dict(obj)); // => UNDEFINED BEHAVIOUR; could be true or false
  *
  * // Objects as elements inside the iterator are OK; elements are compared
  * // using eq() not seqEq()
@@ -912,6 +936,8 @@ const into = curry('into', (seq, t) => Into.invoke(t, seq));
  * Practical uses of into include converting between types; e.g:
  *
  * ```
+ * const { into } = require('ferrum');
+ *
  * into({foo:  42, bar: 23}, Map) // Map { 'foo' => 42, 'bar' }
  * into(["foo", " bar"], String) // "foo bar"
  * into([1,1,2,3,4,2], Set) // Set(1,2,3,4)
@@ -921,21 +947,25 @@ const into = curry('into', (seq, t) => Into.invoke(t, seq));
  * in this class:
  *
  * ```
+ * const { into, filter } = require('ferrum');
+ *
  * // Remove odd numbers from a set
  * const st = new Set([1,1,2,2,3,4,5]);
  * into(filter(st, n => n % 2 === 0), Set) // Set(2,4)
  *
  * // Remove a key/value pair from an object
  * const obj = {foo: 42, bar: 5};
- * into(filter(obj, ([k, v]) => k !== 'foo'), Obj)
+ * into(filter(obj, ([k, v]) => k !== 'foo'), Object)
  * // yields {bar: 5}
  * ```
  *
  * It can be even used for more complex use cases:
  *
  * ```
+ * const { concat, into } = require('ferrum');
+ *
  * // Merge multiple key/value containers into one sequence:
- * const seq = concat([[99, 42]], new Map(true, 23), {bar: 13});
+ * const seq = concat([[99, 42]], new Map([[true, 23]]), {bar: 13});
  * into(seq, Map) // Map( 99 => 42, true => 23, bar => 13 )
  * ```
  *
@@ -1043,7 +1073,8 @@ const product = (seq) => foldl(seq, 1, mul);
  * Lazily transform all the values in a sequence.
  *
  * ```
- * into(map([1,2,3,4], n => n*2), Array) // [2,4,6,8]
+ * const { into, map } = require('ferrum');
+ * into(map([1,2,3,4], n => n*2), Array); // [2,4,6,8]
  * ```
  *
  * @function
@@ -1061,7 +1092,8 @@ const map = curry('map', function* map(seq, fn) {
  * Remove values from the sequence based on the given condition.
  *
  * ```
- * filter(range(0,10), x => x%2 === 0) // [2,4,6,8]
+ * const { filter, range } = require('ferrum');
+ * filter(range(0,10), x => x%2 === 0); // [2,4,6,8]
  * ```
  *
  * @function
@@ -1290,6 +1322,7 @@ const takeDef = (seq) => takeWhile(seq, (v) => v !== null && v !== undefined);
  * This function is not recursive (it will just expand the second level into the first).
  *
  * ```
+ * const { into, flat } = require('ferrum');
  * into(flat([[1,2], [3,4]]), Array) // [1,2,3,4]
  * into(flat({foo: 42}), Array) // ["foo", 42]
  * ```
@@ -1471,7 +1504,7 @@ const zipLongest2 = curry('zipLongest2', (a, b, fallback) => zipLongest([a, b], 
  * Inserts an element between every two elements of the given sequence.
  *
  * ```
- * const { intersperse } = require('ferrum');
+ * const { intersperse, assertSequenceEquals } = require('ferrum');
  * assertSequenceEquals(
  *   intersperse('ABC', '|'),
  *   ['A', '|', 'B', '|', 'C']);
@@ -1571,6 +1604,7 @@ const trySlidingWindow = curry('trySlidingWindow', function* trySlidingWindow(se
  * length.
  *
  * ```
+ * const { lookahead } = require('ferrum');
  * lookahead([], 3, null) // => []
  * lookahead([42], 3, null) // => [[42, null, null, null]]
  * lookahead([42, 23], 3, null) // => [[42, 23, null, null], [23, null, null, null]]
@@ -1717,7 +1751,7 @@ const chunkifyWithFallback = curry('chunkifyWithFallback', (seq, len, fallback) 
  *    [22, [
  *      { foo: 42, bar: 22 },
  *      { foo: 13, bar: 22 }]],
- *    [42, [
+ *    [99, [
  *      { foo: 42, bar: 99 }]]
  *  ])
  * );
@@ -1747,7 +1781,7 @@ const group = curry('group', (seq, keyfn) => {
  * list(cartesian([[1,2], [3,4]])); // => [[1,3], [1, 4], [2, 3], [2, 4]]
  * list(cartesian([[1,2], [3,4], [5,6]]));
  * // => [[1,3,5], [1,3,6], [1,4,5], [1,4,6],
- *        [2,3,5], [2,3,6], [2,4,5], [2,4,6]]
+ * //     [2,3,5], [2,3,6], [2,4,5], [2,4,6]]
  * list(cartesian([[], [3,4], [5,6]])); // => []
  * ```
  *
@@ -1811,8 +1845,10 @@ const cartesian2 = curry('cartesian2', (a, b) => cartesian([a, b]));
  * of the given parameter.
  *
  * ```
+ * const assert = require('assert');
+ * const { mod, map, plus } = require('ferrum');
  * const s = new Set([1,2,3,4]);
- * const z = mod1(s, map(plus(1))); # => new Set([2,3,4,5]),
+ * const z = mod(s, map(plus(1))); // => new Set([2,3,4,5]),
  * assert(z.constructor === Set)
  * ```
  *

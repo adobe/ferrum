@@ -24,6 +24,7 @@ const {
  * This is a helper for declaring multiline strings.
  *
  * ```
+ * const { multiline } = require('ferrum');
  * const s = multiline(`
  *     Foo
  *     Bar

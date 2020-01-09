@@ -53,6 +53,7 @@ const _maybeURL = typeof URL !== 'undefined' ? [URL] : [];
  * Test whether instance of a given type is immutable.
  *
  * ```
+ * const { typeIsImmutable } = require('ferrum');
  * typeIsImmutable(Object); // => false
  * typeIsImmutable(String); // => true
  * ```
@@ -69,6 +70,7 @@ const typeIsImmutable = (t) => supports(t, Immutable);
  * Test whether a given value is immutable.
  *
  * ```
+ * const { isImmutable } = require('ferrum');
  * isImmutable({}); // => false
  * isImmutable(42); // => true
  * ```
@@ -142,6 +144,7 @@ const Immutable = new Trait('Immutable');
  * Determine whether two values are equal using the Equals trait.
  *
  * ```
+ * const { eq } = require('ferrum');
  * eq([{foo: 42}], [{foo: 42}]); // => true
  * eq(1, 2); // => false
  * ```
@@ -181,7 +184,8 @@ const eq = curry('eq', (a, b) => {
  * Equivalent to `!eq(a, b)`
  *
  * ```
- * uneq(4, 5); # => true
+ * const { uneq } = require('ferrum');
+ * uneq(4, 5); // => true
  * ```
  *
  * # Version history
@@ -202,8 +206,9 @@ const uneq = curry('uneq', (a, b) => !eq(a, b));
  * Assert that `eq(actual, expected)`
  *
  * ```
+ * const { assertEquals } = require('ferrum');
  * assertEquals([{foo: 42}], [{foo: 42}]); // OK!
- * assertEquals(1, 2); // AssertionError!
+ * //assertEquals(1, 2); // AssertionError!
  * ```
  *
  * # Version history
@@ -239,8 +244,9 @@ const assertEquals = (actual, expected, msg) => {
  * Assert that `!eq(actual, expected)`
  *
  * ```
+ * const { assertUneq } = require('ferrum');
  * assertUneq(1, 2); // OK!
- * assertUneq([{foo: 42}], [{foo: 42}]); // AssertionError!
+ * //assertUneq([{foo: 42}], [{foo: 42}]); // AssertionError!
  * ```
  *
  * # Version history
@@ -276,7 +282,7 @@ const assertUneq = (actual, notExpected, msg) => {
  * Trait to check whether two values are equal.a
  *
  * ```
- * const {equals, eq, uneq, assertEquals, assertUneq} = require('ferrum');
+ * const { Equals, equals, eq, uneq, assertEquals, assertUneq } = require('ferrum');
  *
  * // Implementing this type
  * class Bar {
@@ -294,7 +300,7 @@ const assertUneq = (actual, notExpected, msg) => {
  *
  * // Or alternatively
  * Equals.impl(Bar, (a, b) => {
- *   ...
+ *   // ...
  * });
  *
  * // Test for equality
@@ -305,10 +311,10 @@ const assertUneq = (actual, notExpected, msg) => {
  * uneq(4, 4); // => false
  *
  * assertEquals({}, {}, 'Values where different!'); // OK!
- * assertEquals({}, {foo: 42}, 'Values where different!'); // Assertion Error!
+ * //assertEquals({}, {foo: 42}, 'Values where different!'); // Assertion Error!
  *
  * assertUneq([], [{}], 'Values where the same'); // OK!
- * assertUneq([], [], 'Values where the same'); // Assertion Error!
+ * //assertUneq([], [], 'Values where the same'); // Assertion Error!
  * ```
  *
  * Normally this trait should not be used directly; consider using
@@ -337,12 +343,14 @@ const assertUneq = (actual, notExpected, msg) => {
  * I suggest using the same code for both implementations: Consider the following
  * contrive examples:
  *
- * ```
+ * ```notest
+ * const { Equals, type } = require('ferrum');
+ *
  * Equals.impl(Number, (a, b) =>
- *   type(b) === (String || type(b) === Number)
+ *   (type(b) === String || type(b) === Number)
  *   && a.toString() === b.toString());
  * Equals.impl(String, (a, b) =>
- *   type(b) === (String || type(b) === Number)
+ *   (type(b) === String || type(b) === Number)
  *   && a.toString() === b.toString());
  * ```
  *
@@ -397,6 +405,7 @@ Equals.impl(Number, (a, b) => a === b || (Number.isNaN(a) && Number.isNaN(b)));
  * Determine the size of a container. Uses the Size trait.
  *
  * ```
+ * const { size } = require('ferrum');
  * size({foo: 42}); // => 1
  * size([1,2,3]); // => 3
  * ```
@@ -416,6 +425,7 @@ const size = (what) => Size.invoke(what);
  * Determine if a container is empty. Uses `size(x) === 0`a
  *
  * ```
+ * const { empty } = require('ferrum');
  * empty([]); // => true
  * empty({}); // => true
  * empty("asd"); // => false
@@ -437,6 +447,8 @@ const empty = (what) => size(what) === 0;
  * Trait to determine the size of a container.
  *
  * ```
+ * const { Size, size, empty } = require('ferrum');
+ *
  * // Implementing size
  * class Foo {
  *   constructor(len) {
@@ -496,6 +508,7 @@ Size.impl(Object, (x) => {
  * Shallowly clone an object
  *
  * ```
+ * const { shallowclone } = require('ferrum');
  * const a = {foo: []};
  * const b = shallowclone(a);
  * b.foo.push(42);
@@ -520,7 +533,8 @@ const shallowclone = (a) => Shallowclone.invoke(a);
  * Shallowly clone an object.
  *
  * ```
- * const {Shallowclone, shallowclone} = require('ferrum');
+ * const assert = require('assert');
+ * const { Shallowclone, shallowclone, assertEquals, Equals, eq } = require('ferrum');
  *
  * class Bar {
  *   constructor(foo, bang) {
@@ -529,7 +543,11 @@ const shallowclone = (a) => Shallowclone.invoke(a);
  *   }
  *
  *   [Shallowclone.sym]() {
- *     return new Bar(this.foo, this.bar);
+ *     return new Bar(this.foo, this.bang);
+ *   }
+ *
+ *   [Equals.sym](otr) {
+ *     return eq(this.foo, otr.foo) && eq(this.bar, otr.bar);
  *   }
  * }
  *
@@ -540,7 +558,7 @@ const shallowclone = (a) => Shallowclone.invoke(a);
  * assertEquals(a, b);
  *
  * a.foo.foo = 5;
- * assert(b.foo.foo === 5);
+ * assert.strictEqual(b.foo.foo, 5);
  * ```
  *
  * # Interface
@@ -583,6 +601,8 @@ Shallowclone.implDerived([Immutable], ([_], v) => v);
  * Recursively clone an object
  *
  * ```
+ * const { deepclone } = require('ferrum');
+ *
  * const a = {foo: []};
  * const b = deepclone(a);
  * b.foo.push(42);
@@ -607,7 +627,8 @@ const deepclone = (x) => Deepclone.invoke(x);
  * Recursively clone an object.
  *
  * ```
- * const {Deepclone, deepclone} = require('ferrum');
+ * const assert = require('assert');
+ * const { Deepclone, deepclone, Equals, eq, assertEquals } = require('ferrum');
  *
  * class Bar {
  *   constructor(foo, bang) {
@@ -616,7 +637,11 @@ const deepclone = (x) => Deepclone.invoke(x);
  *   }
  *
  *   [Deepclone.sym]() {
- *     return new Bar(deepclone(this.foo), deepclone(this.bar));
+ *     return new Bar(deepclone(this.foo), deepclone(this.bang));
+ *   }
+ *
+ *   [Equals.sym](otr) {
+ *     return eq(this.foo, otr.foo) && eq(this.bar, otr.bar);
  *   }
  * }
  *
@@ -691,10 +716,10 @@ Deepclone.implDerived([Immutable], ([_], v) => v);
  * any iterators and will actually support lists of key value pairs.
  *
  * ```
- * const {list, pairs} = require('ferrum');
+ * const { list, pairs } = require('ferrum');
  *
  * list(pairs(['a', 'b'])); // => [[0, 'a'], [1, 'b']]
- * list(pairs(new Set[1, 2])); // => [[1, 1], [2, 2]]
+ * list(pairs(new Set([1, 2]))); // => [[1, 1], [2, 2]]
  * list(pairs({foo: 42})); // [['foo', 42]]
  * ```
  *
@@ -716,7 +741,7 @@ const pairs = (x) => Pairs.invoke(x);
  * const {list, keys} = require('ferrum');
  *
  * list(keys(['a', 'b'])); // => [0, 1]
- * list(keys(new Set[1, 2])); // => [1, 2]
+ * list(keys(new Set([1, 2]))); // => [1, 2]
  * list(keys({foo: 42})); // ['foo']
  * ```
  *
@@ -741,7 +766,7 @@ const keys = function* keys(x) {
  * const {list, values} = require('ferrum');
  *
  * list(values(['a', 'b'])); // => ['a', 'b']
- * list(values(new Set[1, 2])); // => [1, 2]
+ * list(values(new Set([1, 2]))); // => [1, 2]
  * list(values({foo: 42})); // [42]
  * ```
  *
@@ -764,7 +789,8 @@ const values = function* values(x) {
  * Get an iterator over a container.
  *
  * ```
- * const {list, values, keys, pairs, Pairs} = require('ferrum');
+ * const { list, values, keys, pairs, Pairs } = require('ferrum');
+ *
  * class Bar {
  *   *[Pairs.sym]() {
  *     yield ['foo', 42];
@@ -772,9 +798,9 @@ const values = function* values(x) {
  *   }
  * }
  *
- * list(pairs(new Bar()); // => [['foo', 42], ['bar', 5]]
- * list(keys(new Bar()); // => ['foo', 'bar']
- * list(values(new Bar()); // => [42, 5]
+ * list(pairs(new Bar())); // => [['foo', 42], ['bar', 5]]
+ * list(keys(new Bar())); // => ['foo', 'bar']
+ * list(values(new Bar())); // => [42, 5]
  * ```
  *
  * This is different from the `Sequence` trait in `sequence.js`

@@ -189,6 +189,7 @@ const xnor = curry('xnor', (a, b) => Boolean(a) === Boolean(b));
  * `===` as a function
  *
  * ```
+ * const assert = require('assert');
  * const {is, count, filter, pipe} = require('ferrum');
  *
  * is(42, 42) // => true
@@ -203,9 +204,8 @@ const xnor = curry('xnor', (a, b) => Boolean(a) === Boolean(b));
  * const cnt = pipe(
  *   [42, 23, 1, 4, 17, 22, 42],
  *   filter(is(42)),
- *   count
- * );
- * assert(cnt == 42);
+ *   count);
+ * assert.strictEqual(cnt, 2);
  * ```
  *
  * @function
@@ -235,8 +235,7 @@ const is = curry('is', (a, b) => a === b);
  * pipe(
  *   [1,2,3,4,42,5,24],
  *   filter(aint(42)),
- *   list;
- * )
+ *   list);
  * // => [1,2,3,4,5]
  * ```
  *
@@ -288,20 +287,19 @@ const plus = curry('plus', (a, b) => a + b);
  * The `*` operator as a function:
  *
  * ```
- * const {mul, list, map, pipe} = require('ferrum');
+ * const { mul, list, map, pipe, plus } = require('ferrum');
  *
- * mul(3, 4) // => 12
- * mul(3, 1/10) // => -1; Can also be used for s
+ * mul(3, 4); // => 12
+ * mul(3, 1/10); // => -1; Can also be used for s
  *
- * plus(3)(4) // => 7
- * plus(3)(-4) // => -1; Can also be used for subtraction
+ * plus(3)(4); // => 7
+ * plus(3)(-4); // => -1; Can also be used for subtraction
  *
  * // Divide each element in the list by ten
  * pipe(
  *   [1,2,3,4,5],
- *   map(div(1/10)),
- *   list
- * );
+ *   map(mul(1/10)),
+ *   list);
  * // [0.1, 0.2, 0.3, 0.4, 0.5]
  * ```
  *

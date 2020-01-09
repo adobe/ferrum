@@ -29,7 +29,7 @@
  * }
  *
  * // Can be rewritten as
- * const r = exec(() => {
+ * const q = exec(() => {
  *   let x = 42, y = 5;
  *   return  x + y;
  * });
@@ -41,10 +41,10 @@ const exec = (fn) => fn();
  * Just a function that returns it's argument!
  *
  * ```
- * const {identity, list, filter} = require('ferrum');
+ * const {identity, list, filter, pipe} = require('ferrum');
  *
- * identity(null) # => null
- * identity(42) # => 42
+ * identity(null); // => null
+ * identity(42); // => 42
  *
  * // Identity is sometimes useful in higher order functions like
  * // filter(); this example for instance removes all values from
@@ -63,6 +63,8 @@ const identity = (a) => a;
  * Pipeline a value through multiple function calls.
  *
  * ```
+ * const { pipe, filter, uniq, map, plus, identity } = require('ferrum');
+ *
  * // Sometimes you get very nested function invocations:
  *
  * pipe(
@@ -130,15 +132,17 @@ const withFunctionName = (name, fn) => {
  * in the suffix position when using no curring:
  *
  * ```
+ * const { map } = require('ferrum');
+ *
  * const toNumber = (seq) => map(seq, n => Number(n));
  *
  * // is the same as
  *
- * const toNumber = map(n => Number(n))
+ * const toNumber2 = map(n => Number(n));
  *
  * // or even
  *
- * const toNumber = map(Number);
+ * const toNumber3 = map(Number);
  * ```
  *
  * Note how in the second version we specified the last parameter
@@ -147,15 +151,17 @@ const withFunctionName = (name, fn) => {
  * Reverse order only applies in separate invocations:
  *
  * ```
+ * const { foldl, plus } = require('ferrum');
+ *
  * const sum = (seq) => foldl(seq, 0, (a, b) => a+b);
  *
  * // is the same as
  *
- * const sum = foldl(0, (a, b) => a+b);
+ * const sum2 = foldl(0, (a, b) => a+b);
  *
  * // or even
  *
- * concat = sum = foldl(0, plus);
+ * const sum3 = foldl(0, plus);
  * ```
  *
  * Note how in version two, we specify the parameters in order 2, 3, and then 1:
