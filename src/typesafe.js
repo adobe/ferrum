@@ -23,10 +23,10 @@ const { curry } = require('./functional');
  * ```
  * const {isdef} = require('ferrum');
  *
- * isdef(null) # => false
- * isdef(undefined) # => false
- * isdef(0) # => true
- * isdef(false) # => true
+ * isdef(null); // => false
+ * isdef(undefined); // => false
+ * isdef(0); // => true
+ * isdef(false); // => true
  * ```
  *
  * This function considers all values that are not null
@@ -46,7 +46,7 @@ const isdef = (v) => v !== undefined && v !== null;
  * This basically implements Optional semantics using null/undefined.
  *
  * ```
- * const {plus, pipe, isdef, ifdef} = require('ferrum');
+ * const { plus, pipe, isdef, ifdef, map, list } = require('ferrum');
  *
  * const o = {
  *   foo: 42
@@ -58,7 +58,7 @@ const isdef = (v) => v !== undefined && v !== null;
  * // This is particularly useful for map or curry
  * pipe(
  *   [1,2,null,3],
- *   map(ifdef(x => x*3))
+ *   map(ifdef(x => x*3)),
  *   list);
  * // yields [3,6,null,9]
  *
@@ -66,7 +66,7 @@ const isdef = (v) => v !== undefined && v !== null;
  * // which is a bit harder to read
  * pipe(
  *   [1,2,null,3],
- *   map(x => isdef(x) ? x : x*3)
+ *   map(x => isdef(x) ? x : x*3),
  *   list);
  * ```
  *
@@ -81,21 +81,21 @@ const ifdef = curry('ifdef', (v, fn) => (isdef(v) ? fn(v) : v));
  * Determine type of an object.
  *
  * ```
- * const {type} = require('ferrum');a
+ * const { type } = require('ferrum');
  *
  * class Bar {};
  *
- * type(null) # => null
- * type(undefined) # => undefined
- * type(42) # => Number
- * type(new Number(42)) # => Number
- * type(new Bar()) # => Bar
+ * type(null); // => null
+ * type(undefined); // => undefined
+ * type(42); // => Number
+ * type(new Number(42)); // => Number
+ * type(new Bar()); // => Bar
  *
  * // The usual strategy to get the type is this
  * new Bar().constructor
  *
  * // Which fails for null and undefined...
- * null.constructor
+ * //null.constructor
  * // Thrown:
  * // TypeError: Cannot read property 'constructor' of null
  * ```
@@ -120,17 +120,17 @@ const type = (v) => (isdef(v) ? v.constructor : v);
  *
  * class Bar {};
  *
- * typename(type(null)) # => "null"
- * typename(type(undefined)) # => "undefined"
- * typename(type(42)) # => "Number"
- * typename(Bar) # => "Bar"
+ * typename(type(null)); // => "null"
+ * typename(type(undefined)); // => "undefined"
+ * typename(type(42)); // => "Number"
+ * typename(Bar); // => "Bar"
  *
  * // The usual strategy to get the name of a value's type is this
  * new Bar().constructor.name
  *
  * // But this obviously fails for null & undefined
- * null.constructor.name
- * null.name // still throws
+ * //null.constructor.name
+ * //null.name // still throws
  * ```
  *
  * This is useful as a replacement for val.constructor.name,
@@ -148,11 +148,11 @@ const typename = (t) => (isdef(t) ? t.name : `${t}`);
  * ```
  * const {isPrimitive} = require('ferrum');
  *
- * isPrimitive(null) # => true
- * isPrimitive(undefined) # => true
- * isPrimitive(42) # => true
- * isPrimitive({}) # => false
- * isPrimitive(new Number(42)) # => false
+ * isPrimitive(null); // => true
+ * isPrimitive(undefined); // => true
+ * isPrimitive(42); // => true
+ * isPrimitive({}); // => false
+ * isPrimitive(new Number(42)); // => false
  * ```
  *
  * @function

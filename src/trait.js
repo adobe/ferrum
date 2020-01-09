@@ -25,7 +25,7 @@ const {
  * Drop-in replacement for WeakMap that can store primitives.
  *
  * ```
- * new
+ * const { HybridWeakMap } = require('ferrum');
  * const m = new HybridWeakMap([['foo', 42], ]);
  * ```
  *
@@ -81,6 +81,8 @@ class TraitNotImplemented extends Error {}
  * Helper for implementing generic functions/protocols.
  *
  * ```
+ * const { Trait } = require('ferrum');
+ *
  * // Declaring a trait
  * const Size = new Trait('Size');
  *
@@ -113,7 +115,7 @@ class TraitNotImplemented extends Error {}
  *
  * // This implementation will be used if the underlying type/value
  * // implements the magnitude trait
- * Size.implDerived([Magnitude], ([magnitude], v) => magnitude(v));
+ * //Size.implDerived([Magnitude], ([magnitude], v) => magnitude(v));
  *
  * // This will be called as a last resort, so this must be very fast!
  * // This example would implement the `size` trait for any even number.
@@ -135,12 +137,12 @@ class TraitNotImplemented extends Error {}
  *
  *
  * // Using all the implementations
- * size([1,2,3]) # => 3
- * size({foo: 42}) # => 1
- * size(new Set([1,2,3])) # => 3
- * size(new MyType()) # => 42
- * size(null) # => 0
- * size(document.body) # => 1
+ * size([1,2,3]); // => 3
+ * size({foo: 42}); // => 1
+ * size(new Set([1,2,3])); // => 3
+ * size(new MyType()); // => 42
+ * size(null); // => 0
+ * //size(document.body); // => 1
  * ```
  *
  * # Traits, an introduction: Very specific interfaces that let you choose your guarantees
