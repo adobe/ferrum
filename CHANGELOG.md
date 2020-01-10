@@ -1,3 +1,10 @@
+# [1.6.0](https://github.com/adobe/ferrum/compare/v1.5.0...v1.6.0) (2020-01-10)
+
+
+### Features
+
+* mutate(), apply() ([d4e3a7a](https://github.com/adobe/ferrum/commit/d4e3a7a750afe58696097b5f75117c555291d01b))
+
 # [1.5.0](https://github.com/adobe/ferrum/compare/v1.4.1...v1.5.0) (2019-12-23)
 
 
