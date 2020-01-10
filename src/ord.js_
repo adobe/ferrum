@@ -1,0 +1,36 @@
+const ord = (a, b, custom = (x, y, ord_) => ord_(x, y)) =>
+  custom(a, b, _ordImpl(custom));
+
+const _ordImpl = (custom) => (a, b) => {
+  // This is a law: if a === b then ord(a, b) must be 0
+  if (a === b) {
+    return 0;
+  }
+
+  // Compare based on type
+  const v = ord(type(a), type(b));
+  if (v !== 0) {
+    return v;
+  }
+
+  // Try the trait
+  const main = Ord.lookupValue(a);
+  if (main) {
+    return main(a, b, custom);
+  }
+
+  const alt = Equals.lookupValue(b);
+  if (alt) {
+    return alt(b, a, custom);
+  }
+
+  // As a last resort, compare as strings
+  return String(a).localeCompare(b);
+};
+
+const Ord = Trait('Ord');
+Ord.impl(Number, (a, b) => a < b ? -1 : (a > b ? +1 : 0));
+Ord.impl(String, (a, b) => a.localeCompare(b));
+Ord.impl(Date, (a, b) => ord(a.getTime(), b.getTime()));
+Ord.impl(RegExp, (a, b) => ord(a.source, b.source));
+Ord.impl(..._maybeURL, (a, b) => ord(String(a), String(b)));
