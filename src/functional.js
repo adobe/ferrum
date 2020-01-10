@@ -175,6 +175,11 @@ curry.impl = (name, fn, arity, got) => withFunctionName(`${name} [CURRY]`, (...a
   }
 });
 
+const apply = curry('apply', (args, fn) => fn(...args));
+
+/* eslint-disable-next-line */ // (using the comma operator here)
+const mutate = curry('mutate', (v, fn) => (fn(v), v));
+
 module.exports = {
-  exec, identity, pipe, compose, withFunctionName, curry,
+  exec, identity, pipe, compose, withFunctionName, curry, apply, mutate,
 };
