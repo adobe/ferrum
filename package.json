@@ -4,7 +4,7 @@
   "description": "Features from the rust language in javascript: Provides Traits/Type classes & an advanced library for working with sequences/iterators in js.",
   "main": "src/index.js",
   "scripts": {
-    "test": "nyc --reporter=text --reporter=lcov --check-coverage --branches 90 --statements 90 --lines 90 mocha --reporter xunit --reporter-options output=./junit/test-results.xml test src",
+    "test": "nyc --reporter=text --reporter=lcov --check-coverage --branches 90 --statements 90 --lines 90 mocha --reporter mocha-multi-reporters --reporter-options configFile=.mochaReportersConfig.json test",
     "test-ci": "npm run test && codecov",
     "lint": "./node_modules/.bin/eslint src test",
     "semantic-release": "semantic-release",
@@ -49,6 +49,7 @@
     "lint-staged": "9.5.0",
     "mocha": "7.0.0",
     "mocha-junit-reporter": "1.23.2",
+    "mocha-multi-reporters": "^1.1.7",
     "mocha-parallel-tests": "2.2.2",
     "nyc": "15.0.0",
     "semantic-release": "16.0.1",
