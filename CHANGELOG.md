@@ -1,3 +1,15 @@
+# [1.7.0](https://github.com/adobe/ferrum/compare/v1.6.0...v1.7.0) (2020-01-17)
+
+
+### Bug Fixes
+
+* Add missing export for Pairs ([492c02c](https://github.com/adobe/ferrum/commit/492c02c7e1dea16e924ab04bf64d78f1c15e902f))
+
+
+### Features
+
+* Use ferrum.doctest to make sure examples are valid js code ([b0f9d45](https://github.com/adobe/ferrum/commit/b0f9d4569b4439ffb94c6b3f7a00bf2d6b0ab78a))
+
 # [1.6.0](https://github.com/adobe/ferrum/compare/v1.5.0...v1.6.0) (2020-01-10)
 
 
