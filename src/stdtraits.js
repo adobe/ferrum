@@ -1066,6 +1066,7 @@ module.exports = {
   Shallowclone,
   deepclone,
   Deepclone,
+  Pairs,
   pairs,
   keys,
   values,
