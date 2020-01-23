@@ -15,18 +15,16 @@
 
 const assert = require('assert');
 const {
-  and, plus, or, mul, not, curry,
-  size, TraitNotImplemented, _typedArrays,
-  iter, range, range0, repeat, repeatFn, extend, extend1, flattenTree,
-  IteratorEnded, next, tryNext, nth, first, second, last, tryNth, tryFirst,
-  trySecond, tryLast, seqEq, each, find, tryFind, contains, count, list,
-  uniq, join, dict, obj, into, foldl, foldr, any, all, sum, product, map,
-  filter, reject, reverse, enumerate, trySkip, skip, skipWhile, tryTake,
-  takeShort, takeWithFallback, chunkifyShort, chunkify, chunkifyWithFallback,
-  take, takeWhile, takeUntilVal, takeDef, flat, concat, prepend, append,
-  mapSort, zipLeast, zip, zipLongest, zipLeast2, zip2, zipLongest2,
-  slidingWindow, trySlidingWindow, lookahead, mod, union, union2,
-  cartesian, cartesian2, intersperse,
+  and, plus, or, mul, not, curry, size, TraitNotImplemented, _typedArrays,
+  iter, range0, extend, extend1, flattenTree, IteratorEnded, next, tryNext,
+  nth, first, second, last, tryNth, tryFirst, trySecond, tryLast, seqEq, each,
+  find, tryFind, contains, count, list, uniq, join, dict, obj, into, foldl,
+  foldr, any, all, sum, product, map, filter, reject, reverse, enumerate,
+  trySkip, skip, skipWhile, tryTake, takeShort, takeWithFallback,
+  chunkifyShort, chunkify, chunkifyWithFallback, take, takeWhile, takeUntilVal,
+  takeDef, flat, concat, prepend, append, mapSort, zipLeast, zip, zipLongest,
+  zipLeast2, zip2, zipLongest2, slidingWindow, trySlidingWindow, lookahead,
+  mod, union, union2, cartesian, cartesian2, intersperse,
 } = require('../src/index');
 const { ckEq, ckEqSeq, ckThrows } = require('./util');
 
@@ -99,26 +97,6 @@ it('enumerate()', () => {
     Array.from(enumerate('abc')),
     [[0, 'a'], [1, 'b'], [2, 'c']],
   );
-});
-
-it('range(), range0()', () => {
-  const ck = (a, b, l) => ckEq(list(range(a, b)), list(l));
-  ck(0, 5, [0, 1, 2, 3, 4]);
-  ck(0, -1, []);
-  ck(0, 0, []);
-  ck(7, 9, [7, 8]);
-  ckEq(list(range0(4)), [0, 1, 2, 3]);
-});
-
-it('repeat()', () => {
-  ckEqSeq(tryTake(repeat(2), 4), [2, 2, 2, 2]);
-
-  let x = 0;
-  const fn = () => {
-    x += 1;
-    return x;
-  };
-  ckEqSeq(tryTake(repeatFn(fn), 4), [1, 2, 3, 4]);
 });
 
 it('extend(), extend1()', () => {

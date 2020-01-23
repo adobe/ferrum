@@ -14,28 +14,12 @@
 /* global describe, it */
 const assert = require('assert');
 const {
-  compose, _typedArrays, type, HybridWeakMap, TraitNotImplemented,
-  typeIsImmutable, isImmutable, assertUneq, size, empty, Size,
-  shallowclone, deepclone, pairs, keys, values, get, has, assign, del,
-  setdefault, replace, each, dict, uniq, range0, map, all, first, takeDef, zip,
-  count, extend,
+  compose, _typedArrays, type, HybridWeakMap, TraitNotImplemented, assertUneq,
+  size, empty, Size, shallowclone, deepclone, pairs, keys, values, get, has,
+  assign, del, each, dict, uniq, range0, map, all, first, takeDef, zip, count,
+  extend,
 } = require('../src/index');
 const { ckEq, ckEqSeq, ckThrows } = require('./util');
-
-it('Immutable', () => {
-  each([String, Number, Symbol, undefined, RegExp, Function], (Typ) => {
-    assert(typeIsImmutable(Typ));
-  });
-  each([Object, Map], (Typ) => {
-    assert(!typeIsImmutable(Typ));
-  });
-  each(['asd', null, undefined, 2, Symbol('')], (Typ) => {
-    assert(isImmutable(Typ));
-  });
-  each([{}, new Set()], (Typ) => {
-    assert(!isImmutable(Typ));
-  });
-});
 
 it('size(), empty(), count()', () => {
   const ck = (arg, expect) => {
@@ -267,46 +251,9 @@ it('Deepclone', () => {
   });
 });
 
-it('Pairs', () => {
-  const ar = ['a', 's', 'd', 'f'];
-  ar[5] = 'x';
-  const s = Symbol('foo');
-  ckEqSeq(pairs(ar), [[0, 'a'], [1, 's'], [2, 'd'], [3, 'f'], [4, undefined], [5, 'x']]);
-  ckEqSeq(pairs('asdf'), [[0, 'a'], [1, 's'], [2, 'd'], [3, 'f']]);
-  ckEqSeq(pairs(new Set(['foo'])), [['foo', 'foo']]);
-  ckEqSeq(pairs({ hello: 'world', [s]: 'bar' }), [['hello', 'world'], [s, 'bar']]);
-  ckEqSeq(pairs(dict({ hello: 'world', [s]: 'bar' })), [['hello', 'world'], [s, 'bar']]);
-
+it('pairs() with typed arrays', () => {
   each(_typedArrays, (Typ) => {
     ckEqSeq(pairs(new Typ([42, 23])), [[0, 42], [1, 23]]);
-  });
-});
-
-it('keys', () => {
-  const ar = ['a', 's', 'd', 'f'];
-  ar[5] = 'x';
-  const s = Symbol('foo');
-  ckEqSeq(keys(ar), [0, 1, 2, 3, 4, 5]);
-  ckEqSeq(keys('asdf'), [0, 1, 2, 3]);
-  ckEqSeq(keys(new Set(['foo'])), ['foo']);
-  ckEqSeq(keys({ hello: 'world', [s]: 'bar' }), ['hello', s]);
-  ckEqSeq(keys(dict({ hello: 'world', [s]: 'bar' })), ['hello', s]);
-  each(_typedArrays, (Typ) => {
-    ckEqSeq(keys(new Typ([42, 23])), [0, 1]);
-  });
-});
-
-it('values', () => {
-  const ar = ['a', 's', 'd', 'f'];
-  ar[5] = 'x';
-  const s = Symbol('foo');
-  ckEqSeq(values(ar), ['a', 's', 'd', 'f', undefined, 'x']);
-  ckEqSeq(values('asdf'), ['a', 's', 'd', 'f']);
-  ckEqSeq(values(new Set(['foo'])), ['foo']);
-  ckEqSeq(values({ hello: 'world', [s]: 'bar' }), ['world', 'bar']);
-  ckEqSeq(values(dict({ hello: 'world', [s]: 'bar' })), ['world', 'bar']);
-  each(_typedArrays, (Typ) => {
-    ckEqSeq(values(new Typ([42, 23])), [42, 23]);
   });
 });
 
@@ -444,46 +391,4 @@ it('Del', () => {
 
   ck(se, 'foo');
   ckEq(se, uniq(['bar']));
-});
-
-it('Setdefault', () => {
-  const sy = Symbol('foo');
-  const o = { foo: 42 };
-  const m = new Map([['foo', 42]]);
-  const a = ['foo', 'bar', 42];
-
-  ckEq(setdefault(o, 'foo', 23), 42);
-  ckEq(setdefault(o, 'bar', 99), 99);
-  ckEq(setdefault(o, sy, 100), 100);
-  ckEq(setdefault(o, sy, 200), 100);
-  ckEq(o, { foo: 42, bar: 99, [sy]: 100 });
-
-  ckEq(setdefault(m, 'foo', 23), 42);
-  ckEq(setdefault(m, 'bar', 99), 99);
-  ckEq(m, dict({ foo: 42, bar: 99 }));
-
-  ckEq(setdefault(a, 2, 23), 42);
-  ckEq(setdefault(a, 4, 99), 99);
-  ckEq(a, ['foo', 'bar', 42, undefined, 99]);
-});
-
-it('Replace', () => {
-  const sy = Symbol('foo');
-  const o = { foo: 42 };
-  const m = new Map([['foo', 42]]);
-  const a = ['foo', 'bar', 42];
-
-  ckEq(replace(o, 'foo', 23), 42);
-  ckEq(replace(o, 'bar', 99), undefined);
-  ckEq(replace(o, sy, 100), undefined);
-  ckEq(replace(o, sy, 200), 100);
-  ckEq(o, { foo: 23, bar: 99, [sy]: 200 });
-
-  ckEq(replace(m, 'foo', 23), 42);
-  ckEq(replace(m, 'bar', 99), undefined);
-  ckEq(m, dict({ foo: 23, bar: 99 }));
-
-  ckEq(replace(a, 2, 23), 42);
-  ckEq(replace(a, 4, 99), undefined);
-  ckEq(a, ['foo', 'bar', 23, undefined, 99]);
 });
