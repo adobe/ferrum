@@ -170,19 +170,17 @@ be extra arguments after the function (otherwise you end up with dangling argume
 while the function is usually also the first parameter you want to supply when currying:
 
 ```js,notest
-const {each} = require('ferrum');
-
-// This is much more handy
-each([1,2,3], () => {
-  ...
-});
-
 // This is not very handy because you might need to scroll down to find the last
 // argument; you will also need to scroll down to determine whether the call to
 // each is using currying
 each(() => {
   ...
 }, [1,2,3]);
+
+// This is much more handy
+each([1,2,3], () => {
+  ...
+});
 ```
 
 Underscore.js does not support currying at all; lodash provides curried variants of their functions in an extra
@@ -198,10 +196,11 @@ Pipelines are conceptually the same as the highly successful pipes in bash; the 
 standard library in the form of the [`|>` operator](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Pipeline_operator).
 
 ```js
-const {sqrt} = Math;
+const { sqrt, floor } = Math;
 const {
-  pipe, filter, uniq, map, mul, mapSort, identity,
+  pipe, filter, uniq, map, mul, mapSort, identity, take,
   prepend, takeWhile, all, range, assertSequenceEquals,
+  extend, plus, any,
 } = require('ferrum');
 
 const a = pipe(
@@ -214,17 +213,16 @@ assertSequenceEquals(a, [3,9,15,21,33]);
 
 // Very simple primality test
 const isPrime = (v) => v > 1 && pipe(
-  // Build the list of candidate factors
-  range(0, Infinity), // List of all even integers >0
-  takeWhile(x => x<=sqrt(v)), // Cut of the list at the square root of our input
-  // Perform the division test
-  map(x => v % x === 0),
-  all); // NOTE: Due to lazy evaluation, dividing will stop at the first factor found
+  range(2, floor(sqrt(v)) + 1),
+  map(x => v % x !== 0), // check that v is not divisible by x
+  all);
 
 // Sequence of all prime numbers (calculated slowly)
 const primes = () => pipe(
-  range(0, Infinity), // List of all positive integers
+  range(0, Infinity),
   filter(isPrime));
+
+assertSequenceEquals(take(primes(), 5), [2, 3, 5, 7, 11]);
 ```
 
 Learning to write algorithms in this way is not always easy, but it can be very rewarding
@@ -233,11 +231,13 @@ code of the prime sequence example changes as we take a way features from `Ferru
 let's first take away currying and the `pipe()` function itself:
 
 ```js
-const {sqrt} = Math;
-const {all, map, takeWhile, filter, range} = require('ferrum');
+const { sqrt, floor } = Math;
+const { all, map, takeWhile, filter, range, assertSequenceEquals, take, extend, plus } = require('ferrum');
 
-const isPrime = (v) => v > 1 && all(map(takeWhile(range(2, Infinity), x => x<=sqrt(v)), x => v % x === 0));
+const isPrime = (v) => v > 1 && all(map(range(2, floor(sqrt(v))+1), x => v % x !== 0));
 const primes = () => filter(range(0, Infinity), isPrime);
+
+assertSequenceEquals(take(primes(), 5), [2, 3, 5, 7, 11]);
 ```
 
 One way to work around the lack of currying and `pipe()` is to just put all our
@@ -247,16 +247,18 @@ and it does not help that subexpression cannot be properly documented any more.
 Let's try another way to write down these functions:
 
 ```js
-const {sqrt} = Math;
-const {all, map, takeWhile, filter, range} = require('ferrum');
+const { sqrt, floor } = Math;
+const { assertSequenceEquals, all, map, takeWhile, filter, range, take } = require('ferrum');
 
-const positiveIntegers = () => range(1, Infinity);
+const integers = () => range(1, Infinity);
 const isPrime = (v) => {
-  const fromTwo = range(2, Infinity);
-  const candidates = takeWhile(fromTwo, x => x<=sqrt(v));
-  return v > 1 && all(map(x => v % x === 0));
+  const candidates = range(2, floor(sqrt(v)) + 1);
+  const tests = map(candidates, x => v % x !== 0)
+  return v > 1 && all(tests);
 }
-const primes = () => filter(positiveIntegers(), isPrime);
+const primes = () => filter(integers(), isPrime);
+
+assertSequenceEquals(take(primes(), 5), [2, 3, 5, 7, 11]);
 ```
 
 This is much better! The data flow is more clear and substeps can be documented again.
@@ -278,14 +280,14 @@ very useful, especially in large functions.
 Finally, let's implement this in classic imperative style:
 
 ```js
-const {sqrt} = Math;
+const { sqrt } = Math;
 
 const isPrime = (v) => {
   if (v < 2) {
     return false;
   }
 
-  for (let i=2; i <= sqrt(v); i++) {
+  for (let i=0; i <= sqrt(v); i++) {
     if (v % i !== 0) {
       return false;
     }
@@ -295,7 +297,7 @@ const isPrime = (v) => {
 }
 
 const primes = function *primes() {
-  for (let i=2; true; i++) {
+  for (let i=0; true; i++) {
     if (isPrime(i)) {
       yield i;
     }
@@ -335,9 +337,12 @@ This means that the values in iterators/sequences are only evaluated once they
 are needed:
 
 ```js
-const {map, plus, list} = require('ferrum');
+const { map, plus, list, assertSequenceEquals } = require('ferrum');
 const a = map([1,2,3], plus(2)); // At this point, no calculations have been performed
-const b = list(a); // This will actually cause the values of the a iterator to be calculated
+const b = list(a); // This will actually cause the values of the `a` iterator to be calculatedA
+assertSequenceEquals(a, []); // `a` is now exhausted and can no longer be used
+assertSequenceEquals(b, [3,4,5]); // `b` can be used as often as we want
+assertSequenceEquals(b, [3,4,5]);
 ```
 
 Try the above example with a couple of `console.log` statements and see what happens.
@@ -530,13 +535,15 @@ of traits at once.
 `Ferrum/Ops` provides all of the JS operators and some extra boolean operators as curryable functions.
 
 ```js
-const {plus, and, not, is, xor, map, list} = require('ferrum');
+const { strictEqual: assertIs } = require('assert');
+const { plus, and, not, is, xor, map, list, assertSequenceEquals } = require('ferrum');
 
-list(map([1,2,3], plus(2))); // => [3,4,5]
-and(true, false);  // => false
-not(1); // => false
-is(2, 2); // => true
-xor(true, false); // => true
+assertSequenceEquals(
+  map([1,2,3], plus(2)),   /* => */ [3,4,5]);
+assertIs(and(true, false), /* => */ false);
+assertIs(not(1),           /* => */ false);
+assertIs(is(2, 2),         /* => */ true);
+assertIs(xor(true, false), /* => */ true);
 ```
 
 <a name="typing-utilities"></a>
@@ -546,19 +553,20 @@ Ferrum provides utilities for working with types that can be safely
 used with null and undefined.
 
 ```js
+const { strictEqual: assertIs } = require('assert');
 const {isdef, type, typename} = require('ferrum');
 
-isdef(0); // => true
-isdef(null); // => false
-isdef(undefined); // => false
+assertIs(isdef(0),         /* => */ true);
+assertIs(isdef(null),      /* => */ false);
+assertIs(isdef(undefined), /* => */ false);
 
-type(22); // => Number
-type(null); // => null
-type(undefined); // => undefined
+assertIs(type(22),        /* => */ Number);
+assertIs(type(null),      /* => */ null);
+assertIs(type(undefined), /* => */ undefined);
 
-typename(type(22)); // => "Number"
-typename(type(null)); // => "null"
-typename(type(undefined)); // => "undefined"
+assertIs(typename(type(22)),        /* => */ "Number");
+assertIs(typename(type(null)),      /* => */ "null");
+assertIs(typename(type(undefined)), /* => */ "undefined");
 ```
 
 The usual strategy of using `value.constructor` and `value.constructor.name`
@@ -568,20 +576,24 @@ yields errors for `null` & `undefined`.
 ### Functional Utilities
 
 ```js
-const {curry, pipe, filter, isdef, uniq, map, plus} = require('ferrum');
+const {
+  curry, pipe, filter, isdef, uniq, map, plus,
+  assertSequenceEquals, assertEquals,
+} = require('ferrum');
 
 // Using pipe() + auto currying instead of chaining
-pipe(
-  [0,1,2,null,3,4,null,5,1,3,2,null,1,4],
-  filter(isdef), // Filter out every null & undefined
-  uniq,          // Remove duplicates
-  map(plus(2))); // Add two to each element
-// => [2,3,4,5,6,7]
+assertSequenceEquals(
+  pipe(
+    [0, 1, 2, null, 3, 4, null, 5, 1, 3, 2, null, 1, 4],
+    filter(isdef), // Filter out every null & undefined
+    uniq,          // Remove duplicates
+    map(plus(2))), // Add two to each element
+  /* => */ [2, 3, 4, 5, 6, 7]);
 
 // Auto currying
 const pair = curry('pair', (a, b) => [a, b]);
-pair(1,2); // => [1,2]
-pair(2)(1); // => [1,2]
+assertEquals(pair(1,2),  /* => */ [1,2]);
+assertEquals(pair(2)(1), /* => */ [1,2]);
 ```
 
 <a name="changelog"></a>

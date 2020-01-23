@@ -47,7 +47,7 @@ const {
  * as `Array.map` would do.
  * In practice the `x*2` would be calculated immediately before the result is printed.
  *
- * ```
+ * ```js,notest
  * const { each, map } = require('ferrum');
  * each(map([1,2,3], (x) => x*2), console.log);
  * ```
@@ -60,7 +60,7 @@ const {
  *
  * sequence.js functions also support passing functions as the last argument:
  *
- * ```
+ * ```js,notest
  * const { each } = require('ferrum');
  * each([1,2,3,4], (elm) => {
  *   // doSomething(elm);
@@ -72,7 +72,7 @@ const {
  * are using multiple nested each/map/fold calls and the function bodies
  * grow long!
  *
- * ```
+ * ```js,notest
  * const each = (fn, seq) => {
  *   for (const val of seq) fn(val);
  * };
@@ -102,36 +102,34 @@ const {
  *
  * # Replace With
  *
- * ```
+ * ```js,notest
  * const { each } = require('ferrum');
- * each([1,2,3,4], console.log);
- * // 1
- * // 2
- * // 3
- * // 4
+ * each({ foo: 42, bar: 23 }, console.log);
  * ```
  *
  * or
  *
  * ```
  * const { each } = require('ferrum');
- * each({foo: 42}, v => console.log(v));
- * // [ 'foo', 42 ]
+ * each({ foo: 42, bar: 23 }, v => console.log(v));
  * ```
  *
  * or the following if the full power of a for loop is really required..
  *
- * ```
+ * ```js,notest
  * const { each, iter } = require('ferrum');
- * for (const v of iter({foo: 42})) console.log(v);
- * // [ 'foo', 42 ]
+ * for (const v of iter({foo: 42})) {
+ *   console.log(v);
+ * }
  * ```
  *
  * # Array.forEach
  *
- * ```
+ * ```js,notest
  * const { each } = require('ferrum');
  * [1,2,3,4].forEach(console.log)
+ *
+ * // Outputs:
  * // 1 0 [ 1, 2, 3, 4 ]
  * // 2 1 [ 1, 2, 3, 4 ]
  * // 3 2 [ 1, 2, 3, 4 ]
@@ -145,7 +143,7 @@ const {
  *
  * ## Replace With
  *
- * ```
+ * ```js,notest
  * const { each } = require('ferrum');
  * each([1,2,3,4], console.log);
  * // 1
@@ -156,7 +154,7 @@ const {
  *
  * If the index is really needed, `enumerate()` may be used:
  *
- * ```
+ * ```js,notest
  * const { each, enumerate } = require('ferrum');
  * each(enumerate([42, 23]), console.log)
  * // [ 0, 42 ]
@@ -166,8 +164,6 @@ const {
  * As a sidenote this also effortlessly fits the concept of a key/value
  * container; the output of `enumerate([42, 23])` could easily passed
  * into `new Map(...)`;
- *
- * The full behaviour of for each
  */
 
 /**
@@ -178,15 +174,32 @@ const {
  *
  * Any value that is allowed as a parameter for this function shall be
  * considered to be a `Sequence` for the purpose of this file.
- * This term shall be distinguished from `Iterable` in that iterables
- * must implement the iterator protocol `iterable[Symbol.iterator]()`.
+ *
+ * This term shall be distinguished from Iterable in that Iterables
+ * must implement the iterator protocol `iterable[Symbol.iterator]()`
+ * while Sequences implement the Sequence trait. E.g. plain objects
+ * would be sequences but not Iterables.
+ *
+ * ```js
+ * const { iter, assertEquals } = require('ferrum');
+ *
+ * let it = iter({ foo: 42 });
+ * assertEquals(it.next(), { value: [ 'foo', 42 ], done: false });
+ * assertEquals(it.next(), { value: undefined, done: true });
+ *
+ * it = iter('asd');
+ * assertEquals(it.next(), { value: 'a', done: false });
+ * assertEquals(it.next(), { value: 's', done: false });
+ * assertEquals(it.next(), { value: 'd', done: false });
+ * assertEquals(it.next(), { value: undefined, done: true });
+ * ```
  *
  * # Version history
  *
  * - 1.2.0 Support for objects with Symbol keys.
  *
  * @function
- * @param {Object|Iterable|Iterator} obj
+ * @param {Sequence} obj
  * @returns {Iterator}
  * @yields The data from the given elements
  */
@@ -198,6 +211,39 @@ const iter = (v) => Sequence.invoke(v);
  * Uses the `Symbol.iterator` Symbol, so this is implemented for any
  * type that implements the iterator protocol.
  *
+ * You generally won't want to use this, implement the iterator protocol
+ * instead.
+ *
+ * ```js
+ * const { strictEqual: assertIs } = require('assert');
+ * const { Sequence, iter, assertEquals } = require('ferrum');
+ *
+ * // Sequence extends the iterator protocol; they use the same
+ * // symbols
+ * assertIs(Sequence.sym, Symbol.iterator)
+ *
+ * // Usually you want to implement the Sequence trait by implementing
+ * // the iterator protocol.
+ * class Foo {
+ *   [Symbol.iterator]() {
+ *     function* gen() {
+ *       yield 2;
+ *       yield 3;
+ *       yield 4;
+ *     }
+ *     return gen();
+ *   }
+ * };
+ *
+ * // You can use iter() as a shorthand for getting the iterator.
+ * // It is much less cumbersome than using mySeq[Symbol.iterator]().
+ * it = iter(new Foo());
+ * assertEquals(it.next(), { value: 2, done: false });
+ * assertEquals(it.next(), { value: 3, done: false });
+ * assertEquals(it.next(), { value: 4, done: false });
+ * assertEquals(it.next(), { value: undefined, done: true });
+ * ```
+ *
  * @interface
  */
 const Sequence = new Trait('Sequence', Symbol.iterator);
@@ -207,9 +253,33 @@ Sequence.impl(Object, pairs);
  * Generates an iterator with the numeric range [start; end[
  * Includes start but not end.
  *
+ * ```js
+ * const {
+ *  range, extend, takeWhile, assertSequenceEquals, take, pipe,
+ *  mul,
+ * } = require('ferrum');
+ *
+ * assertSequenceEquals(range(0, 4), [0, 1, 2, 3]);
+ * assertSequenceEquals(range(-6, -3), [-6, -5, -4]);
+ * assertSequenceEquals(range(0, 0), []);
+ *
+ * // You can even generate infinite sequences
+ * assertSequenceEquals(take(range(10, Infinity), 3), [10, 11, 12]);
+ *
+ * // Note that for more sophisticated ranges (custom step, not on numbers)
+ * // the following pattern (extend, takeWhile) can be used
+ * assertSequenceEquals(
+ *   // Range over all powers of two below 20
+ *   pipe(
+ *     2,                         // Start value
+ *     extend(mul(2)),            // Step function
+ *     takeWhile((v) => v < 20)), // Define the end condition
+ *   [2, 4, 8, 16]);
+ * ```
+ *
  * @function
  * @param {Number} start
- * @param {Number} end
+ * @param {Number} end Must be >= start
  * @returns {Iterator}
  */
 function* range(start, end) {
@@ -221,6 +291,16 @@ function* range(start, end) {
 /**
  * Like range(a, b) but always starts at 0
  *
+ * ```js
+ * const { range0, assertSequenceEquals, take } = require('ferrum');
+ *
+ * assertSequenceEquals(range0(4), [0, 1, 2, 3]);
+ * assertSequenceEquals(range0(0), []);
+ *
+ * // You can even generate infinite sequences
+ * assertSequenceEquals(take(range0(Infinity), 3), [0, 1, 2]);
+ * ```
+ *
  * @function
  * @param {Number} end
  * @returns {Iterator}
@@ -230,6 +310,21 @@ const range0 = (b) => range(0, b);
 /**
  * Generates an infinite iterator by invoking the
  * given function repeatedly.
+ *
+ * Note that this pretty much assumes that
+ *
+ * ```js
+ * const { repeatFn, assertSequenceEquals, take } = require('ferrum');
+ *
+ * let i = 0;
+ * assertSequenceEquals(
+ *   take(repeatFn(() => i += 1), 4),
+ *   [1, 2, 3, 4]);
+ *
+ * // This is a much better example for it's usefulness, although it
+ * // is hard to test!
+ * const randomSeq = () => repeatFn(Math.random);
+ * ```
  *
  * @function
  * @param {Function} fn
@@ -243,6 +338,14 @@ function* repeatFn(fn) {
 
 /**
  * Generates an infinite iterator of the given value.
+ *
+ * ```js
+ * const { repeat, take, assertSequenceEquals } = require('ferrum');
+ *
+ * assertSequenceEquals(
+ *   take(repeat(true), 4),
+ *   [true, true, true, true]);
+ * ```
  *
  * @function
  * @template T
@@ -258,15 +361,23 @@ const repeat = (val) => repeatFn(() => val);
  * This is often used in conjunction with takeDef or takeWhile to generate
  * a non-infinite sequence.
  *
- * ```
- * const { extend, takeUntilVal } = require('ferrum');
+ * ```js
+ * const { extend, take, assertSequenceEquals, mul, plus } = require('ferrum');
  *
- * // Generate an infinite list of all positive integers
- * extend(0, x => x+1);
+ * // Use currying to generate a function that generates an
+ * // infinite sequence counting down from the given number
+ * const countDown = extend(plus(-1));
  *
- * // Generate the range of integers [first; last[
- * const range = (first, last) =>
- *   takeUntilVal(extend(first, x => x+1), last);
+ * assertSequenceEquals(
+ *   take(countDown(3), 5),
+ *   [3, 2, 1, 0, -1]);
+ *
+ * // Generate a list of all powers of a number
+ * const powers = (base) => extend(base, mul(base));
+ *
+ * assertSequenceEquals(
+ *   take(powers(3), 5),
+ *   [3, 9, 27, 81, 243]);
  * ```
  *
  * @function
@@ -286,6 +397,14 @@ const extend = curry('extend', function* extend(init, fn) {
  * Like extend(), but the resulting sequence does not contain
  * the initial element.
  *
+ * ```js
+ * const { take, extend1, plus, assertSequenceEquals } = require('ferrum');
+ *
+ * assertSequenceEquals(
+ *   take(extend1(3, plus(-1)), 5),
+ *   [2, 1, 0, -1, -2]);
+ * ```
+ *
  * @function
  * @param {Any} init
  * @param {Function} fn
@@ -294,25 +413,17 @@ const extend = curry('extend', function* extend(init, fn) {
 const extend1 = curry('extend1', (init, fn) => trySkip(extend(init, fn), 1));
 
 /**
- * Flatten trees of any type into a sequence.
+ * Extract a list of values from any tree-like structure
  *
- * The given function basically has three jobs:
+ * This is just a very thin wrapper (a transform) over a user provided
+ * function that does all the heavy lifting.
  *
  * 1. Decide whether a given value in a tree is a node or a leaf (or both)
  * 2. Convert nodes into sequences so we can easily recurse into them
  * 3. Extract values from leaves
  *
- * If the given function does it's job correctly, visit will yield
- * a sequence with all the values from the tree.
- *
- * The function must return a sequence of values! It is given the current
- * node as well as a callback that takes a list of child nodes and flattens
- * the given subnodes.
- *
- * Use the following return values:
- *
- * ```
- * const { flattenTree } = require('ferrum');
+ * ```js
+ * const { flattenTree, pipe } = require('ferrum');
  *
  * flattenTree((node, recurse) => {
  *   if (isEmptyLeaf()) {
@@ -333,6 +444,82 @@ const extend1 = curry('extend1', (init, fn) => trySkip(extend(init, fn), 1));
  * });
  * ```
  *
+ * Functions implemented using flattenTree can usually be easily implemented
+ * as a classical recursive algorithm, but still flattenTree provides three
+ * important features:
+ *
+ * 1. It lets you implement those algorithms as anonymous functions
+ * 2. It provides documentation that the code's purpose is to flatten
+ *    a tree like structure
+ * 3. It savey you from typing a bit of boilerplate
+ *
+ * ```js
+ * const { strictEqual: assertIs } = require('assert');
+ * const {
+ *   isPrimitive, type, sum, map, flattenTree, filter, pipe,
+ *   flatten,
+ * } = require('ferrum');
+ *
+ * // In the following example, we'll be summing all the numbers from
+ * // a json tree; first we'll implement the algorithm using a classical
+ * // recursive function
+ *
+ * const sumNumbers1 = (v) => {
+ *   if (!isPrimitive(v)) {
+ *     return sum(map(v, sumNumbers1)); // Recurse!
+ *
+ *   } else if (type(v) === Number){
+ *     return v;
+ *
+ *   } else {
+ *     return 0;
+ *   }
+ * }
+ *
+ * // Now, the above algorithm is a bit hard, to read, because it does a lot
+ * // of things at once (filtering out non-numbers, iterating over the tree, summing)
+ * // We can use pipe() to do better.
+ *
+ * const sumNumbers2 = (json) => pipe(
+ *   _flattenJSON(json),
+ *   filter(x => type(x) === Number),
+ *   sum);
+ *
+ * const _flattenJSON = (v) =>
+ *   isPrimitive(v) ? [v] : flatten(map(Object.values(v), _flattenJSON));
+ *
+ * // Unfortunately, now we had to move the tree flattening step into it's
+ * // own function… often moving code into it's own function is good! Doing
+ * // so reduces the amount of code to look at to understand and it allows us
+ * // to reduce code.
+ * //
+ * // In this case though, I would argue this is not the case. _flattenJSON
+ * // arguably is an implementation detail of sumNumbers2; it is very unlikely
+ * // that it can be used anywhere else without modification ("premature abstraction").
+ * //
+ * // Also, since we are using pipe() here, we already have a very good way
+ * // of reducing the amount of code we have to keep in our head at one time.
+ * // Using pipe() we don't need to look at the entire function to understand
+ * // a bit of code, we just need need to look at a single pipeline step!
+ *
+ * const sumNumbers3 = (json) => pipe(
+ *   flattenTree(json, (v, recurse) =>
+ *      isPrimitive(v) ? [v] : recurse(Object.values(v))),
+ *   filter(x => type(x) === Number),
+ *   sum);
+ *
+ * const jsonTree = {
+ *   foo: 3,
+ *   bar: null,
+ *   baz: [5, null, {bang: 4}],
+ *   hello: 'world'
+ * };
+ *
+ * assertIs(sumNumbers1(jsonTree), 12);
+ * assertIs(sumNumbers2(jsonTree), 12);
+ * assertIs(sumNumbers3(jsonTree), 12);
+ * ```
+ *
  * @function
  * @param {Any} val The tree to flatten
  * @param {Function} fn The function that does the actual flattening
@@ -348,14 +535,15 @@ class IteratorEnded extends Error {}
 /**
  * Extracts the next element from the iterator.
  *
- * ```
+ * ```js
+ * const { strictEqual: assertIs, throws: assertThrows } = require('assert');
  * const {iter, next} = require('ferrum');
  *
  * const it = iter([1,2,3]);
- * next(it); // => 1
- * next(it); // => 2
- * next(it); // => 3
- * //next(it); // throws IteratorEnded
+ * assertIs(next(it), 1);
+ * assertIs(next(it), 2);
+ * assertIs(next(it), 3);
+ * assertThrows(() => next(it)); // throws IteratorEnded
  * //next(it); // throws IteratorEnded
  * ```
  *
@@ -374,17 +562,26 @@ const next = (seq) => {
 };
 
 /**
- * Extracts the next element from the iterator.
+ * Extracts the next element from the iterator using a sentinel
+ * value if the sequence has ended.
  *
- * ```
- * const {iter, tryNext} = require('ferrum');
+ * ```js
+ * const { strictEqual: assertIs } = require('assert');
+ * const { iter, tryNext } = require('ferrum');
  *
  * const it = iter([1,2,3]);
- * tryNext(it, null); // => 1
- * tryNext(it, null); // => 2
- * tryNext(it, null); // => 3
- * tryNext(it, null); // => null
- * tryNext(it, null); // => null
+ * assertIs(tryNext(it, null), 1);
+ * assertIs(tryNext(it, null), 2);
+ * assertIs(tryNext(it, null), 3);
+ * assertIs(tryNext(it, null), null);
+ *
+ * // If you need to be able to handle null/undefined values, you
+ * // can choose a different sentinel value. E.g. a custom symbol
+ * // will by definition never be used by anyone else…
+ * // This technique is used in a couple of places inside ferrum…
+ *
+ * const end = Symbol()
+ * assertIs(tryNext(it, end), end);
  * ```
  *
  * @function
@@ -402,19 +599,20 @@ const tryNext = curry('tryNext', (seq, fallback) => {
 });
 
 /**
- * Extract the nth element from the sequence
+ * Extract the nth element from the sequence returning a sentinel
+ * value if the sequence has ended
  *
- * ```
+ * ```js
+ * const { strictEqual: assertIs, throws: assertThrows } = require('assert');
  * const {iter, next, nth} = require('ferrum');
  *
- *
  * const it = iter('hello world');
- * nth(it, 3);  // => 'l'
- * next(it);    // => 'o'
+ * assertIs(nth(it, 3), 'l');
+ * assertIs(next(it),   'o');
  *
- * const fifth = nth(4);
- * fifth(it)  // => 'l'
- * //nth(it, 10); // throws IteratorEnded
+ * const f = nth(4);
+ * assertIs(f(it), 'l');
+ * assertThrows(() => fourth(it)); // throws IteratorEnded
  * ```
  *
  * @function
@@ -430,10 +628,11 @@ const nth = curry('nth', (seq, idx) => next(skip(seq, idx)));
  * an alias for next();
  *
  * ```
- * const {first} = require('ferrum');
+ * const { strictEqual: assertIs, throws: assertThrows } = require('assert');
+ * const { first } = require('ferrum');
  *
- * first([1,2]) // => 1
- * //first([]); // throws IteratorEnded
+ * assertIs(first([1,2]), 1);
+ * assertThrows(() => first([])); // throws IteratorEnded
  * ```
  *
  * @function
@@ -447,10 +646,11 @@ const first = (seq) => next(seq);
  * Extract the second element from the sequence
  *
  * ```
+ * const { strictEqual: assertIs, throws: assertThrows } = require('assert');
  * const {second} = require('ferrum');
  *
- * second([1,2]) // => 2
- * //second([1]); // throws IteratorEnded
+ * assertIs(second([1,2]), 2);
+ * assertThrows(() => second([1])); // throws IteratorEnded
  * ```
  *
  * @function
@@ -464,10 +664,13 @@ const second = (seq) => nth(seq, 1);
  * Extract the last element from the sequence
  *
  * ```
- * const {last} = require('ferrum');
+ * const { strictEqual: assertIs, throws: assertThrows } = require('assert');
+ * const { last, next, iter } = require('ferrum');
  *
- * last([1,2,3,4,5]); // => 5
- * //last([]); // throws IteratorEnded
+ * const it = iter([1, 2, 3, 4, 5]);
+ * assertIs(last(it), 5);
+ * assertThrows(() => last(it)); // throws IteratorEnded
+ * assertThrows(() => next(it));
  * ```
  *
  * @function
@@ -486,18 +689,20 @@ const last = (seq) => {
 };
 
 /**
- * Extract the nth element from the sequence
+ * Extract the nth element from the sequence, returnng
+ * a sentinel value if the sequence is too showrt
  *
  * ```
+ * const { strictEqual: assertIs, throws: assertThrows } = require('assert');
  * const { iter, next, tryNth, nth } = require('ferrum');
  *
  * const it = iter('hello world');
- * tryNth(it, 3, null);  // => 'l'
- * next(it);    // => 'o'
+ * assertIs(tryNth(it, 3, null), 'l');
+ * assertIs(next(it), 'o');
  *
  * const fifth = tryNth(4, null);
- * fifth(it);  // => 'l'
- * tryNth(it, 10, null); // => null
+ * assertIs(fifth(it), 'l');
+ * assertIs(fifth(it), null);
  * ```
  *
  * @function
@@ -513,10 +718,11 @@ const tryNth = curry('tryNth', (seq, idx, fallback) => tryNext(trySkip(seq, idx)
  * an alias for tryNext();
  *
  * ```
- * const {tryFirst} = require('ferrum');
+ * const { strictEqual: assertIs, throws: assertThrows } = require('assert');
+ * const { tryFirst } = require('ferrum');
  *
- * tryFirst([1,2], null) // => 1
- * tryFirst([], null);   // => null
+ * assertIs(tryFirst([1,2], null), 1);
+ * assertIs(tryFirst([], null),  null);
  *
  * const fn = tryFirst(null);
  * fn([]); // => null
@@ -552,14 +758,15 @@ const trySecond = curry('trySecond', (seq, fallback) => tryNth(seq, 1, fallback)
 /**
  * Extract the last element from the sequence
  *
- * ```
- * const {tryLast} = require('ferrum');
+ * ```js
+ * const { strictEqual: assertIs, throws: assertThrows } = require('assert');
+ * const { tryLast } = require('ferrum');
  *
- * tryLast([1,2,3,4,5], null) // => 5
- * tryLast([], null); // => null
+ * assertIs(tryLast([1,2,3,4,5], null), 5);
+ * assertIs(tryLast([], null), null);
  *
  * const fn = tryLast(null);
- * fn([]); // => null
+ * assertIs(fn([]), null);
  * ```
  *
  * @function
@@ -579,15 +786,15 @@ const tryLast = curry('tryLast', (seq, fallback) => {
  * Iterate over sequences: Apply the give function to
  * every element in the sequence
  *
- * ```
- * const {each} = require('ferrum');
+ * ```js,notest
+ * const { each } = require('ferrum');
  *
  * each({foo: 42, bar: 23}, ([key, value]) => {
- *   console.log(`${key}: ${value}`)
+ *   // console.log(`${key}: ${value}`);
  * });
  *
  * each([1,2,3], (v) => {
- *   console.log(v);
+ *   // console.log(v);
  * });
  * ```
  *
@@ -608,152 +815,156 @@ const each = curry('each', (seq, fn) => {
 /**
  * Return the first element in the sequence for which the predicate matches.
  *
- * ```
- * const {find} = require('ferrum');
+ * ```js
+ * const { strictEqual: assertIs, throws: assertThrows } = require('assert');
+ * const { find } = require('ferrum');
  *
- * find([1,2,3,4], v => v>2); // => 3
- * //find([1,2,3,4], v => v>10); // throws IteratorEnded
+ * assertIs(find([1,2,3,4], v => v>2), 3);
+ * assertThrows(() => find([1,2,3,4], v => v>10)); // throws IteratorEnded
  *
  * const findEven = find(v => v % 2 === 0);
- * find([3,4,1,2]); // => 4
- * // find([]); // throws IteratorEnded
+ * assertIs(findEven([3,4,1,2]), 4);
+ * assertThrows(() => findEven([])); // throws IteratorEnded
  * ```
  *
  * @function
  * @param {Sequence} seq Any sequence for which iter() is defined
  * @param {Function} fn The predicate
  * @throws {IteratorEnded} If no element in the sequence matches the predicate..
- * @returns Any
+ * @returns *
  */
 const find = curry('find', (seq, fn) => next(filter(seq, fn)));
 
 /**
- * Return the first element in the sequence for which the predicate matches.
+ * Return the first element in the sequence for which the predicate matches,
+ * returning a sentinel value if there is no such element.
  *
- * ```
- * const {tryFind} = require('ferrum');
+ * ```js
+ * const { strictEqual: assertIs } = require('assert');
+ * const { tryFind } = require('ferrum');
  *
- * tryFind([1,2,3,4], null, v => v>2); // => 3
- * tryFind([1,2,3,4], null, v => v>10); // => null
+ * assertIs(tryFind([1,2,3,4], null, v => v>2), 3);
+ * assertIs(tryFind([1,2,3,4], null, v => v>10), null);
  *
  * const findEven = tryFind(null, v => v%2 === 0);
- * findEven([1,9,10,14]); // => 10
- * findEven([]); // => null
+ * assertIs(findEven([1,9,10,14]), 10);
+ * assertIs(findEven([]), null);
  * ```
  *
  * @function
  * @param {Sequence} seq Any sequence for which iter() is defined
- * @param {Any} fallback The value to return if no element in the sequence matches the predicate
+ * @param {*} fallback The value to return if no element in the sequence matches the predicate
  * @param {Function} fn The predicate
- * @returns Any
+ * @returns *
  */
 const tryFind = curry('tryFind', (seq, fallback, fn) => tryNext(filter(seq, fn), fallback));
 
 /**
  * Test if the given sequence contains a value that matches the predicate.
  *
- * ```
- * const {contains, eq, is, not} = require('ferrum');
+ * ```js
+ * const assert = require('assert');
+ * const { contains, eq, is, not } = require('ferrum');
  *
  * const containsEven = contains(x => x%2 === 0);
- * containsEven([1,2,3,4]); // => true
- * containsEven([1,3,5,7]); // => false
+ * assert(containsEven([1,2,3,4]));
+ * assert(!containsEven([1,3,5,7]));
  *
  * // Use is to search vor values using the === operator
  * const contains4 = contains(is(4));
- * // const contains4 = contains(x => x === 4); // this is a bit longer & harder to read
- * contains4([1,2,3]); // => false
- * contains4([4,4,4]); // => true
- *
- * // You can use eq to search for values equal to another value
- * const containsEmptyObject = contains(eq({}));
- * containsEmptyObject([{foo: 42}]); // => false
- * containsEmptyObject([{}]); // => true
- * ```
- *
- * This function should be used over `tryFind` in cases where just the presence
- * of a value should be tested for:
- *
- * ```
- * const { tryFind, contains, is, not } = require('ferrum');
- *
- * // The usual pattern checking whether a value is contained would be this:
- * tryFind([1,2,3,4], null, is(3)); // => 3 (truthy)
- * tryFind([1,2,4,5], null, is(3)); // => null (falsy)
- *
- * // Obviously this pattern breaks down when searching for falsy values
- * tryFind([0,1,2,3,4], null, is(0)); // => 0 (falsy - FALSE POSITIVE)
- * tryFind([1,1,2,3,4], null, is(0)); // => null (falsy)
- *
- * // Using contains() gets you around this issue and does what you would expect
- * contains([0,1,2,3,4], is(0)); // => true
- * contains([1,1,2,3,4], is(0)); // => false
- *
- * // If you need to search for the value and do not want to run into this issue,
- * // the following pattern (creating a symbol on the fly) can be used
- * // This is also how contains() is implemented.
- * // You could also use null or undefined as the sentinel value, but this is discouraged,
- * // as the sequence could contain those values; this can never be the case with a symbol
- * // you just created
- *
- * const nothing = Symbol('');
- * const v = tryFind([1,2,3,null,4,0], nothing, not) // tryFindFalsy
- * if (v === nothing) {
- *   // handle that case
- * } else {
- *   // Got a valid, falsy value
- * }
- * ```
- * @function
- * @param {Sequence} seq Any sequence for which iter() is defined
- * @returns {Boolean}
- */
+* // const contains4 = contains(x => x === 4); // this is a bit longer & harder to read
+* assert(!contains4([1,2,3])); // => false
+* contains4([4,4,4]); // => true
+*
+* // You can use eq to search for values equal to another value
+* const containsEmptyObject = contains(eq({}));
+* containsEmptyObject([{foo: 42}]); // => false
+* containsEmptyObject([{}]); // => true
+* ```
+*
+* This function should be used over `tryFind` in cases where just the presence
+* of a value should be tested for:
+*
+* ```
+* const { tryFind, contains, is, not } = require('ferrum');
+*
+* // The usual pattern checking whether a value is contained would be this:
+* tryFind([1,2,3,4], null, is(3)); // => 3 (truthy)
+* tryFind([1,2,4,5], null, is(3)); // => null (falsy)
+*
+* // Obviously this pattern breaks down when searching for falsy values
+* tryFind([0,1,2,3,4], null, is(0)); // => 0 (falsy - FALSE POSITIVE)
+* tryFind([1,1,2,3,4], null, is(0)); // => null (falsy)
+*
+* // Using contains() gets you around this issue and does what you would expect
+* contains([0,1,2,3,4], is(0)); // => true
+* contains([1,1,2,3,4], is(0)); // => false
+*
+* // If you need to search for the value and do not want to run into this issue,
+* // the following pattern (creating a symbol on the fly) can be used
+* // This is also how contains() is implemented.
+* // You could also use null or undefined as the sentinel value, but this is discouraged,
+* // as the sequence could contain those values; this can never be the case with a symbol
+* // you just created
+*
+* const nothing = Symbol('');
+* const v = tryFind([1,2,3,null,4,0], nothing, not) // tryFindFalsy
+* if (v === nothing) {
+*   // handle that case
+* } else {
+*   // Got a valid, falsy value
+* }
+* ```
+* @function
+* @param {Sequence} seq Any sequence for which iter() is defined
+* @returns {Boolean}
+*/
 const contains = curry('contains', (seq, fn) => {
   const nothing = Symbol('');
   return tryFind(seq, nothing, fn) !== nothing;
 });
 
 /**
- * Determine whether the items in two sequences are equal.
- *
- * ```
- * const { seqEq, eq, dict } = require('ferrum');
- *
- * seqEq([1,2,3,4], [1,2,3,4]); // => true
- * seqEq([1,2,3,4], [1,2,3]); // => false
- *
- * // The types of the objects being compared is not important,
- * // just the contents of the iterator
- * seqEq(new Set([1,2,3]), [1,2,3]); // => true
- * seqEq(new Set([1,2,3,3]), [1,2,3,3]); // => false (the set discards the second 3)
- *
- * // Note that sets and maps should usually compared using eq() and not
- * // seqEq, since seqEq cares about the infestation order while eq() does
- * // not for sets and maps
- * eq(new Set([1,2,3]), new Set([1,2,3])); // => true
- * eq(new Set([3,2,1]), new Set([1,2,3])); // => true
- *
- * seqEq(new Set([1,2,3]), new Set([1,2,3])); // => true
- * seqEq(new Set([3,2,1]), new Set([1,2,3])); // => false
- *
- * // Objects should never be compared using seqEq, because the order
- * // in which the elements of an object are returned is undefined
- * const obj = {foo: 23, bar: 42};
- * seqEq(obj, obj); // UNDEFINED BEHAVIOUR; could be true or false
- *
- * // Same goes of course for es6 Maps created from objects
- * seqEq(dict(obj), dict(obj)); // => UNDEFINED BEHAVIOUR; could be true or false
- *
- * // Objects as elements inside the iterator are OK; elements are compared
- * // using eq() not seqEq()
- * seqEq([{foo: 42, bar: 23}], [{bar: 23, foo: 42}]); // => true
- * ```
- *
- * @function
- * @param {Sequence} a Any sequence for which iter() is defined
- * @param {Sequence} b Any sequence for which iter() is defined
- * @returns {Boolean}
- */
+* Determine whether the items in two sequences are equal.
+*
+* ```
+* const { seqEq, eq, dict } = require('ferrum');
+*
+* seqEq([1,2,3,4], [1,2,3,4]); // => true
+* seqEq([1,2,3,4], [1,2,3]); // => false
+*
+* // The types of the objects being compared is not important,
+* // just the contents of the iterator
+* seqEq(new Set([1,2,3]), [1,2,3]); // => true
+* seqEq(new Set([1,2,3,3]), [1,2,3,3]); // => false (the set discards the second 3)
+*
+* // Note that sets and maps should usually compared using eq() and not
+* // seqEq, since seqEq cares about the infestation order while eq() does
+* // not for sets and maps
+* eq(new Set([1,2,3]), new Set([1,2,3])); // => true
+* eq(new Set([3,2,1]), new Set([1,2,3])); // => true
+*
+* seqEq(new Set([1,2,3]), new Set([1,2,3])); // => true
+* seqEq(new Set([3,2,1]), new Set([1,2,3])); // => false
+*
+* // Objects should never be compared using seqEq, because the order
+* // in which the elements of an object are returned is undefined
+* const obj = {foo: 23, bar: 42};
+* seqEq(obj, obj); // UNDEFINED BEHAVIOUR; could be true or false
+*
+* // Same goes of course for es6 Maps created from objects
+* seqEq(dict(obj), dict(obj)); // => UNDEFINED BEHAVIOUR; could be true or false
+*
+* // Objects as elements inside the iterator are OK; elements are compared
+* // using eq() not seqEq()
+* seqEq([{foo: 42, bar: 23}], [{bar: 23, foo: 42}]); // => true
+* ```
+*
+* @function
+* @param {Sequence} a Any sequence for which iter() is defined
+* @param {Sequence} b Any sequence for which iter() is defined
+* @returns {Boolean}
+*/
 const seqEq = (a, b) => pipe(
   zipLongest([a, b], Symbol('EqualToNothing')),
   map(([x, y]) => eq(x, y)),
@@ -761,14 +972,14 @@ const seqEq = (a, b) => pipe(
 );
 
 /**
- * Assert that two finite sequences are equals.
- * @function
- * @param {Sequence} a Any sequence for which iter() is defined
- * @param {Sequence} b Any sequence for which iter() is defined
- * @param {String|undefined} msg The error message to print
- * @throws {AssertionError}
- * @returns {Boolean}
- */
+* Assert that two finite sequences are equals.
+* @function
+* @param {Sequence} a Any sequence for which iter() is defined
+* @param {Sequence} b Any sequence for which iter() is defined
+* @param {String|undefined} msg The error message to print
+* @throws {AssertionError}
+* @returns {Boolean}
+*/
 const assertSequenceEquals = (a, b, msg) => {
   const P = (v) => inspect(v, {
     depth: null, breakLength: 1, compact: false, sorted: true,
@@ -788,60 +999,76 @@ const assertSequenceEquals = (a, b, msg) => {
 };
 
 /**
- * Determine the number of elements in an iterator.
- * This will try using trySize(), but fall back to iterating
- * over the container and counting the elements this way if necessary.
- *
- * ```
- * const {iter,count} = require('ferrum')
- *
- * count([1,2,3]); // => 3; O(1)
- * count(iter([1,2,3])); // => 3; O(n)
- * ```
- *
- * See: [https://en.wikipedia.org/wiki/Big_O_notation]()
- *
- * @function
- * @param {Sequence} a Any sequence for which iter() is defined
- * @returns {Number}
- */
+* Determine the number of elements in an iterator.
+* This will try using trySize(), but fall back to iterating
+* over the container and counting the elements this way if necessary.
+*
+* ```
+* const {iter,count} = require('ferrum')
+*
+* count([1,2,3]); // => 3; O(1)
+* count(iter([1,2,3])); // => 3; O(n)
+* ```
+*
+* See: [https://en.wikipedia.org/wiki/Big_O_notation]()
+*
+* @function
+* @param {Sequence} a Any sequence for which iter() is defined
+* @returns {Number}
+*/
 const count = (val) => {
   const impl = Size.lookupValue(val);
   return impl ? impl(val) : foldl(val, 0, (v) => v + 1);
 };
 
 /**
- * Turns any sequence into a list.
- * Shorthand for `Array.from(iter())`.
- * This is often utilized to cache a sequence so it can be
- * iterated over multiple times.
- *
- * @function
- * @param {Sequence} a The sequence to convert to a list.
- * @returns {Array}
- */
+* Turns any sequence into a list.
+* Shorthand for `Array.from(iter())`.
+* This is often utilized to cache a sequence so it can be
+* iterated over multiple times.
+*
+* @function
+* @param {Sequence} a The sequence to convert to a list.
+* @returns {Array}
+*/
 const list = (seq) => Array.from(iter(seq));
 
 /**
- * Turns any sequence into a set.
- * Shorthand for new Set(iter()).
- * This often finds practical usage as a way of
- * removing duplicates elements from a sequence.
- *
- * @function
- * @param {Sequence} a The sequence to convert to a set.
- * @returns {Set}
- */
+* Turns any sequence into a set.
+* Shorthand for new Set(iter()).
+* This often finds practical usage as a way of
+* removing duplicates elements from a sequence.
+*
+* ```js
+* const { uniq, assertEquals, assertSequenceEquals } = require('ferrum');
+*
+* // Removes duplicates
+* assertEquals(
+*   uniq([1, 1, 2, 1, 3, 4, 3]),
+*   new Set([1, 2, 3, 4]));
+*
+* // Since this just creates a Set and Set outputs elements
+* // in order of insertion, the order of elements output by
+* // uniq() is well defined
+* assertSequenceEquals(
+*   uniq([4, 3, 3, 4, 1, 2, 1]),
+*   [4, 3, 1, 2]);
+* ```
+*
+* @function
+* @param {Sequence} seq The sequence to convert to a set.
+* @returns {Set}
+*/
 const uniq = (seq) => new Set(iter(seq));
 
 /**
- * Turns any sequence into an es6 map
- * This is particularly useful for constructing es7 maps from objects...
- *
- * @function
- * @param {Sequence} a The sequence to convert.
- * @returns {Map}
- */
+* Turns any sequence into an es6 map
+* This is particularly useful for constructing es7 maps from objects...
+*
+* @function
+* @param {Sequence} a The sequence to convert.
+* @returns {Map}
+*/
 const dict = (seq) => {
   const r = new Map();
   each(seq, (pair) => {
@@ -852,12 +1079,12 @@ const dict = (seq) => {
 };
 
 /**
- * Turns any sequence into an object
- *
- * @function
- * @param {Sequence} a The sequence to convert.
- * @returns {Object}
- */
+* Turns any sequence into an object
+*
+* @function
+* @param {Sequence} a The sequence to convert.
+* @returns {Object}
+*/
 const obj = (seq) => {
   const r = {};
   each(seq, (pair) => {
@@ -868,108 +1095,108 @@ const obj = (seq) => {
 };
 
 /**
- * Convert each element from a sequence into a string
- * and join them with the given separator.
- *
- * ```
- * const { join, assertEquals } = require('ferrum');
- * assertEquals(
- *   join(['Hello', 'World'], ' '),
- *   'Hello World');
- * ```
- *
- * @function
- * @param {String} sep The separator
- * @param {Sequence} seq The sequence to convert.
- * @returns {String}
- */
+* Convert each element from a sequence into a string
+* and join them with the given separator.
+*
+* ```
+* const { join, assertEquals } = require('ferrum');
+* assertEquals(
+*   join(['Hello', 'World'], ' '),
+*   'Hello World');
+* ```
+*
+* @function
+* @param {String} sep The separator
+* @param {Sequence} seq The sequence to convert.
+* @returns {String}
+*/
 const join = curry('join', (seq, sep) => list(seq).join(sep));
 
 /**
- * Convert values into a given type using the `Into` trait.
- * Note that this has inverse parameters compared to the trait
- * (sequence first, type second) for currying purposes.
- *
- * @function
- * @param {Sequence} a The sequence to convert.
- * @param {Type} T
- * @returns {T}
- */
+* Convert values into a given type using the `Into` trait.
+* Note that this has inverse parameters compared to the trait
+* (sequence first, type second) for currying purposes.
+*
+* @function
+* @param {Sequence} a The sequence to convert.
+* @param {Type} T
+* @returns {T}
+*/
 const into = curry('into', (seq, t) => Into.invoke(t, seq));
 
 /**
- * Into can be used to turn sequences back into other types.
- *
- * into is the inverse of `iter()`, meaning that taking the result
- * of `iter()` and calling `into()`, yields the original value.
- *
- * So in a purely functional language, `into(iter(v))` would be a
- * no-op; since we are in javascript, this essentially implements
- * a poor mans shallow copy for some types
- *
- * ```
- * const shallowcopy = (v) => into(v, v.constructor);
- * ```
- *
- * # Interface
- *
- * `(T: Type/Function, v: Sequence) => r: T
- *
- * # Laws
- *
- * * `into(v, type(v)) <=> shallowclone(v)`
- *
- * # Specialization notes
- *
- * String: Uses toString() on each value from the sequence
- *   and concatenates them into one string...
- * Object: Expects key/value pairs; the keys must be strings;
- *   sequences containing the same key multiple times and sequences
- *   with bad key/value pairs are considered to be undefined behaviour.
- *   The key/value pairs may be sequences themselves.
- * Map: Same rules as for object.
- * Set: Refer to https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set
- *
- * # Examples
- *
- * Practical uses of into include converting between types; e.g:
- *
- * ```
- * const { into } = require('ferrum');
- *
- * into({foo:  42, bar: 23}, Map) // Map { 'foo' => 42, 'bar' }
- * into(["foo", " bar"], String) // "foo bar"
- * into([1,1,2,3,4,2], Set) // Set(1,2,3,4)
- * ```
- *
- * Into is also useful to transform values using the functions
- * in this class:
- *
- * ```
- * const { into, filter } = require('ferrum');
- *
- * // Remove odd numbers from a set
- * const st = new Set([1,1,2,2,3,4,5]);
- * into(filter(st, n => n % 2 === 0), Set) // Set(2,4)
- *
- * // Remove a key/value pair from an object
- * const obj = {foo: 42, bar: 5};
- * into(filter(obj, ([k, v]) => k !== 'foo'), Object)
- * // yields {bar: 5}
- * ```
- *
- * It can be even used for more complex use cases:
- *
- * ```
- * const { concat, into } = require('ferrum');
- *
- * // Merge multiple key/value containers into one sequence:
- * const seq = concat([[99, 42]], new Map([[true, 23]]), {bar: 13});
- * into(seq, Map) // Map( 99 => 42, true => 23, bar => 13 )
- * ```
- *
- * @interface
- */
+* Into can be used to turn sequences back into other types.
+*
+* into is the inverse of `iter()`, meaning that taking the result
+* of `iter()` and calling `into()`, yields the original value.
+*
+* So in a purely functional language, `into(iter(v))` would be a
+* no-op; since we are in javascript, this essentially implements
+* a poor mans shallow copy for some types
+*
+* ```
+* const shallowcopy = (v) => into(v, v.constructor);
+* ```
+*
+* # Interface
+*
+* `(T: Type/Function, v: Sequence) => r: T
+*
+* # Laws
+*
+* * `into(v, type(v)) <=> shallowclone(v)`
+*
+* # Specialization notes
+*
+* String: Uses toString() on each value from the sequence
+*   and concatenates them into one string...
+* Object: Expects key/value pairs; the keys must be strings;
+*   sequences containing the same key multiple times and sequences
+*   with bad key/value pairs are considered to be undefined behaviour.
+*   The key/value pairs may be sequences themselves.
+* Map: Same rules as for object.
+* Set: Refer to https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set
+*
+* # Examples
+*
+* Practical uses of into include converting between types; e.g:
+*
+* ```
+* const { into } = require('ferrum');
+*
+* into({foo:  42, bar: 23}, Map) // Map { 'foo' => 42, 'bar' }
+* into(["foo", " bar"], String) // "foo bar"
+* into([1,1,2,3,4,2], Set) // Set(1,2,3,4)
+* ```
+*
+* Into is also useful to transform values using the functions
+* in this class:
+*
+* ```
+* const { into, filter } = require('ferrum');
+*
+* // Remove odd numbers from a set
+* const st = new Set([1,1,2,2,3,4,5]);
+* into(filter(st, n => n % 2 === 0), Set) // Set(2,4)
+*
+* // Remove a key/value pair from an object
+* const obj = {foo: 42, bar: 5};
+* into(filter(obj, ([k, v]) => k !== 'foo'), Object)
+* // yields {bar: 5}
+* ```
+*
+* It can be even used for more complex use cases:
+*
+* ```
+* const { concat, into } = require('ferrum');
+*
+* // Merge multiple key/value containers into one sequence:
+* const seq = concat([[99, 42]], new Map([[true, 23]]), {bar: 13});
+* into(seq, Map) // Map( 99 => 42, true => 23, bar => 13 )
+* ```
+*
+* @interface
+*/
 const Into = new Trait('Into');
 Into.implStatic(Array, (t, v) => list(v));
 Into.implStatic(String, (t, v) => join(v, ''));
@@ -979,34 +1206,34 @@ each([Set, Map, WeakSet, WeakMap, ..._typedArrays], (Typ) => {
 });
 
 /**
- * Combine all the values from a sequence into one value.
- *
- * This function is also often called reduce, because it reduces
- * multiple values into a single value.
- *
- * Here are some common use cases of the foldl function:
- *
- * ```
- * const all = (seq) => foldl(seq, true, (a, b) => a && b);
- * const any = (seq) => foldl(seq, false, (a, b) => a || b);
- * const sum = (seq) => foldl(seq, 0, (a, b) => a + b);
- * const product = (seq) => foldl(seq, 1, (a, b) => a * b);
- * ```
- *
- * Notice the pattern: We basically take an operator and apply
- * it until the sequence is empty: sum([1,2,3,4]) is pretty much
- * equivalent to `1 + 2 + 3 + 4`.
- *
- * (If you want to get very mathematical here...notice how we basically
- * have an operation and then just take the operation's neutral element
- * as the initial value?)
- *
- * @function
- * @param {Sequence} seq The sequence to reduce
- * @param {Any} initial The initial value of the reduce operation.
- *   If the sequence is empty, this value will be returned.
- * @returns {Any}
- */
+* Combine all the values from a sequence into one value.
+*
+* This function is also often called reduce, because it reduces
+* multiple values into a single value.
+*
+* Here are some common use cases of the foldl function:
+*
+* ```
+* const all = (seq) => foldl(seq, true, (a, b) => a && b);
+* const any = (seq) => foldl(seq, false, (a, b) => a || b);
+* const sum = (seq) => foldl(seq, 0, (a, b) => a + b);
+* const product = (seq) => foldl(seq, 1, (a, b) => a * b);
+* ```
+*
+* Notice the pattern: We basically take an operator and apply
+* it until the sequence is empty: sum([1,2,3,4]) is pretty much
+* equivalent to `1 + 2 + 3 + 4`.
+*
+* (If you want to get very mathematical here...notice how we basically
+* have an operation and then just take the operation's neutral element
+* as the initial value?)
+*
+* @function
+* @param {Sequence} seq The sequence to reduce
+* @param {Any} initial The initial value of the reduce operation.
+*   If the sequence is empty, this value will be returned.
+* @returns {Any}
+*/
 const foldl = curry('foldl', (seq, initial, fn) => {
   let accu = initial;
   each(seq, (v) => {
@@ -1016,71 +1243,71 @@ const foldl = curry('foldl', (seq, initial, fn) => {
 });
 
 /**
- * Like foldl, but right-to-left
- *
- * @function
- * @param {Sequence} seq The sequence to reduce
- * @param {Any} initial The initial value of the reduce operation.
- *   If the sequence is empty, this value will be returned.
- * @returns {Any}
- */
+* Like foldl, but right-to-left
+*
+* @function
+* @param {Sequence} seq The sequence to reduce
+* @param {Any} initial The initial value of the reduce operation.
+*   If the sequence is empty, this value will be returned.
+* @returns {Any}
+*/
 const foldr = curry('foldr', (seq, ini, fn) => foldl(reverse(seq), ini, fn));
 
 /**
- * Test whether any element in the given sequence is truthy.
- * Returns null if the list is empty.
- *
- * @function
- * @param {Sequence} seq
- * @returns {Boolean}
- */
+* Test whether any element in the given sequence is truthy.
+* Returns null if the list is empty.
+*
+* @function
+* @param {Sequence} seq
+* @returns {Boolean}
+*/
 const any = (seq) => foldl(seq, null, or);
 
 /**
- * Test whether all elements in the given sequence are truthy
- * Returns true if the list is empty.
- *
- * @function
- * @param {Sequence} seq
- * @returns {Boolean}
- */
+* Test whether all elements in the given sequence are truthy
+* Returns true if the list is empty.
+*
+* @function
+* @param {Sequence} seq
+* @returns {Boolean}
+*/
 const all = (seq) => foldl(seq, true, and);
 
 /**
- * Calculate the sum of a list of numbers.
- * Returns 0 is the list is empty.
- *
- * @function
- * @param {Sequence} seq
- * @returns {Number}
- */
+* Calculate the sum of a list of numbers.
+* Returns 0 is the list is empty.
+*
+* @function
+* @param {Sequence} seq
+* @returns {Number}
+*/
 const sum = (seq) => foldl(seq, 0, plus);
 
 /**
- * Calculate the product of a list of numbers.
- * Returns 1 is the list is empty.
- *
- * @function
- * @param {Sequence} seq
- * @returns {Number}
- */
+* Calculate the product of a list of numbers.
+* Returns 1 is the list is empty.
+*
+* @function
+* @param {Sequence} seq
+* @returns {Number}
+*/
 const product = (seq) => foldl(seq, 1, mul);
 
 // ITERATOR FILTERS //////////////////////////////////////////
 
 /**
- * Lazily transform all the values in a sequence.
- *
- * ```
- * const { into, map } = require('ferrum');
- * into(map([1,2,3,4], n => n*2), Array); // [2,4,6,8]
- * ```
- *
- * @function
- * @param {Sequence} seq Any sequence for which iter() is defined
- * @param {Function} fn The function that transforms all the values in the sequence
- * @returns {Iterator}
- */
+* Lazily transform all the values in a sequence.
+*
+* ```
+* const { into, map } = require('ferrum');
+* into(map([1,2,3,4], n => n*2), Array); // [2,4,6,8]
+* ```
+*
+* @function
+* @param {Sequence} seq Any sequence for which iter() is defined
+* @param {Function} fn The function that transforms all the values in the sequence
+* @returns {Iterator}
+*/
 const map = curry('map', function* map(seq, fn) {
   for (const val of iter(seq)) {
     yield fn(val);
@@ -1088,18 +1315,18 @@ const map = curry('map', function* map(seq, fn) {
 });
 
 /**
- * Remove values from the sequence based on the given condition.
- *
- * ```
- * const { filter, range } = require('ferrum');
- * filter(range(0,10), x => x%2 === 0); // [2,4,6,8]
- * ```
- *
- * @function
- * @param {Sequence} seq Any sequence for which iter() is defined
- * @param {Function} fn The function
- * @returns {Iterator}
- */
+* Remove values from the sequence based on the given condition.
+*
+* ```
+* const { filter, range } = require('ferrum');
+* filter(range(0,10), x => x%2 === 0); // [2,4,6,8]
+* ```
+*
+* @function
+* @param {Sequence} seq Any sequence for which iter() is defined
+* @param {Function} fn The function
+* @returns {Iterator}
+*/
 const filter = curry('filter', function* filter(seq, fn) {
   for (const val of iter(seq)) {
     if (fn(val)) {
@@ -1109,23 +1336,23 @@ const filter = curry('filter', function* filter(seq, fn) {
 });
 
 /**
- * Opposite of filter: Removes values from the sequence if the function
- * returns true.
- *
- * @function
- * @param {Sequence} seq Any sequence for which iter() is defined
- * @param {Function} fn The function
- * @returns {Iterator}
- */
+* Opposite of filter: Removes values from the sequence if the function
+* returns true.
+*
+* @function
+* @param {Sequence} seq Any sequence for which iter() is defined
+* @param {Function} fn The function
+* @returns {Iterator}
+*/
 const reject = curry('reject', (seq, fn) => filter(seq, (v) => !fn(v)));
 
 /**
- * Reverse a given sequence
- *
- * @function
- * @param {Sequence} seq Any sequence for which iter() is defined
- * @returns {Array}
- */
+* Reverse a given sequence
+*
+* @function
+* @param {Sequence} seq Any sequence for which iter() is defined
+* @returns {Array}
+*/
 const reverse = (seq) => {
   const r = list(seq);
   r.reverse();
@@ -1133,14 +1360,14 @@ const reverse = (seq) => {
 };
 
 /**
- * Extend the given sequences with indexes:
- * Takes a sequence of values and generates
- * a sequence where each element is a pair [index, element];
- *
- * @function
- * @param {Sequence} seq Any sequence for which iter() is defined
- * @returns {Iterator}
- */
+* Extend the given sequences with indexes:
+* Takes a sequence of values and generates
+* a sequence where each element is a pair [index, element];
+*
+* @function
+* @param {Sequence} seq Any sequence for which iter() is defined
+* @returns {Iterator}
+*/
 function* enumerate(seq) {
   let idx = -1;
   for (const val of iter(seq)) {
@@ -1150,14 +1377,14 @@ function* enumerate(seq) {
 }
 
 /**
- * Like skip, but returns an exhausted iterator if the sequence contains
- * less than `no` elements instead of throwing IteratorEnded.
- *
- * @function
- * @param {Sequence} seq Any sequence for which iter() is defined
- * @param {Number} no The number of elements to skip
- * @returns {Iterator}
- */
+* Like skip, but returns an exhausted iterator if the sequence contains
+* less than `no` elements instead of throwing IteratorEnded.
+*
+* @function
+* @param {Sequence} seq Any sequence for which iter() is defined
+* @param {Number} no The number of elements to skip
+* @returns {Iterator}
+*/
 const trySkip = curry('trySkip', (seq, no) => {
   const it = iter(seq);
   each(range0(no), () => it.next());
@@ -1165,14 +1392,14 @@ const trySkip = curry('trySkip', (seq, no) => {
 });
 
 /**
- * Skip elements in a sequence.
- * Throws IteratorEnded if the sequence contains less than `no` elements.
- *
- * @function
- * @param {Sequence} seq Any sequence for which iter() is defined
- * @param {Number} no The number of elements to skip
- * @returns {Iterator}
- */
+* Skip elements in a sequence.
+* Throws IteratorEnded if the sequence contains less than `no` elements.
+*
+* @function
+* @param {Sequence} seq Any sequence for which iter() is defined
+* @param {Number} no The number of elements to skip
+* @returns {Iterator}
+*/
 const skip = curry('skip', (seq, no) => {
   const it = iter(seq);
   each(range(0, no), () => next(it));
@@ -1180,15 +1407,15 @@ const skip = curry('skip', (seq, no) => {
 });
 
 /**
- * Skips elements in the given sequences until one is found
- * for which the predicate is false.
- *
- * @function
- * @param {Sequence} seq Any sequence for which iter() is defined
- * @param {Function} pred
- * @returns {Iterator} The first element for which pred returns false
- *   plus the rest of the sequence.
- */
+* Skips elements in the given sequences until one is found
+* for which the predicate is false.
+*
+* @function
+* @param {Sequence} seq Any sequence for which iter() is defined
+* @param {Function} pred
+* @returns {Iterator} The first element for which pred returns false
+*   plus the rest of the sequence.
+*/
 const skipWhile = curry('skipWhile', (seq, pred) => {
   const it = iter(seq);
   while (true) {
@@ -1202,17 +1429,17 @@ const skipWhile = curry('skipWhile', (seq, pred) => {
 });
 
 /**
- * Yields an iterator of the first `no` elements in the given
- * sequence; the resulting iterator may contain less then `no`
- * elements if the input sequence was shorter than `no` elements.
- *
- * @function
- * @alias takeShort
- * @param {Sequence} seq Any sequence for which iter() is defined
- * @param {Number} no The number of elements to take
- * @returns {Iterator} The first element for which pred returns false
- *   plus the rest of the sequence.
- */
+* Yields an iterator of the first `no` elements in the given
+* sequence; the resulting iterator may contain less then `no`
+* elements if the input sequence was shorter than `no` elements.
+*
+* @function
+* @alias takeShort
+* @param {Sequence} seq Any sequence for which iter() is defined
+* @param {Number} no The number of elements to take
+* @returns {Iterator} The first element for which pred returns false
+*   plus the rest of the sequence.
+*/
 const tryTake = curry('tryTake', (seq, no) => {
   const Nothing = Symbol('Nothing');
   return pipe(
@@ -1226,15 +1453,15 @@ const tryTake = curry('tryTake', (seq, no) => {
 const takeShort = tryTake;
 
 /**
- * Version of tryTake that will throw IteratorEnded
- * if the given iterable is too short.
- *
- * @function
- * @param {Sequence} seq Any sequence for which iter() is defined
- * @param {Number} no The number of elements to take
- * @throws IteratorEnded
- * @returns {Array}
- */
+* Version of tryTake that will throw IteratorEnded
+* if the given iterable is too short.
+*
+* @function
+* @param {Sequence} seq Any sequence for which iter() is defined
+* @param {Number} no The number of elements to take
+* @throws IteratorEnded
+* @returns {Array}
+*/
 const take = curry('take', (seq, no) => pipe(
   range0(no),
   map(() => next(seq)),
@@ -1242,16 +1469,16 @@ const take = curry('take', (seq, no) => pipe(
 ));
 
 /**
- * Yields an iterator of the first `no` elements in the given
- * in the sequence. If the sequence is too short, the fallback
- * parameter will be substituted.
- *
- * @function
- * @param {Sequence} seq Any sequence for which iter() is defined
- * @param {Number} no The number of elements to take
- * @param {Any} fallback The value to supply if the input sequence is too short
- * @returns {Array} The elements taken
- */
+* Yields an iterator of the first `no` elements in the given
+* in the sequence. If the sequence is too short, the fallback
+* parameter will be substituted.
+*
+* @function
+* @param {Sequence} seq Any sequence for which iter() is defined
+* @param {Number} no The number of elements to take
+* @param {Any} fallback The value to supply if the input sequence is too short
+* @returns {Array} The elements taken
+*/
 const takeWithFallback = curry('takeWithFallback', (seq, no, fallback) => pipe(
   concat(range0(no)),
   map(() => tryNext(seq, fallback)),
@@ -1259,21 +1486,21 @@ const takeWithFallback = curry('takeWithFallback', (seq, no, fallback) => pipe(
 ));
 
 /**
- * Cut off the sequence at the first point where the given condition is no
- * longer met.
- *
- * `list(takeWhile([1,2,3,4,5,6...], x => x < 4))` yields `[1,2,3]`
- *
- * # Version History
- *
- * - 2.0.0 Add alias flatten()
- *
- * @function
- * @alias flatten
- * @param {Sequence} seq Any sequence for which iter() is defined
- * @param {Function} fn The predicate function
- * @returns {Iterator}
- */
+* Cut off the sequence at the first point where the given condition is no
+* longer met.
+*
+* `list(takeWhile([1,2,3,4,5,6...], x => x < 4))` yields `[1,2,3]`
+*
+* # Version History
+*
+* - 2.0.0 Add alias flatten()
+*
+* @function
+* @alias flatten
+* @param {Sequence} seq Any sequence for which iter() is defined
+* @param {Function} fn The predicate function
+* @returns {Iterator}
+*/
 const takeWhile = curry('takeWhile', function* takeWhile(seq, fn) {
   const it = iter(seq);
   while (true) {
@@ -1286,50 +1513,50 @@ const takeWhile = curry('takeWhile', function* takeWhile(seq, fn) {
 });
 
 /**
- * Cut off the sequence at the first point where the given condition is met.
- *
- * `list(takeUntil([1,2,3,4,5,6...], x => x > 4))` yields `[1,2,3,4]`
- *
- * @function
- * @param {Sequence} seq Any sequence for which iter() is defined
- * @param {Function} fn The predicate function
- * @returns {Iterator}
- */
+* Cut off the sequence at the first point where the given condition is met.
+*
+* `list(takeUntil([1,2,3,4,5,6...], x => x > 4))` yields `[1,2,3,4]`
+*
+* @function
+* @param {Sequence} seq Any sequence for which iter() is defined
+* @param {Function} fn The predicate function
+* @returns {Iterator}
+*/
 const takeUntil = curry('takeUntil', (seq, fn) => takeWhile(seq, (v) => !fn(v)));
 
 /**
- * Cut of the sequence at the point where the given value is
- * first encountered.
- *
- * @function
- * @param {Sequence} seq Any sequence for which iter() is defined
- * @returns {Iterator}
- */
+* Cut of the sequence at the point where the given value is
+* first encountered.
+*
+* @function
+* @param {Sequence} seq Any sequence for which iter() is defined
+* @returns {Iterator}
+*/
 const takeUntilVal = curry('takeUntilVal', (seq, val) => takeUntil(seq, is(val)));
 
 /**
- * Cut of the given sequence at the first undefined or null value.
- *
- * @function
- * @param {Sequence} seq Any sequence for which iter() is defined
- * @returns {Iterator}
- */
+* Cut of the given sequence at the first undefined or null value.
+*
+* @function
+* @param {Sequence} seq Any sequence for which iter() is defined
+* @returns {Iterator}
+*/
 const takeDef = (seq) => takeWhile(seq, (v) => v !== null && v !== undefined);
 
 /**
- * Flattens a sequence of sequences.
- * This function is not recursive (it will just expand the second level into the first).
- *
- * ```
- * const { into, flat } = require('ferrum');
- * into(flat([[1,2], [3,4]]), Array) // [1,2,3,4]
- * into(flat({foo: 42}), Array) // ["foo", 42]
- * ```
- *
- * @function
- * @param {Sequence(Sequence)} seq Any sequence for which iter() is defined
- * @returns {Sequence}
- */
+* Flattens a sequence of sequences.
+* This function is not recursive (it will just expand the second level into the first).
+*
+* ```
+* const { into, flat } = require('ferrum');
+* into(flat([[1,2], [3,4]]), Array) // [1,2,3,4]
+* into(flat({foo: 42}), Array) // ["foo", 42]
+* ```
+*
+* @function
+* @param {Sequence(Sequence)} seq Any sequence for which iter() is defined
+* @returns {Sequence}
+*/
 function* flat(seq) {
   for (const sub of iter(seq)) {
     for (const val of iter(sub)) {
@@ -1341,49 +1568,49 @@ function* flat(seq) {
 const flatten = flat;
 
 /**
- * Concatenate any number of sequences.
- * This is just a variadic alias for `flat()`
- *
- * @function
- * @param {...Sequence} seq
- * @returns {Sequence}
- */
+* Concatenate any number of sequences.
+* This is just a variadic alias for `flat()`
+*
+* @function
+* @param {...Sequence} seq
+* @returns {Sequence}
+*/
 const concat = (...args) => flat(args);
 
 /**
- * Given a sequence and a value, prepend the value to the sequence,
- * yielding a new iterator.
- *
- * @function
- * @param {Sequence} seq
- * @param {Any} val
- * @returns {Sequence}
- */
+* Given a sequence and a value, prepend the value to the sequence,
+* yielding a new iterator.
+*
+* @function
+* @param {Sequence} seq
+* @param {Any} val
+* @returns {Sequence}
+*/
 const prepend = curry('prepend', (seq, val) => concat([val], seq));
 
 /**
- * Given a sequence and a value, append the value to the sequence,
- * yielding a new iterator.
- *
- * @function
- * @param {Sequence} seq
- * @param {Any} val
- * @returns {Sequence}
- */
+* Given a sequence and a value, append the value to the sequence,
+* yielding a new iterator.
+*
+* @function
+* @param {Sequence} seq
+* @param {Any} val
+* @returns {Sequence}
+*/
 const append = curry('prepend', (seq, val) => concat(seq, [val]));
 
 /**
- * Sort a sequence.
- * The given function must turn map each parameter to a string or
- * number. Objects will be sorted based on those numbers.A
- * If the given parameters are already numbers/strings, you may
- * just use identity as the mapping function.
- *
- * @function
- * @param {Sequence} seq Any sequence for which iter() is defined
- * @param {Function} fn
- * @returns {Array}
- */
+* Sort a sequence.
+* The given function must turn map each parameter to a string or
+* number. Objects will be sorted based on those numbers.A
+* If the given parameters are already numbers/strings, you may
+* just use identity as the mapping function.
+*
+* @function
+* @param {Sequence} seq Any sequence for which iter() is defined
+* @param {Function} fn
+* @returns {Array}
+*/
 const mapSort = curry('mapSort', (seq, fn) => {
   const v = list(map(seq, (u) => [u, fn(u)]));
   // eslint-disable-next-line no-nested-ternary
@@ -1406,17 +1633,17 @@ function* zipBase(seqs) {
 }
 
 /**
- * Zip multiple sequences.
- * Puts all the first values from sequences into one sublist;
- * all the second values, third values and so on.
- * If the sequences are of different length, the output sequence
- * will be the length of the *shortest* sequence and discard all
- * remaining from the longer sequences...
- *
- * @function
- * @param {Sequence} seq A sequence of sequences
- * @returns {Iterator}
- */
+* Zip multiple sequences.
+* Puts all the first values from sequences into one sublist;
+* all the second values, third values and so on.
+* If the sequences are of different length, the output sequence
+* will be the length of the *shortest* sequence and discard all
+* remaining from the longer sequences...
+*
+* @function
+* @param {Sequence} seq A sequence of sequences
+* @returns {Iterator}
+*/
 const zipLeast = (seqs) => pipe(
   zipBase(seqs),
   takeWhile((elms) => all(map(elms, ({ done }) => !done))),
@@ -1425,26 +1652,26 @@ const zipLeast = (seqs) => pipe(
 );
 
 /**
- * Curryable version of zipLeast
- *
- * @function
- * @param {Sequence} a
- * @param {Sequence} b
- * @returns {Sequence}
- */
+* Curryable version of zipLeast
+*
+* @function
+* @param {Sequence} a
+* @param {Sequence} b
+* @returns {Sequence}
+*/
 const zipLeast2 = curry('zipLeast2', (a, b) => zipLeast([a, b]));
 
 /**
- * Zip multiple sequences.
- * Puts all the first values from sequences into one sublist;
- * all the second values, third values and so on.
- * If the sequences are of different length, an error will be thrown.
- *
- * @function
- * @param {Sequence} seq A sequence of sequences
- * @throws {IteratorEnded}
- * @returns {Iterator}
- */
+* Zip multiple sequences.
+* Puts all the first values from sequences into one sublist;
+* all the second values, third values and so on.
+* If the sequences are of different length, an error will be thrown.
+*
+* @function
+* @param {Sequence} seq A sequence of sequences
+* @throws {IteratorEnded}
+* @returns {Iterator}
+*/
 function* zip(seqs) {
   for (const elms of zipBase(seqs)) {
     const doneCnt = count(filter(elms, ({ done }) => done));
@@ -1459,29 +1686,29 @@ function* zip(seqs) {
 }
 
 /**
- * Curryable version of zip
- *
- * @function
- * @param {Sequence} a
- * @param {Sequence} b
- * @throws {IteratorEnded}
- * @returns {Sequence}
- */
+* Curryable version of zip
+*
+* @function
+* @param {Sequence} a
+* @param {Sequence} b
+* @throws {IteratorEnded}
+* @returns {Sequence}
+*/
 const zip2 = curry('zip2', (a, b) => zip([a, b]));
 
 /**
- * Zip multiple sequences.
- * Puts all the first values from sequences into one sublist;
- * all the second values, third values and so on...
- * If the sequences are of different length, the resulting iterator
- * will have the length of the longest sequence; the missing values
- * from the shorter sequences will be substituted with the given
- * fallback value.
- *
- * @function
- * @param {Sequence} seq A sequence of sequences
- * @returns {Iterator}
- */
+* Zip multiple sequences.
+* Puts all the first values from sequences into one sublist;
+* all the second values, third values and so on...
+* If the sequences are of different length, the resulting iterator
+* will have the length of the longest sequence; the missing values
+* from the shorter sequences will be substituted with the given
+* fallback value.
+*
+* @function
+* @param {Sequence} seq A sequence of sequences
+* @returns {Iterator}
+*/
 const zipLongest = curry('zipLongest', (seqs, fallback) => pipe(
   zipBase(seqs),
   takeWhile((elms) => any(map(elms, ({ done }) => !done))),
@@ -1490,30 +1717,30 @@ const zipLongest = curry('zipLongest', (seqs, fallback) => pipe(
 ));
 
 /**
- * Curryable version of zipLongest
- *
- * @function
- * @param {Sequence} a
- * @param {Sequence} b
- * @returns {Sequence}
- */
+* Curryable version of zipLongest
+*
+* @function
+* @param {Sequence} a
+* @param {Sequence} b
+* @returns {Sequence}
+*/
 const zipLongest2 = curry('zipLongest2', (a, b, fallback) => zipLongest([a, b], fallback));
 
 /**
- * Inserts an element between every two elements of the given sequence.
- *
- * ```
- * const { intersperse, assertSequenceEquals } = require('ferrum');
- * assertSequenceEquals(
- *   intersperse('ABC', '|'),
- *   ['A', '|', 'B', '|', 'C']);
- * ```
- *
- * @function
- * @param {Any} what – The element to intersperse
- * @param {Sequence} a
- * @returns {Sequence}
- */
+* Inserts an element between every two elements of the given sequence.
+*
+* ```
+* const { intersperse, assertSequenceEquals } = require('ferrum');
+* assertSequenceEquals(
+*   intersperse('ABC', '|'),
+*   ['A', '|', 'B', '|', 'C']);
+* ```
+*
+* @function
+* @param {Any} what – The element to intersperse
+* @param {Sequence} a
+* @returns {Sequence}
+*/
 const intersperse = curry('intersperse', (seq, e) => pipe(
   seq,
   map((v) => [e, v]),
@@ -1522,21 +1749,21 @@ const intersperse = curry('intersperse', (seq, e) => pipe(
 ));
 
 /**
- * Forms a sliding window on the underlying iterator.
- *
- * `slidingWindow([1,2,3,4,5], 3)`
- * yields `[[1,2,3], [2,3,4], [3,4,5]]`
- *
- * Will throw IteratorEnded if the sequence is shorter than
- * the given window.
- *
- * Returns an empty sequence if `no === 0`.
- *
- * @function
- * @param {Sequence} seq A sequence of sequences
- * @throws {IteratorEnded}
- * @returns {Iterator} Iterator of lists
- */
+* Forms a sliding window on the underlying iterator.
+*
+* `slidingWindow([1,2,3,4,5], 3)`
+* yields `[[1,2,3], [2,3,4], [3,4,5]]`
+*
+* Will throw IteratorEnded if the sequence is shorter than
+* the given window.
+*
+* Returns an empty sequence if `no === 0`.
+*
+* @function
+* @param {Sequence} seq A sequence of sequences
+* @throws {IteratorEnded}
+* @returns {Iterator} Iterator of lists
+*/
 const slidingWindow = curry('slidingWindow', (seq, no) => {
   if (no === 0) {
     return iter([]);
@@ -1562,15 +1789,15 @@ const slidingWindow = curry('slidingWindow', (seq, no) => {
 });
 
 /**
- * Like slidingWindow, but returns an empty sequence if the given
- * sequence is too short.
- *
- * Returns an empty sequence if `no === 0`.
- *
- * @function
- * @param {Sequence} seq A sequence of sequences
- * @returns {Iterator} Iterator of lists
- */
+* Like slidingWindow, but returns an empty sequence if the given
+* sequence is too short.
+*
+* Returns an empty sequence if `no === 0`.
+*
+* @function
+* @param {Sequence} seq A sequence of sequences
+* @returns {Iterator} Iterator of lists
+*/
 const trySlidingWindow = curry('trySlidingWindow', function* trySlidingWindow(seq, no) {
   if (no === 0) {
     return;
@@ -1595,53 +1822,53 @@ const trySlidingWindow = curry('trySlidingWindow', function* trySlidingWindow(se
 });
 
 /**
- * Almost like trySlidingWindow, but makes sure that
- * every element from the sequence gets it's own subarray,
- * even the last element. The arrays at the end are filled
- * with the filler value to make sure they have the correct
- * length.
- *
- * ```
- * const { lookahead } = require('ferrum');
- * lookahead([], 3, null) // => []
- * lookahead([42], 3, null) // => [[42, null, null, null]]
- * lookahead([42, 23], 3, null) // => [[42, 23, null, null], [23, null, null, null]]
- * lookahead([42, 23], 0, null) // => [[42], [23]]
- * ```
- *
- * Try sliding window would yield an empty array in each of the examples
- * above.
- *
- * Returns an empty sequence if `no === 0`.
- *
- * @function
- * @param {Sequence} seq
- * @param {Number} no Number of elements to look ahead to.
- * @param {Any} filler
- * @returns {Sequence<Array>}
- */
+* Almost like trySlidingWindow, but makes sure that
+* every element from the sequence gets it's own subarray,
+* even the last element. The arrays at the end are filled
+* with the filler value to make sure they have the correct
+* length.
+*
+* ```
+* const { lookahead } = require('ferrum');
+* lookahead([], 3, null) // => []
+* lookahead([42], 3, null) // => [[42, null, null, null]]
+* lookahead([42, 23], 3, null) // => [[42, 23, null, null], [23, null, null, null]]
+* lookahead([42, 23], 0, null) // => [[42], [23]]
+* ```
+*
+* Try sliding window would yield an empty array in each of the examples
+* above.
+*
+* Returns an empty sequence if `no === 0`.
+*
+* @function
+* @param {Sequence} seq
+* @param {Number} no Number of elements to look ahead to.
+* @param {Any} filler
+* @returns {Sequence<Array>}
+*/
 const lookahead = curry('lookahead', (seq, no, filler) => {
   const filled = concat(seq, take(repeat(filler), no));
   return trySlidingWindow(filled, no + 1);
 });
 
 /**
- * Split the given input sequence into chunks of a specific length.
- * The last chunk may be shorter than the given chunk size if the input
- * sequence is not long enough.
- *
- * ```
- * const { list, chunkifyShort } = require('ferrum');
- * list(chunkifyShort([1,2,3,4,5], 2)); // => [[1,2], [3,4], [5]]
- * ```
- *
- * Returns an empty sequence if `no === 0`.
- *
- * @function
- * @param {Sequence} seq A sequence of sequences
- * @param {Number} len The length of the chunk
- * @returns {Iterator} Sequence of lists
- */
+* Split the given input sequence into chunks of a specific length.
+* The last chunk may be shorter than the given chunk size if the input
+* sequence is not long enough.
+*
+* ```
+* const { list, chunkifyShort } = require('ferrum');
+* list(chunkifyShort([1,2,3,4,5], 2)); // => [[1,2], [3,4], [5]]
+* ```
+*
+* Returns an empty sequence if `no === 0`.
+*
+* @function
+* @param {Sequence} seq A sequence of sequences
+* @param {Number} len The length of the chunk
+* @returns {Iterator} Sequence of lists
+*/
 const chunkifyShort = curry('chunkifyShort', (seq, len) => {
   if (len === 0) {
     return iter([]);
@@ -1655,23 +1882,23 @@ const chunkifyShort = curry('chunkifyShort', (seq, len) => {
 });
 
 /**
- * Split the given input sequence into chunks of a specific length.
- * If the length of the sequence is not divisible by the chunk length
- * IteratorEnded will be thrown.
- *
- * ```
- * const { list, chunkify } = require('ferrum');
- * list(chunkify([1,2,3,4], 2)); // => [[1,2], [3,4]]
- * ```
- *
- * Returns an empty sequence if `no === 0`.
- *
- * @function
- * @param {Sequence} seq A sequence of sequences
- * @param {Number} len The length of the chunk
- * @throws {IteratorEnded}
- * @returns {Iterator} Sequence of lists
- */
+* Split the given input sequence into chunks of a specific length.
+* If the length of the sequence is not divisible by the chunk length
+* IteratorEnded will be thrown.
+*
+* ```
+* const { list, chunkify } = require('ferrum');
+* list(chunkify([1,2,3,4], 2)); // => [[1,2], [3,4]]
+* ```
+*
+* Returns an empty sequence if `no === 0`.
+*
+* @function
+* @param {Sequence} seq A sequence of sequences
+* @param {Number} len The length of the chunk
+* @throws {IteratorEnded}
+* @returns {Iterator} Sequence of lists
+*/
 const chunkify = curry('chunkify', (seq, len) => pipe(
   chunkifyShort(seq, len),
   map((chunk) => {
@@ -1684,21 +1911,21 @@ const chunkify = curry('chunkify', (seq, len) => pipe(
 ));
 
 /**
- * Split the given input sequence into chunks of a specific length.
- * If the input sequence is not long enough, the last chunk will be filled
- * with the given fallback value.
- *
- * ```
- * const { list, chunkifyWithFallback } = require('ferrum');
- * list(chunkifyWithFallback([1,2,3,4,5], 2, 99)); // => [[1,2], [3,4], [5, 99]]
- * ```
- *
- * @function
- * @param {Sequence} seq A sequence of sequences
- * @param {Number} len The length of the chunk
- * @param {Any} fallback The value to use if the input sequence is too short.
- * @returns {Iterator} Sequence of lists
- */
+* Split the given input sequence into chunks of a specific length.
+* If the input sequence is not long enough, the last chunk will be filled
+* with the given fallback value.
+*
+* ```
+* const { list, chunkifyWithFallback } = require('ferrum');
+* list(chunkifyWithFallback([1,2,3,4,5], 2, 99)); // => [[1,2], [3,4], [5, 99]]
+* ```
+*
+* @function
+* @param {Sequence} seq A sequence of sequences
+* @param {Number} len The length of the chunk
+* @param {Any} fallback The value to use if the input sequence is too short.
+* @returns {Iterator} Sequence of lists
+*/
 const chunkifyWithFallback = curry('chunkifyWithFallback', (seq, len, fallback) => pipe(
   chunkifyShort(seq, len),
   map((chunk) => {
@@ -1730,7 +1957,7 @@ const chunkifyWithFallback = curry('chunkifyWithFallback', (seq, len, fallback) 
  *   { foo: 42, bar: 99 },
  * ];
  *
- * // Group by `foo`
+ * // Group by foo
  * assertEquals(
  *  group(seq, ({foo}) => foo),
  *  new Map([
@@ -1742,7 +1969,7 @@ const chunkifyWithFallback = curry('chunkifyWithFallback', (seq, len, fallback) 
  *  ])
  * );
  *
- * // Group by `bar`
+ * // Group by bar
  * assertEquals(
  *  group(seq, ({bar}) => bar),
  *  new Map([
@@ -1768,7 +1995,7 @@ const group = curry('group', (seq, keyfn) => {
 });
 
 /**
- * Calculate the cartesian product of the given sequences.
+* Calculate the cartesian product of the given sequences.
  *
  * ```
  * const {cartesian, list} = require('ferrum');
@@ -1969,4 +2196,5 @@ module.exports = {
   mod,
   union,
   union2,
+  Sequence,
 };

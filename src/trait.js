@@ -22,11 +22,39 @@ const {
  */
 
 /**
- * Drop-in replacement for WeakMap that can store primitives.
+ * Drop-in replacement for [WeakMap](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WeakMap)
+ * that can store primitives.
  *
- * ```
+ * Note that primitive keys won't be weakly referenced (they cannot
+ * be garbage collected).
+ *
+ * Like the original WeakMap, the elements of a HybridWeakMap cannot be iterated over.
+ *
+ * ```js
+ * const assert = require('assert');
+ * const { strictEqual: assertIs } = require('assert');
  * const { HybridWeakMap } = require('ferrum');
- * const m = new HybridWeakMap([['foo', 42], ]);
+ *
+ * let data = { obj: {}, prim: 'foo' }
+ *
+ * const m = new HybridWeakMap([
+ *   [data.prim,  42], // Primitive key, will be strongly referenced
+ *   [data.obj,   23], // Object key, will be weakly referenced
+ * ]);
+ *
+ * // Can retrieve the values
+ * assertIs(m.get(data.prim), 42);
+ * assertIs(m.get(data.obj),  23);
+ * assert(m.has(data.prim));
+ * assert(m.has(data.obj));
+ *
+ * // Won't prevent object keys from being garbage collected.
+ * // This is especially important for large key/value pairs:
+ * // In this example our key and value are very small (empty object and a string),
+ * // but if they where large, allowing them to be freed could release
+ * // significant amounts of memory.
+ *
+ * data = null; // Allow the {}/23 pair to be garbage collected.
  * ```
  *
  * Normally WeakMaps cannot store primitive values like Strings
@@ -37,6 +65,8 @@ const {
  *
  * This is what HybridWeakMap is for: It simply contains two maps; one
  * Weak map for objects, and one normal Map for primitives...
+ *
+ * @class
  */
 class HybridWeakMap {
   constructor(iterable) {
@@ -71,6 +101,18 @@ class HybridWeakMap {
  * Thrown thrown to indicate a trait is not implemented for a specific
  * type or value.
  *
+ * ```js
+ * const { strictEqual: assertIs, throws: assertThrows } = require('assert');
+ * const { Size, size } = require('ferrum');
+ *
+ * class Bar {};
+ * assertThrows(() => size(new Bar()));
+ *
+ * // The error goes away after implementing the trait
+ * Size.impl(Bar, () => 42);
+ * assertIs(size(new Bar()), 42);
+ * ```
+ *
  * @class
  * @property {Trait} trait The trait that was not implemented
  */
@@ -79,7 +121,9 @@ class TraitNotImplemented extends Error {}
 /**
  * Helper for implementing generic functions/protocols.
  *
- * ```
+ * ```js
+ * const assert = require('assert');
+ * const { strictEqual: assertIs } = require('assert');
  * const { Trait } = require('ferrum');
  *
  * // Declaring a trait
@@ -98,19 +142,28 @@ class TraitNotImplemented extends Error {}
  *
  * // Providing implementations for third party types
  * Size.impl(Array, (x) => x.length); // Method of type Array
+ * assertIs(size([1,2,3]), 3);
+ *
  * Size.impl(String, (x) => x.length);
+ * assertIs(size("foobar"), 6);
+ *
  * Size.impl(Map, (x) => x.size);
+ * assert(empty(new Map()), true);
+ *
  * Size.impl(Set, (x) => x.size);
+ * assert(!empty(new Set([1, 2])));
  *
  * Size.impl(Object, (x) => { // Note that this won't apply to subclasses
  *   let cnt = 0;
  *   for (const _ in x) cnt++;
  *   return cnt;
  * });
+ * assertIs(size({foo: 42}), 1);
  *
  * // Note: The two following examples would be a bad idea in reality,
  * // they are just here toshow the mechanism
  * Size.implStatic(null, (_) => 0); // Static implementation (for a value and not a type)
+ * assert(empty(null));
  *
  * // This implementation will be used if the underlying type/value
  * // implements the magnitude trait
@@ -133,15 +186,6 @@ class TraitNotImplemented extends Error {}
  * // Last resort lookup for types. Implements Size for any dom nodes…
  * Size.implWild(
  *    (t) => isNodeType(t) ? ((elm) => elm.childElementCount) : undefined);
- *
- *
- * // Using all the implementations
- * size([1,2,3]); // => 3
- * size({foo: 42}); // => 1
- * size(new Set([1,2,3])); // => 3
- * size(new MyType()); // => 42
- * size(null); // => 0
- * //size(document.body); // => 1
  * ```
  *
  * # Traits, an introduction: Very specific interfaces that let you choose your guarantees
@@ -242,7 +286,7 @@ class Trait {
    * This function can be used directly in order to avoid a double lookup
    * of the implementation:
    *
-   * ```
+   * ```js
    * const impl = MyTrait.lookupValue(what);
    * if (impl) {
    *   impl(what, ...);
@@ -410,13 +454,51 @@ Trait._UndefObj = {};
 
 /**
  * Test if the given trait has been implemented for the given type
+ *
+ * ```js
+ * const assert = require('assert');
+ * const { Size, supports } = require('ferrum');
+ *
+ * class Bar {};
+ * assert(!supports(Bar, Size));
+ *
+ * // can be curried
+ * const supportsSize = supports(Size);
+ *
+ * // After implementing the trait
+ * Size.impl(Bar, () => 42);
+ * assert(supportsSize(Bar));
+ * ```
+ *
  * @function
+ * @param {Function} Typ The type
+ * @param {Trait} trait The trait to check support for
+ * @returns {Boolean}
  */
 const supports = curry('supports', (Typ, trait) => Boolean(trait.lookupType(Typ)));
 
 /**
  * Test if the given trait has been implemented for the given value
+ *
+ * ```js
+ * const assert = require('assert');
+ * const { Size, valueSupports } = require('ferrum');
+ *
+ * class Bar {};
+ * assert(!valueSupports(new Bar(), Size));
+ *
+ * // can be curried
+ * const valueSupportsSize = valueSupports(Size);
+ *
+ * // After implementing the trait
+ * Size.impl(Bar, () => 42);
+ * assert(valueSupportsSize(new Bar()));
+ * ```
+ *
  * @function
+ * @param {Function} Typ The type
+ * @param {Trait} trait The trait to check support for
+ * @returns {Boolean}
  */
 const valueSupports = curry('valueSupports', (val, trait) => Boolean(trait.lookupValue(val)));
 

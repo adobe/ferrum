@@ -24,14 +24,14 @@ const { curry } = require('./functional');
 /**
  * The `&&` operator as a function.
  *
- * ```
- * const {and} = require('ferrum');
+ * ```js
+ * const { strictEqual: assertIs } = require('assert');
+ * const { and } = require('ferrum');
  *
- * and("", true) // => ""
- * and(true, 42) // => 42
- *
- * and(true)("") // => ""
- * and(42)(true) // => 42
+ * assertIs(and("",   true),   "");
+ * assertIs(and(true)(""),     "");
+ * assertIs(and(true, 42),     42);
+ * assertIs(and(42)(true),     42);
  * ```
  *
  * @function
@@ -46,14 +46,14 @@ const and = curry('and', (a, b) => a && b);
 /**
  * The `||` operator as a function
  *
- * ```
- * const {or} = require('ferrum');
+ * ```js
+ * const { strictEqual: assertIs } = require('assert');
+ * const { or } = require('ferrum');
  *
- * or(42, false) // => 42
- * or(true, 5) // => 5
- *
- * or(false)(42) // => 42
- * or(5)(true) // => 5
+ * assertIs(or(42, false), 42);
+ * assertIs(or(false)(42), 42);
+ * assertIs(or(5, true),   5);
+ * assertIs(or(true)(5),   5);
  * ```
  *
  * @function
@@ -70,11 +70,12 @@ const or = curry('or', (a, b) => a || b);
 /**
  * The `!` as a function
  *
- * ```
- * const {not} = require('ferrum');
+ * ```js
+ * const { strictEqual: assertIs } = require('assert');
+ * const { not } = require('ferrum');
  *
- * not(42); // => false
- * not(null); // => true
+ * assertIs(not(42),   false);
+ * assertIs(not(null), true);
  * ```
  *
  * @function
@@ -87,16 +88,16 @@ const not = (a) => !a;
 /**
  * NAND as a function.
  *
- * ```
- * const {nand} = require('ferrum');
+ * ```js
+ * const { strictEqual: assertIs } = require('assert');
+ * const { nand } = require('ferrum');
  *
- * nand(true, 42) // => false
- * nand(null, false) // => true
- * nand(true, false) // => true
- *
- * nand(true)(42) // => false
- * nand(null)(false) // => true
- * nand(true)(false) // => true
+ * assertIs(nand(true, 42),    false);
+ * assertIs(nand(true)(42),    false);
+ * assertIs(nand(null, false), true);
+ * assertIs(nand(null)(false), true);
+ * assertIs(nand(true, false), true);
+ * assertIs(nand(true)(false), true);
  * ```
  *
  * @function
@@ -111,16 +112,16 @@ const nand = curry('nand', (a, b) => !(a && b));
 /**
  * NOR as a function.
  *
- * ```
- * const {nor} = require('ferrum');
+ * ```js
+ * const { strictEqual: assertIs } = require('assert');
+ * const { nor } = require('ferrum');
  *
- * nor(true, true) // => false
- * nor(false, true) // => false
- * nor(false, false) // => true
- *
- * nor(true)(true) // => false
- * nor(false)(true) // => false
- * nor(false)(false) // => true
+ * assertIs(nor(true, true),   false);
+ * assertIs(nor(true)(true),   false);
+ * assertIs(nor(false, true),  false);
+ * assertIs(nor(false)(true),  false);
+ * assertIs(nor(false, false), true);
+ * assertIs(nor(false)(false), true);
  * ```
  *
  * @function
@@ -135,18 +136,18 @@ const nor = curry('nor', (a, b) => !(a || b));
 /**
  * XOR as a function.
  *
- * ```
- * const {xor} = require('ferrum');
+ * ```js
+ * const { strictEqual: assertIs } = require('assert');
+ * const { xor } = require('ferrum');
  *
- * xor(true, true) // => false
- * xor(false, true) // => true
- * xor(true, false) // => true
- * xor(false, false) // => false
- *
- * xor(true)(true) // => false
- * xor(false)(true) // => true
- * xor(true)(false) // => true
- * xor(false)(false) // => false
+ * assertIs(xor(true, true),   false);
+ * assertIs(xor(true)(true),   false);
+ * assertIs(xor(false, false), false);
+ * assertIs(xor(false)(false), false);
+ * assertIs(xor(false, true),  true);
+ * assertIs(xor(true)(false),  true);
+ * assertIs(xor(true, false),  true);
+ * assertIs(xor(false)(true),  true);
  * ```
  *
  * @function
@@ -157,21 +158,22 @@ const nor = curry('nor', (a, b) => !(a || b));
  * @returns {Boolean}
  */
 const xor = curry('xor', (a, b) => Boolean(a) !== Boolean(b));
+
 /**
  * XNOR as a function.
  *
- * ```
- * const {xnor} = require('ferrum');
+ * ```js
+ * const { strictEqual: assertIs } = require('assert');
+ * const { xnor } = require('ferrum');
  *
- * xnor(true, true) // => true
- * xnor(false, true) // => false
- * xnor(true, false) // => false
- * xnor(false, false) // => true
- *
- * xnor(true)(true) // => true
- * xnor(false)(true) // => false
- * xnor(true)(false) // => false
- * xnor(false)(false) // => true
+ * assertIs(xnor(true, true),   true);
+ * assertIs(xnor(true)(true),   true);
+ * assertIs(xnor(false, false), true);
+ * assertIs(xnor(false)(false), true);
+ * assertIs(xnor(false, true),  false);
+ * assertIs(xnor(true)(false),  false);
+ * assertIs(xnor(true, false),  false);
+ * assertIs(xnor(false)(true),  false);
  * ```
  *
  * @function
@@ -188,24 +190,25 @@ const xnor = curry('xnor', (a, b) => Boolean(a) === Boolean(b));
 /**
  * `===` as a function
  *
- * ```
- * const assert = require('assert');
+ * See [eq()](./module-stdtraits.html#~eq) for a content aware comparison function.
+ *
+ * ```js
+ * const { strictEqual: assertIs } = require('assert');
  * const {is, count, filter, pipe} = require('ferrum');
  *
- * is(42, 42) // => true
- * is(42, "") // => false
- * is({}, {}) // => false (Can only successfully compare primitives)
- *
- * is(42)(42) // => true
- * is(42)("") // => false
- * is({})({}) // => false (Can only successfully compare primitives)
+ * assertIs(is(42, 42), true);
+ * assertIs(is(42)(42), true);
+ * assertIs(is(42, ""), false);
+ * assertIs(is(42)(""), false);
+ * assertIs(is({}, {}), false); // Can only successfully compare primitives
+ * assertIs(is({})({}), false);
  *
  * // Count how many times the value `42` occurs in the list
  * const cnt = pipe(
  *   [42, 23, 1, 4, 17, 22, 42],
  *   filter(is(42)),
  *   count);
- * assert.strictEqual(cnt, 2);
+ * assertIs(cnt, 2);
  * ```
  *
  * @function
@@ -220,23 +223,21 @@ const is = curry('is', (a, b) => a === b);
 /**
  * `!==` as a function
  *
- * ```
- * const {aint, list, filter, pipe} = require('ferrum');
+ * ```js
+ * const { strictEqual: assertIs } = require('assert');
+ * const { assertSequenceEquals, aint, filter, pipe } = require('ferrum');
  *
- * aint(42, 42) // => false
- * aint(42, "") // => true
- * aint({}, {}) // => true (Can only successfully compare primitives)
- *
- * aint(42)(42) // => false
- * aint(42)("") // => true
- * aint({})({}) // => false (Can only successfully compare primitives)
+ * assertIs(aint(42, 42), false);
+ * assertIs(aint(42)(42), false);
+ * assertIs(aint(42, ""), true);
+ * assertIs(aint(42)(""), true);
+ * assertIs(aint({}, {}), true); // Can only successfully compare primitives
+ * assertIs(aint({})({}), true);
  *
  * // Remove the value 42 from the list
- * pipe(
- *   [1,2,3,4,42,5,24],
- *   filter(aint(42)),
- *   list);
- * // => [1,2,3,4,5]
+ * assertSequenceEquals(
+ *   filter([1,2,3,4,42,5,24], aint(42)),
+ *   [1,2,3,4,5,24]);
  * ```
  *
  * @function
@@ -253,24 +254,21 @@ const aint = curry('aint', (a, b) => a !== b);
 /**
  * The `+` operator as a function:
  *
- * ```
- * const {plus, list, map, pipe} = require('ferrum');
+ * ```js
+ * const { strictEqual: assertIs } = require('assert');
+ * const { assertSequenceEquals, plus, list, map, pipe } = require('ferrum');
  *
- * plus(3, 4) // => 7
- * plus(3, -4) // => -1; Can also be used for subtraction
- * plus("foo", "bar") // => "foobar"
- *
- * plus(3)(4) // => 7
- * plus(3)(-4) // => -1; Can also be used for subtraction
- * plus("bar")("foo") // => "foobar"
+ * assertIs(plus(3, 4), 7);
+ * assertIs(plus(3)(4), 7);
+ * assertIs(plus(3, -4), -1); // Can also be used for subtraction
+ * assertIs(plus(3)(-4), -1);
+ * assertIs(plus("foo", "bar"), "foobar");
+ * assertIs(plus("bar")("foo"), "foobar");
  *
  * // Subtract one from each element in the list
- * pipe(
- *   [1,2,3,4,5],
- *   plus(-1),
- *   list
- * );
- * // => [0,1,2,3,4]
+ * assertSequenceEquals(
+ *   map([1, 2, 3, 4, 5], plus(-1)),
+ *   [0, 1, 2, 3, 4]);
  * ```
  *
  * NOTE: There is no subtract function, if you need subtraction just
@@ -286,21 +284,19 @@ const plus = curry('plus', (a, b) => a + b);
 /**
  * The `*` operator as a function:
  *
- * ```
- * const { mul, list, map, pipe, plus } = require('ferrum');
+ * ```js
+ * const { strictEqual: assertIs } = require('assert');
+ * const { assertSequenceEquals, mul, map } = require('ferrum');
  *
- * mul(3, 4); // => 12
- * mul(3, 1/10); // => -1; Can also be used for s
+ * assertIs(mul(3, 4), 12)
+ * assertIs(mul(4)(3), 12);
+ * assertIs(mul(10, 1/2), 5); // Can also be used for division
+ * assertIs(mul(1/2)(10), 5);
  *
- * plus(3)(4); // => 7
- * plus(3)(-4); // => -1; Can also be used for subtraction
- *
- * // Divide each element in the list by ten
- * pipe(
- *   [1,2,3,4,5],
- *   map(mul(1/10)),
- *   list);
- * // [0.1, 0.2, 0.3, 0.4, 0.5]
+ * // Divide each element in the list by two
+ * assertSequenceEquals(
+ *   map([2, 4, 6, 8], mul(1/2)),
+ *   [1, 2, 3, 4]);
  * ```
  *
  * NOTE: There is no division function, if you need division just

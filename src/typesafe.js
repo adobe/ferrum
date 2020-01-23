@@ -20,13 +20,14 @@ const { curry } = require('./functional');
 /**
  * Checks whether a value is null or undefined
  *
- * ```
- * const {isdef} = require('ferrum');
+ * ```js
+ * const assert = require('assert');
+ * const { isdef } = require('ferrum');
  *
- * isdef(null); // => false
- * isdef(undefined); // => false
- * isdef(0); // => true
- * isdef(false); // => true
+ * assert(isdef(0));
+ * assert(isdef(false));
+ * assert(!isdef(null));
+ * assert(!isdef(undefined));
  * ```
  *
  * This function considers all values that are not null
@@ -45,29 +46,27 @@ const isdef = (v) => v !== undefined && v !== null;
  *
  * This basically implements Optional semantics using null/undefined.
  *
- * ```
- * const { plus, pipe, isdef, ifdef, map, list } = require('ferrum');
+ * ```js
+ * const { strictEqual: assertIs } = require('assert');
+ * const { assertSequenceEquals, plus,  isdef, ifdef, map } = require('ferrum');
  *
  * const o = {
  *   foo: 42
  * };
  *
- * ifdef(o['foo'], plus(2)); // 44
- * ifdef(o['bar'], plus(2)); // undefined
+ * assertIs(ifdef(o['foo'], plus(2)), 44);
+ * assertIs(ifdef(o['bar'], plus(2)), undefined);
  *
  * // This is particularly useful for map or curry
- * pipe(
- *   [1,2,null,3],
- *   map(ifdef(x => x*3)),
- *   list);
- * // yields [3,6,null,9]
+ * assertSequenceEquals(
+ *   map([1, 2, null, 3], ifdef(x => x*3)),
+ *   [3,6,null,9]);
  *
  * // Without ifdef the pipe above would have to be manually written,
  * // which is a bit harder to read
- * pipe(
- *   [1,2,null,3],
- *   map(x => isdef(x) ? x : x*3),
- *   list);
+ * assertSequenceEquals(
+ *   map([1, 2, null, 3], (x) => isdef(x) ? x*3 : x),
+ *   [3, 6, null, 9]);
  * ```
  *
  * @function
@@ -80,19 +79,21 @@ const ifdef = curry('ifdef', (v, fn) => (isdef(v) ? fn(v) : v));
 /**
  * Determine type of an object.
  *
- * ```
+ * ```js
+ * const { strictEqual: assertIs } = require('assert');
  * const { type } = require('ferrum');
  *
  * class Bar {};
  *
- * type(null); // => null
- * type(undefined); // => undefined
- * type(42); // => Number
- * type(new Number(42)); // => Number
- * type(new Bar()); // => Bar
+ * assertIs(type(null),           null);
+ * assertIs(type(undefined),      undefined);
+ * assertIs(type({}),             Object);
+ * assertIs(type(42),             Number);
+ * assertIs(type(new Number(42)), Number);
+ * assertIs(type(new Bar()),      Bar);
  *
  * // The usual strategy to get the type is this
- * new Bar().constructor
+ * assertIs(new Bar().constructor, Bar);
  *
  * // Which fails for null and undefined...
  * //null.constructor
@@ -115,18 +116,22 @@ const type = (v) => (isdef(v) ? v.constructor : v);
 /**
  * Given a type, determine it's name.
  *
- * ```
- * const {type, typename} = require('ferrum');
+ * ```js
+ * const { strictEqual: assertIs } = require('assert');
+ * const { type, typename } = require('ferrum');
  *
  * class Bar {};
  *
- * typename(type(null)); // => "null"
- * typename(type(undefined)); // => "undefined"
- * typename(type(42)); // => "Number"
- * typename(Bar); // => "Bar"
+ * assertIs(typename(null),            "null");
+ * assertIs(typename(undefined),       "undefined");
+ * assertIs(typename(type(null)),      "null");
+ * assertIs(typename(type(undefined)), "undefined");
+ * assertIs(typename(type({})),        "Object");
+ * assertIs(typename(type(42)),        "Number");
+ * assertIs(typename(Bar),             "Bar");
  *
  * // The usual strategy to get the name of a value's type is this
- * new Bar().constructor.name
+ * assertIs(new Bar().constructor.name, "Bar");
  *
  * // But this obviously fails for null & undefined
  * //null.constructor.name
@@ -145,14 +150,19 @@ const typename = (t) => (isdef(t) ? t.name : `${t}`);
 /**
  * Test if a value is primitive
  *
- * ```
- * const {isPrimitive} = require('ferrum');
+ * ```js
+ * const { strictEqual: assertIs } = require('assert');
+ * const { isPrimitive } = require('ferrum');
  *
- * isPrimitive(null); // => true
- * isPrimitive(undefined); // => true
- * isPrimitive(42); // => true
- * isPrimitive({}); // => false
- * isPrimitive(new Number(42)); // => false
+ * assertIs(isPrimitive(null),      true);
+ * assertIs(isPrimitive(undefined), true);
+ * assertIs(isPrimitive(true),      true);
+ * assertIs(isPrimitive(false),     true);
+ * assertIs(isPrimitive(Symbol()),  true);
+ * assertIs(isPrimitive(""),        true);
+ * assertIs(isPrimitive(42),        true);
+ * assertIs(isPrimitive({}),        false);
+ * assertIs(isPrimitive(new Number(42)), false);
  * ```
  *
  * @function

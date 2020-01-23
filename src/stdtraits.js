@@ -45,6 +45,7 @@ const _typedArrays = [
   Uint16Array, Int32Array, Uint32Array, Float32Array, Float64Array];
 
 // URL is not available in some environments
+/* eslint-disable-next-line */
 const _maybeURL = typeof URL !== 'undefined' ? [URL] : [];
 
 // IMMUTABLE TRAIT ////////////////////////////////////
@@ -52,10 +53,22 @@ const _maybeURL = typeof URL !== 'undefined' ? [URL] : [];
 /**
  * Test whether instance of a given type is immutable.
  *
- * ```
+ * ```js
+ * const assert = require('assert');
  * const { typeIsImmutable } = require('ferrum');
- * typeIsImmutable(Object); // => false
- * typeIsImmutable(String); // => true
+ *
+ * assert(typeIsImmutable(String));
+ * assert(typeIsImmutable(Number));
+ * assert(typeIsImmutable(Symbol));
+ * assert(typeIsImmutable(undefined));
+ * assert(typeIsImmutable(null));
+ * assert(typeIsImmutable(RegExp));
+ * assert(typeIsImmutable(Function));
+ *
+ * assert(!typeIsImmutable(Object));
+ * assert(!typeIsImmutable(Array));
+ * assert(!typeIsImmutable(Map));
+ * assert(!typeIsImmutable(Set));
  * ```
  *
  * @function
@@ -69,10 +82,22 @@ const typeIsImmutable = (t) => supports(t, Immutable);
 /**
  * Test whether a given value is immutable.
  *
- * ```
+ * ```js
+ * const assert = require('assert');
  * const { isImmutable } = require('ferrum');
- * isImmutable({}); // => false
- * isImmutable(42); // => true
+ *
+ * assert(isImmutable(42));
+ * assert(isImmutable('asd'));
+ * assert(isImmutable(Symbol()));
+ * assert(isImmutable(null));
+ * assert(isImmutable(undefined));
+ * assert(isImmutable(/asd/));
+ * assert(isImmutable(() => {}));
+ *
+ * assert(!isImmutable({}));
+ * assert(!isImmutable([]));
+ * assert(!isImmutable(new Map()));
+ * assert(!isImmutable(new Set()));
  * ```
  *
  * @function
@@ -86,34 +111,36 @@ const isImmutable = (v) => valueSupports(v, Immutable);
 /**
  * This is a flag trait that indicates whether a type is immutable.
  *
- * ```
- * const {Immutable, isImmutable, typeIsImmutable} = require('ferrum');
+ * ```js
+ * const assert = require('assert');
+ * const { Immutable, isImmutable, typeIsImmutable, type } = require('ferrum');
  *
  * // Mark a custom type as immutable
  * class Foo {
  *   [Immutable.sym]() {}
  * };
  *
+ * assert(isImmutable(new Foo()));
+ * assert(typeIsImmutable(Foo));
+ *
  * // Or alternatively
- * Immutable.impl(Foo, true);
+ * class Bar {};
+ * Immutable.impl(Bar, true);
+ *
+ * assert(isImmutable(new Bar()));
+ * assert(typeIsImmutable(Bar));
  *
  * // Mark a custom value as immutable
- * const bar = {};
- * Immutable.implStatic(bar, true);
+ * const baz = {};
+ * Immutable.implStatic(baz, true);
  *
- * // Test a type for immutability
- * typeIsImmutable(Foo); // => true
- * typeIsImmutable(Number); // => true
- * typeIsImmutable(Object); // => false
- *
- * // Test a value for immutability
- * isImmutable(42); // => true
- * isImmutable({}); // => false
- * isImmutable(bar); // => true
+ * assert(isImmutable(baz));
+ * assert(!typeIsImmutable(type(baz)));
  *
  * // Any other classes will not be considered immutable by default
  * class Bang {};
- * typeIsImmutable(Bang); // => false
+ * assert(!isImmutable(new Bang()));
+ * assert(!typeIsImmutable(Bang));
  * ```
  *
  * Since javascript has not real way to enforce absolute immutability
@@ -144,9 +171,29 @@ const Immutable = new Trait('Immutable');
  * Determine whether two values are equal using the Equals trait.
  *
  * ```
- * const { eq } = require('ferrum');
- * eq([{foo: 42}], [{foo: 42}]); // => true
- * eq(1, 2); // => false
+ * const assert = require('assert');
+ * const { eq, assertSequenceEquals, reject } = require('ferrum');
+ *
+ * // Should give the same results as `===` for primitive values
+ * assert(eq(true, true));
+ * assert(eq(null, null));
+ * assert(eq(undefined, undefined));
+ * assert(eq("asd", "asd"));
+ * assert(eq(Symbol.iterator, Symbol.iterator));
+ * assert(!eq("", 0));
+ * assert(!eq(1, 2));
+ *
+ * // Can also compare more complex structures
+ * assert(eq([{foo: 42}], [{foo: 42}]));
+ * assert(!eq([{foo: 42}], [{bar: 11}]));
+ *
+ * // This is also particularly useful as a predicate for sequence
+ * // functions like filter, reject, contains, find, etc.
+ * // Eg. the following code will remove any objects equal to {foo: 23}
+ * const inp = [{foo: 42}, {foo: 23}, {foo: 23, bar: 1}];
+ * assertSequenceEquals(
+ *   reject(inp, eq({foo: 23})),
+ *   [{foo: 42}, {foo: 23, bar: 1}]);
  * ```
  *
  * This function is a bit more powerful than than the Equals trait itself:
@@ -184,8 +231,11 @@ const eq = curry('eq', (a, b) => {
  * Equivalent to `!eq(a, b)`
  *
  * ```
+ * const assert = require('assert');
  * const { uneq } = require('ferrum');
- * uneq(4, 5); // => true
+ *
+ * assert(uneq(4, 5));
+ * assert(!uneq({}, {}));
  * ```
  *
  * # Version history
@@ -206,9 +256,11 @@ const uneq = curry('uneq', (a, b) => !eq(a, b));
  * Assert that `eq(actual, expected)`
  *
  * ```
+ * const { throws: assertThrows } = require('assert');
  * const { assertEquals } = require('ferrum');
+ *
  * assertEquals([{foo: 42}], [{foo: 42}]); // OK!
- * //assertEquals(1, 2); // AssertionError!
+ * assertThrows(() => assertEquals([1,2,3], [1,2]));
  * ```
  *
  * # Version history
@@ -244,9 +296,11 @@ const assertEquals = (actual, expected, msg) => {
  * Assert that `!eq(actual, expected)`
  *
  * ```
+ * const { throws: assertThrows } = require('assert');
  * const { assertUneq } = require('ferrum');
- * assertUneq(1, 2); // OK!
- * //assertUneq([{foo: 42}], [{foo: 42}]); // AssertionError!
+ *
+ * assertUneq(1, 2);
+ * assertThrows(() => assertUneq([{foo: 42}], [{foo: 42}])); // AssertionError!
  * ```
  *
  * # Version history
@@ -279,9 +333,9 @@ const assertUneq = (actual, notExpected, msg) => {
 };
 
 /**
- * Trait to check whether two values are equal.a
+ * Trait to check whether two values are equal.
  *
- * ```
+ * ```js
  * const { Equals, equals, eq, uneq, assertEquals, assertUneq } = require('ferrum');
  *
  * // Implementing this type
@@ -291,30 +345,21 @@ const assertUneq = (actual, notExpected, msg) => {
  *     this.bang = bang;
  *   }
  *
- *   [Equals.sym](a, b) {
- *     return b instanceof Bar
- *         && eq(a.foo, b.foo)
- *         && eq(a.bang, b.bang);
+ *   [Equals.sym](otr) {
+ *     return otr instanceof Bar
+ *         && eq(this.foo, otr.foo)
+ *         && eq(this.bang, otr.bang);
  *   }
  * }
  *
  * // Or alternatively
- * Equals.impl(Bar, (a, b) => {
- *   // ...
- * });
+ * //Equals.impl(Bar, (a, b) => {
+ * //  ...
+ * //});
  *
- * // Test for equality
- * eq(new Bar(42, 23), new Bar(42, 23)); // => true
- * eq(new Bar(42, 23), new Bar(0, 0)); // => falseAA
- *
- * uneq(4, 3); // => true
- * uneq(4, 4); // => false
- *
- * assertEquals({}, {}, 'Values where different!'); // OK!
- * //assertEquals({}, {foo: 42}, 'Values where different!'); // Assertion Error!
- *
- * assertUneq([], [{}], 'Values where the same'); // OK!
- * //assertUneq([], [], 'Values where the same'); // Assertion Error!
+ * // Test for equality, normally you would use eq() and uneq()
+ * assertEquals(new Bar(42, 23), new Bar(42, 23));
+ * assertUneq(new Bar(42, 23), new Bar(0, 0));
  * ```
  *
  * Normally this trait should not be used directly; consider using
@@ -405,15 +450,18 @@ Equals.impl(Number, (a, b) => a === b || (Number.isNaN(a) && Number.isNaN(b)));
  * Determine the size of a container. Uses the Size trait.
  *
  * ```
+ * const { strictEqual: assertIs } = require('assert');
  * const { size } = require('ferrum');
- * size({foo: 42}); // => 1
- * size([1,2,3]); // => 3
+ *
+ * assertIs(size({foo: 42}), 1);
+ * assertIs(size([1,2,3]),   3);
  * ```
  *
  * # Version history
  *
  * - 1.2.0 Support for objects with Symbol keys.
  *
+ * @function
  * @see [Size](module-stdtraits-Size.html) for examples
  * @template T
  * @param {T} what
@@ -425,10 +473,22 @@ const size = (what) => Size.invoke(what);
  * Determine if a container is empty. Uses `size(x) === 0`a
  *
  * ```
- * const { empty } = require('ferrum');
- * empty([]); // => true
- * empty({}); // => true
- * empty("asd"); // => false
+ * const assert = require('assert');
+ * const { empty, reject, assertSequenceEquals } = require('ferrum');
+ *
+ * assert(empty([]));
+ * assert(empty({}));
+ * assert(!empty("asd"));
+ *
+ * // This is also particularly useful as a predicate for sequence
+ * // functions like filter, reject, contains, find, etc.
+ * // Eg. the following code will remove any empty containers from a sequence
+ * // regardless of type
+ * const rejectEmpty = reject(empty);
+ *
+ * assertSequenceEquals(
+ *   rejectEmpty([{foo: 23}, "", [], new Set(), "42"]),
+ *   [{foo: 23}, "42"]);
  * ```
  *
  * # Version history
@@ -436,6 +496,7 @@ const size = (what) => Size.invoke(what);
  * - 1.2.0 Support for objects with Symbol keys.
  *
  *
+ * @function
  * @see [Size](module-stdtraits-Size.html) for examples
  * @template T
  * @param {T} what
@@ -447,6 +508,8 @@ const empty = (what) => size(what) === 0;
  * Trait to determine the size of a container.
  *
  * ```
+ * const assert = require('assert');
+ * const { strictEqual: assertIs } = require('assert');
  * const { Size, size, empty } = require('ferrum');
  *
  * // Implementing size
@@ -461,14 +524,14 @@ const empty = (what) => size(what) === 0;
  * }
  *
  * // Alternatively
- * Size.impl(Foo, (v) => v.len);
+ * //Size.impl(Foo, (v) => v.len);
  *
  * // Determine the size
- * size(new Map()); // => 0
- * size("foobar"); // => 6
- * size({foo: 42, bar: 5}); // => 2
- * empty(new Set()); // => true
- * empty([1,2]); // => false
+ * assertIs(size(new Map()),         0);
+ * assertIs(size("foobar"),          6);
+ * assertIs(size({foo: 42, bar: 5}), 2);
+ * assert(empty(new Set()));
+ * assert(!empty([1,2]));
  * ```
  *
  * Implemented at least for Object, String, Array, Map, Set.
@@ -508,13 +571,22 @@ Size.impl(Object, (x) => {
  * Shallowly clone an object
  *
  * ```
- * const { shallowclone } = require('ferrum');
+ * const { strictEqual: assertIs, notStrictEqual: assertIsNot } = require('assert');
+ * const { shallowclone, assertEquals, assertUneq } = require('ferrum');
+ *
  * const a = {foo: []};
  * const b = shallowclone(a);
- * b.foo.push(42);
  *
- * a;  // => {foo: [42]}
- * b;  // => {foo: [42]}
+ * // The resulting value must be equal to the input, but be a clone
+ * assertIsNot(a, b);
+ * assertEquals(a, b);
+ *
+ * // All children are still the same, so mutating them propagates
+ * // to the original element.
+ * b.foo.push(42);
+ * assertIs(a.foo, b.foo);
+ * assertEquals(a.foo, b.foo);
+ * assertEquals(a.foo, [42]);
  * ```
  *
  * # Version history
@@ -533,7 +605,7 @@ const shallowclone = (a) => Shallowclone.invoke(a);
  * Shallowly clone an object.
  *
  * ```
- * const assert = require('assert');
+ * const { strictEqual: assertIs, notStrictEqual: assertIsNot } = require('assert');
  * const { Shallowclone, shallowclone, assertEquals, Equals, eq } = require('ferrum');
  *
  * class Bar {
@@ -554,11 +626,11 @@ const shallowclone = (a) => Shallowclone.invoke(a);
  * const a = new Bar({foo: 42}, {bar: 5});
  * const b = shallowclone(a);
  *
- * assert(a !== b);
  * assertEquals(a, b);
+ * assertIsNot(a, b);
  *
  * a.foo.foo = 5;
- * assert.strictEqual(b.foo.foo, 5);
+ * assertIs(b.foo.foo, 5);
  * ```
  *
  * # Interface
@@ -601,14 +673,24 @@ Shallowclone.implDerived([Immutable], ([_], v) => v);
  * Recursively clone an object
  *
  * ```
- * const { deepclone } = require('ferrum');
+ * const { notStrictEqual: assertIsNot } = require('assert');
+ * const { deepclone, assertEquals, assertUneq } = require('ferrum');
  *
  * const a = {foo: []};
  * const b = deepclone(a);
- * b.foo.push(42);
  *
- * a;  // => {foo: []}
- * b;  // => {foo: [42]}
+ * // After cloning, the top level element is equal to the original,
+ * // but it is a clone.
+ * assertIsNot(a, b);
+ * assertEquals(a, b);
+ *
+ * // The children are also cloned, mutating them will not propagate
+ * // to the origina
+ * b.foo.push(42);
+ * assertIsNot(a.foo, b.foo);
+ * assertUneq(a.foo, b.foo);
+ * assertEquals(a.foo, []);
+ * assertEquals(b.foo, [42])
  * ```
  *
  * # Version history
@@ -627,7 +709,7 @@ const deepclone = (x) => Deepclone.invoke(x);
  * Recursively clone an object.
  *
  * ```
- * const assert = require('assert');
+ * const { strictEqual: assertIs, notStrictEqual: assertIsNot } = require('assert');
  * const { Deepclone, deepclone, Equals, eq, assertEquals } = require('ferrum');
  *
  * class Bar {
@@ -648,11 +730,11 @@ const deepclone = (x) => Deepclone.invoke(x);
  * const a = new Bar({foo: 42}, {bar: 5});
  * const b = deepclone(a);
  *
- * assert(a !== b);
+ * assertIsNot(a, b);
  * assertEquals(a, b);
  *
  * a.foo.foo = 5;
- * assert(b.foo.foo === 42);
+ * assertIs(b.foo.foo, 42);
  * ```
  *
  * # Interface
@@ -716,17 +798,22 @@ Deepclone.implDerived([Immutable], ([_], v) => v);
  * any iterators and will actually support lists of key value pairs.
  *
  * ```
- * const { list, pairs } = require('ferrum');
+ * const { pairs, assertSequenceEquals } = require('ferrum');
  *
- * list(pairs(['a', 'b'])); // => [[0, 'a'], [1, 'b']]
- * list(pairs(new Set([1, 2]))); // => [[1, 1], [2, 2]]
- * list(pairs({foo: 42})); // [['foo', 42]]
+ * assertSequenceEquals(pairs("as"),            [[0, "a"], [1, "s"]]);
+ * assertSequenceEquals(pairs({foo: 42}),       [['foo', 42]]);
+ * assertSequenceEquals(pairs(['a', 'b']),      [[0, 'a'], [1, 'b']]);
+ * assertSequenceEquals(pairs(new Set([1, 2])), [[1, 1], [2, 2]]);
+ * assertSequenceEquals(pairs(
+ *   new Map([["foo", "bar"], ["baz", "bang"]])),
+ *   [["foo", "bar"], ["baz", "bang"]]);
  * ```
  *
  * # Version history
  *
  * - 1.2.0 Support for objects with Symbol keys.
  *
+ * @function
  * @see [Pairs](module-stdtraits-Pairs.html)
  * @template T
  * @param {T} what
@@ -738,17 +825,18 @@ const pairs = (x) => Pairs.invoke(x);
  * Get an iterator over the keys of a container. Uses `pairs(c)`.
  *
  * ```
- * const {list, keys} = require('ferrum');
+ * const {keys, assertSequenceEquals} = require('ferrum');
  *
- * list(keys(['a', 'b'])); // => [0, 1]
- * list(keys(new Set([1, 2]))); // => [1, 2]
- * list(keys({foo: 42})); // ['foo']
+ * assertSequenceEquals(keys(['a', 'b']),      [0, 1]);
+ * assertSequenceEquals(keys(new Set([1, 2])), [1, 2]);
+ * assertSequenceEquals(keys({foo: 42}),       ['foo']);
  * ```
  *
  * # Version history
  *
  * - 1.2.0 Support for objects with Symbol keys.
  *
+ * @function
  * @see [Pairs](module-stdtraits-Pairs.html)
  * @template T
  * @param {T} what
@@ -759,21 +847,25 @@ const keys = function* keys(x) {
     yield k;
   }
 };
+
 /**
- * Get an iterator over the values of a container. Uses `pairs(c)`.
+ * Get an iterator over the values of a container.
  *
- * ```
- * const {list, values} = require('ferrum');
+ * Uses the `Pairs` trait.
  *
- * list(values(['a', 'b'])); // => ['a', 'b']
- * list(values(new Set([1, 2]))); // => [1, 2]
- * list(values({foo: 42})); // [42]
+ * ```js
+ * const { values, assertSequenceEquals } = require('ferrum');
+ *
+ * assertSequenceEquals(values(['a', 'b']),      ['a', 'b']);
+ * assertSequenceEquals(values(new Set([1, 2])), [1, 2]);
+ * assertSequenceEquals(values({foo: 42}),       [42]);
  * ```
  *
  * # Version history
  *
  * - 1.2.0 Support for objects with Symbol keys.
  *
+ * @function
  * @see [Pairs](module-stdtraits-Pairs.html)
  * @template T
  * @param {T} what
@@ -789,7 +881,7 @@ const values = function* values(x) {
  * Get an iterator over a container.
  *
  * ```
- * const { list, values, keys, pairs, Pairs } = require('ferrum');
+ * const { values, keys, pairs, Pairs, assertSequenceEquals } = require('ferrum');
  *
  * class Bar {
  *   *[Pairs.sym]() {
@@ -798,9 +890,9 @@ const values = function* values(x) {
  *   }
  * }
  *
- * list(pairs(new Bar())); // => [['foo', 42], ['bar', 5]]
- * list(keys(new Bar())); // => ['foo', 'bar']
- * list(values(new Bar())); // => [42, 5]
+ * assertSequenceEquals(pairs(new Bar()),  [['foo', 42], ['bar', 5]]);
+ * assertSequenceEquals(keys(new Bar()),   ['foo', 'bar']);
+ * assertSequenceEquals(values(new Bar()), [42, 5]);
  * ```
  *
  * This is different from the `Sequence` trait in `sequence.js`
@@ -848,9 +940,39 @@ Pairs.impl(Object, function* impl(x) {
 /**
  * Given a key, get a value from a container.
  *
+ * Normally you would use the `object[value]` operator for this or
+ * `Map::get`. The advantage of using this function is that it works
+ * for any container (that implements the Trait), so it helps you
+ * write more generic functions.
+ *
+ * ```js
+ * const { strictEqual: assertIs } = require('assert');
+ * const { get, assertSequenceEquals, map } = require('ferrum');
+ *
+ * assertIs(get({foo: 42}, 'foo'), 42);
+ *
+ * // Get is particularly useful for more complex use cases; in this
+ * // example for instance we extract the key `1` from a variety of containers;
+ * const inp = [
+ *   ['foo', 'bar'],
+ *   new Map([[1, 42]]),
+ *   new Set([1]),
+ *   {1: 'bang'},
+ * ];
+ *
+ * assertSequenceEquals(
+ *   map(inp, get(1)),
+ *   ['bar', 42, 1, 'bang']);
+ * ```
+ *
  * # Version history
  *
  * - 1.2.0 Support for objects with Symbol keys.
+ *
+ * @function
+ * @param {*} x The container to get the key of. Must implement the Get trait.
+ * @param {*} k The key to retrieve the value for
+ * @returns {*} The value
  */
 const get = curry('get', (x, k) => Get.invoke(x, k));
 
@@ -884,9 +1006,28 @@ const Get = new Trait('Get');
 /**
  * Test if a container includes an entry with the given key
  *
+ * ```js
+ * const assert = require('assert');
+ * const { has, filter, assertSequenceEquals } = require('ferrum');
+ *
+ * assert(has({foo: 42}, 'foo'));
+ * assert(!has({foo: 42}, 'bar'));
+ *
+ * // Get is particularly useful with filter/reject/find/...
+ * // This example will return all containers that have the 'value' key
+ * const dat = [{ value: 13 }, { ford: 42 }];
+ * assertSequenceEquals(
+ *   filter(dat, has('value')),
+ *   [{ value: 13 }]);
+ * ```
+ *
  * # Version history
  *
  * - 1.2.0 Support for objects with Symbol keys.
+ *
+ * @function
+ * @param {*} x The container
+ * @param {k} k The key to check
  */
 const has = curry('has', (x, k) => Has.invoke(x, k));
 
@@ -921,9 +1062,32 @@ Has.impl(Object, (x, k) => k in x);
  * Set a value in a container.
  * Always returns the given value.
  *
+ * ```js
+ * const { assign, each, assertEquals } = require('ferrum');
+ *
+ * const o = {};
+ * const m = new Map();
+ * const a = [];
+ *
+ * // Normal assignment
+ * assign(o, 'foo', 42);
+ * assertEquals(o, { foo: 42 });
+ *
+ * // Assignment using currying
+ * each([o, m, a], assign(2, 'bar'));
+ * assertEquals(o, { foo: 42, 2: 'bar' });
+ * assertEquals(m, new Map([[ 2, 'bar' ]]));
+ * assertEquals(a, [undefined, undefined, 'bar']);
+ * ```
+ *
  * # Version history
  *
  * - 1.2.0 Support for objects with Symbol keys.
+ *
+ * @function
+ * @param {*} cont The container
+ * @param {*} key The key
+ * @param {*} value The value to set
  */
 const assign = curry('assign', (cont, key, value) => {
   Assign.invoke(cont, key, value);
@@ -970,9 +1134,29 @@ const Assign = new Trait('Assign');
 /**
  * Delete an entry with the given key from a container
  *
+ * ```js
+ * const { del, each, assertEquals } = require('ferrum');
+ *
+ * const o = { foo: 42, bar: '13' };
+ * const m = new Map([[ 'foo', true ]]);
+ *
+ * // Normal assignment
+ * del(o, 'bar');
+ * assertEquals(o, { foo: 42 });
+ *
+ * // Assignment using currying
+ * each([o, m], del('foo'));
+ * assertEquals(o, {});
+ * assertEquals(m, new Map());
+ * ```
+ *
  * # Version history
  *
  * - 1.2.0 Support for objects with Symbol keys.
+ *
+ * @function
+ * @param {*} x The container to delete from
+ * @param {*} k The key to delete
  */
 const del = curry('del', (x, k) => {
   Delete.invoke(x, k);
@@ -1006,18 +1190,46 @@ Delete.impl(Object, (x, k) => delete x[k]);
 });
 
 /**
- * Set a default value in a container.
+ * If the key is present in the container, return the value associated
+ * with the key. Otherwise, assign the supplied default value to the
+ * key and return that value.
+ *
+ * ```js
+ * const { setdefault, map, assertEquals, assertSequenceEquals } = require('ferrum');
+ *
+ * const o = { foo: 42 };
+ * const m = new Map();
+ *
+ * // Normal assignment
+ * assertEquals(setdefault(o, 'bar', 1), 1);
+ * assertEquals(setdefault(o, 'foo', 2), 42);
+ * assertEquals(o, { foo: 42, bar: 1});
+ *
+ * // Assignment using currying
+ * assertSequenceEquals(
+ *   map([o, m], setdefault('foo', 3)),
+ *   [ 42, 3 ]);
+ * assertEquals(o, { foo: 42, bar: 1 });
+ * assertEquals(m, new Map([[ 'foo', 3 ]]));
+ * ```
  *
  * # Version history
  *
  * - 1.2.0 Support for objects with Symbol keys.
+ *
+ * @function
+ * @param {*} x The container
+ * @param {*} k The key to search for
+ * @param {*} v The default value
+ * @returns {*} Whatever the container now has associated with `k`.
  */
 const setdefault = curry('setdefault', (x, k, v) => Setdefault.invoke(x, k, v));
 
 /**
  * Set a default value in a container.
  *
- * This trait is implicitly implemented if the container implements Has, Get and Set.
+ * This trait is implicitly implemented if the container implements Has, Get and Set,
+ * so you usually won't need to explicitly implement this.
  *
  * # Interface
  *
@@ -1036,18 +1248,44 @@ Setdefault.implDerived([Has, Get, Assign], ([has2, get2, assign2], x, k, v) => {
 });
 
 /**
- * Swap out one value in a container for another
+ * Swap out one value in a container for another.
+ *
+ * ```js
+ * const { replace, map, assertEquals, assertSequenceEquals } = require('ferrum');
+ *
+ * const o = { foo: 42 };
+ * const m = new Map([[ 'bar', 'hello' ]]);
+ *
+ * // Normal assignment
+ * assertEquals(replace(o, 'bar', 1), undefined);
+ * assertEquals(replace(o, 'foo', 2), 42);
+ * assertEquals(o, { foo: 2, bar: 1});
+ *
+ * // Assignment using currying
+ * assertSequenceEquals(
+ *   map([o, m], replace('bar', 'world')),
+ *   [ 1, 'hello' ]);
+ * assertEquals(o, { foo: 2, bar: 'world' });
+ * assertEquals(m, new Map([[ 'bar', 'world' ]]));
+ * ```
  *
  * # Version history
  *
  * - 1.2.0 Support for objects with Symbol keys.
+ *
+ * @function
+ * @param {*} x The container to replace a value in
+ * @param {*} k The key of the value to replace
+ * @param {*} v The new value
+ * @returns {*} Whatever the value was before the replace.
  */
 const replace = curry('replace', (x, k, v) => Replace.invoke(x, k, v));
 
 /**
  * Swap out one value in a container for another.
  *
- * This trait is implicitly implemented if the container implements Get and Set.
+ * This trait is implicitly implemented if the container implements Get and Set,
+ * so you usually do not need to manually implement this.
  *
  * # Interface
  *

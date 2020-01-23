@@ -24,8 +24,11 @@ const {
  * This is a helper for declaring multiline strings.
  *
  * ```
+ * const { strictEqual: assertIs } = require('assert');
  * const { multiline } = require('ferrum');
- * const s = multiline(`
+ *
+ * assertIs(
+ *   multiline(`
  *     Foo
  *     Bar
  *     Baz
@@ -33,7 +36,13 @@ const {
  *        Hello
  *
  *     Bang
- * `);
+ *
+ *   `),
+ *   'Foo\nBar\nBaz\n\n   Hello\n\nBang\n');
+ *
+ * assertIs(
+ *   multiline(`Foo\nBar`),
+ *   'Foo\nBar');
  * ```
  *
  * The function basically just takes a string and then
@@ -43,6 +52,8 @@ const {
  * whitespace prefix length (number of space 0x20 characters
  * at the start of the line). This prefix is simply removed
  * from each line...
+ *
+ * @function
  */
 const multiline = (str) => {
   // Discard the leading & trailing line
