@@ -30,11 +30,11 @@
     "@semantic-release/changelog": "5.0.0",
     "@semantic-release/commit-analyzer": "8.0.1",
     "@semantic-release/git": "9.0.0",
-    "@semantic-release/github": "7.0.1",
+    "@semantic-release/github": "7.0.3",
     "@semantic-release/npm": "7.0.2",
     "@semantic-release/release-notes-generator": "9.0.0",
     "ajv": "6.11.0",
-    "codecov": "3.6.4",
+    "codecov": "3.6.5",
     "commitizen": "4.0.3",
     "cz-conventional-changelog": "3.1.0",
     "docdash": "git+https://github.com/koraa/docdash.git",
@@ -51,10 +51,10 @@
     "mocha": "7.0.1",
     "mocha-junit-reporter": "1.23.3",
     "mocha-multi-reporters": "1.1.7",
-    "mocha-parallel-tests": "2.2.2",
+    "mocha-parallel-tests": "2.3.0",
     "nyc": "15.0.0",
     "semantic-release": "17.0.2",
-    "snyk": "1.290.1"
+    "snyk": "1.290.2"
   },
   "snyk": true,
   "renovate": {
