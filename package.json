@@ -43,7 +43,7 @@
     "eslint-plugin-header": "3.0.0",
     "eslint-plugin-import": "2.20.1",
     "eslint-plugin-jsx-a11y": "6.2.3",
-    "eslint-plugin-react": "7.18.3",
+    "eslint-plugin-react": "7.19.0",
     "ferrum.doctest": "0.1.0",
     "jsdoc": "3.6.3",
     "junit-report-builder": "1.3.3",
@@ -54,7 +54,7 @@
     "mocha-parallel-tests": "2.3.0",
     "nyc": "15.0.0",
     "semantic-release": "17.0.4",
-    "snyk": "1.297.3"
+    "snyk": "1.298.1"
   },
   "snyk": true,
   "renovate": {
