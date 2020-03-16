@@ -31,7 +31,7 @@
     "@semantic-release/commit-analyzer": "8.0.1",
     "@semantic-release/git": "9.0.0",
     "@semantic-release/github": "7.0.4",
-    "@semantic-release/npm": "7.0.3",
+    "@semantic-release/npm": "7.0.4",
     "@semantic-release/release-notes-generator": "9.0.1",
     "ajv": "6.12.0",
     "codecov": "3.6.5",
@@ -39,7 +39,7 @@
     "cz-conventional-changelog": "3.1.0",
     "docdash": "git+https://github.com/koraa/docdash.git",
     "eslint": "6.8.0",
-    "eslint-config-airbnb": "18.0.1",
+    "eslint-config-airbnb": "18.1.0",
     "eslint-plugin-header": "3.0.0",
     "eslint-plugin-import": "2.20.1",
     "eslint-plugin-jsx-a11y": "6.2.3",
@@ -54,7 +54,7 @@
     "mocha-parallel-tests": "2.3.0",
     "nyc": "15.0.0",
     "semantic-release": "17.0.4",
-    "snyk": "1.298.1"
+    "snyk": "1.299.0"
   },
   "snyk": true,
   "renovate": {
