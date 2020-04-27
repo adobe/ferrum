@@ -9,9 +9,7 @@
     "lint": "./node_modules/.bin/eslint src test",
     "semantic-release": "semantic-release",
     "docs": "jsdoc -c .jsdoc.json",
-    "commit": "git-cz",
-    "snyk-protect": "snyk protect",
-    "prepare": "npm run snyk-protect"
+    "commit": "git-cz"
   },
   "repository": {
     "type": "git",
@@ -53,10 +51,8 @@
     "mocha-multi-reporters": "1.1.7",
     "mocha-parallel-tests": "2.3.0",
     "nyc": "15.0.1",
-    "semantic-release": "17.0.6",
-    "snyk": "1.306.0"
+    "semantic-release": "17.0.6"
   },
-  "snyk": true,
   "renovate": {
     "extends": [
       "config:base",
