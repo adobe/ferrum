@@ -36,7 +36,7 @@
     "commitizen": "4.1.2",
     "cz-conventional-changelog": "3.2.0",
     "docdash": "git+https://github.com/koraa/docdash.git",
-    "eslint": "7.1.0",
+    "eslint": "7.2.0",
     "eslint-config-airbnb": "18.1.0",
     "eslint-plugin-header": "3.0.0",
     "eslint-plugin-import": "2.20.2",
@@ -45,12 +45,12 @@
     "ferrum.doctest": "0.1.0",
     "jsdoc": "3.6.4",
     "junit-report-builder": "2.0.0",
-    "lint-staged": "10.2.7",
+    "lint-staged": "10.2.9",
     "mocha": "7.2.0",
     "mocha-junit-reporter": "2.0.0",
     "mocha-multi-reporters": "1.1.7",
     "mocha-parallel-tests": "2.3.0",
-    "nyc": "15.0.1",
+    "nyc": "15.1.0",
     "semantic-release": "17.0.8"
   },
   "renovate": {
