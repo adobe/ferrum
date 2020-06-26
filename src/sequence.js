@@ -867,7 +867,6 @@ const obj = (seq) => {
   return r;
 };
 
-
 /**
  * Convert each element from a sequence into a string
  * and join them with the given separator.
@@ -1522,7 +1521,6 @@ const intersperse = curry('intersperse', (seq, e) => pipe(
   trySkip(1),
 ));
 
-
 /**
  * Forms a sliding window on the underlying iterator.
  *
@@ -1768,7 +1766,6 @@ const group = curry('group', (seq, keyfn) => {
   each(seq, (elm) => setdefault(cont, keyfn(elm), []).push(elm));
   return cont;
 });
-
 
 /**
  * Calculate the cartesian product of the given sequences.
