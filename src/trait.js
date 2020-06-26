@@ -50,7 +50,6 @@ class HybridWeakMap {
     }
   }
 
-
   get(k) {
     return isPrimitive(k) ? this.primitives.get(k) : this.objs.get(k);
   }

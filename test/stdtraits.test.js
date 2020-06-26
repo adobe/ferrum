@@ -22,7 +22,6 @@ const {
 } = require('../src/index');
 const { ckEq, ckEqSeq, ckThrows } = require('./util');
 
-
 it('Immutable', () => {
   each([String, Number, Symbol, undefined, RegExp, Function], (Typ) => {
     assert(typeIsImmutable(Typ));
@@ -114,7 +113,6 @@ describe('Equals', () => {
     () => new Set(['foo', 42]),
     ...(map(_typedArrays, (Typ) => () => new Typ([1, 2, 3, 4]))),
   ];
-
 
   it('complex values', () => {
     each(complex, (fn) => ckEq(fn(), fn()));
