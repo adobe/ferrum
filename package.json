@@ -33,7 +33,7 @@
     "@semantic-release/release-notes-generator": "9.0.1",
     "ajv": "6.12.4",
     "codecov": "3.7.2",
-    "commitizen": "4.1.2",
+    "commitizen": "4.1.5",
     "cz-conventional-changelog": "3.2.0",
     "docdash": "git+https://github.com/koraa/docdash.git",
     "eslint": "7.7.0",
