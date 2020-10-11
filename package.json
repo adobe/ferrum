@@ -31,17 +31,17 @@
     "@semantic-release/github": "7.1.1",
     "@semantic-release/npm": "7.0.6",
     "@semantic-release/release-notes-generator": "9.0.1",
-    "ajv": "6.12.5",
-    "codecov": "3.7.2",
+    "ajv": "6.12.6",
+    "codecov": "3.8.0",
     "commitizen": "4.2.1",
     "cz-conventional-changelog": "3.3.0",
     "docdash": "git+https://github.com/koraa/docdash.git",
-    "eslint": "7.10.0",
+    "eslint": "7.11.0",
     "eslint-config-airbnb": "18.2.0",
     "eslint-plugin-header": "3.1.0",
     "eslint-plugin-import": "2.22.1",
     "eslint-plugin-jsx-a11y": "6.3.1",
-    "eslint-plugin-react": "7.21.3",
+    "eslint-plugin-react": "7.21.4",
     "ferrum.doctest": "0.1.0",
     "jsdoc": "3.6.6",
     "junit-report-builder": "2.1.0",
@@ -51,7 +51,7 @@
     "mocha-multi-reporters": "1.1.7",
     "mocha-parallel-tests": "2.3.0",
     "nyc": "15.1.0",
-    "semantic-release": "17.1.2"
+    "semantic-release": "17.2.0"
   },
   "renovate": {
     "extends": [
