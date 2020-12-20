@@ -589,7 +589,7 @@ pair(2)(1); // => [1,2]
 
 ### 1.4.0
 
-*  Add intersperse() ([8d28f73](https://github.com/adobe/ferrum/commit/d28f73))
+*  Add intersperse() ([8d28f73](https://github.com/adobe/ferrum/commit/8d28f73))
 
 ### 1.3.0
 
