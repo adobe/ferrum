@@ -51,7 +51,7 @@
     "mocha-multi-reporters": "1.5.1",
     "mocha-parallel-tests": "2.3.0",
     "nyc": "15.1.0",
-    "semantic-release": "17.3.3"
+    "semantic-release": "17.3.7"
   },
   "renovate": {
     "extends": [
