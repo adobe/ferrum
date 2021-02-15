@@ -44,7 +44,7 @@
     "eslint-plugin-react": "7.22.0",
     "ferrum.doctest": "0.1.0",
     "jsdoc": "3.6.6",
-    "junit-report-builder": "2.1.0",
+    "junit-report-builder": "3.0.0",
     "lint-staged": "10.5.4",
     "mocha": "8.2.1",
     "mocha-junit-reporter": "2.0.0",
