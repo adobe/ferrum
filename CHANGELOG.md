@@ -1,3 +1,10 @@
+# [1.8.0](https://github.com/adobe/ferrum/compare/v1.7.0...v1.8.0) (2021-03-04)
+
+
+### Features
+
+* Move tests into the documentation examples ([c033897](https://github.com/adobe/ferrum/commit/c033897fc9bc22426c10195dddf0a6b78ffad799)), closes [#87](https://github.com/adobe/ferrum/issues/87) [#62](https://github.com/adobe/ferrum/issues/62)
+
 # [1.7.0](https://github.com/adobe/ferrum/compare/v1.6.0...v1.7.0) (2020-01-17)
 
 
