@@ -1,0 +1,8 @@
+* unified api for async & sync sequences
+* await in pipe
+* Traits with multiple type parameters
+* uniq -> lazy
+* Tutorial: Creating equals()
+* Tutorial: Using predicates effectively (filter(eq(2)))
+* Tutorial: Implementing custom containers
+* Tutorial: List comprehensions
