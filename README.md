@@ -645,6 +645,13 @@ assertEquals(pair(2)(1), /* => */ [1,2]);
 
 ### Features
 
+### 1.9.0
+
+* Hashable Trait & Hash tables ([3a86070](https://github.com/adobe/ferrum/commit/3a86070336d9a7f165e1d1d15b7858a0c1391c89))
+* apply1(), let_in(), call() ([3a86070](https://github.com/adobe/ferrum/commit/3a86070336d9a7f165e1d1d15b7858a0c1391c89))
+* create(), createFrom(), builder() ([3a86070](https://github.com/adobe/ferrum/commit/3a86070336d9a7f165e1d1d15b7858a0c1391c89))
+
+
 ### 1.8.0
 
 * Move many tests into the documentation examples ([c033897](https://github.com/adobe/ferrum/commit/c033897fc9bc224))
