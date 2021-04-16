@@ -1,3 +1,10 @@
+# [1.9.0](https://github.com/adobe/ferrum/compare/v1.8.0...v1.9.0) (2021-04-16)
+
+
+### Features
+
+* Hashable Trait & Hash tables ([3a86070](https://github.com/adobe/ferrum/commit/3a86070336d9a7f165e1d1d15b7858a0c1391c89))
+
 # [1.8.0](https://github.com/adobe/ferrum/compare/v1.7.0...v1.8.0) (2021-03-04)
 
 
