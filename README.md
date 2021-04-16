@@ -61,7 +61,8 @@ including an implementation of
 [HashMap](https://www.ferrumjs.org/module-hashing-HashMap.html) and
 [HashSet](https://www.ferrumjs.org/module-hashing-HashSet.html).
 
-It supports [user defined hash functions]() (e.g. blake2 instead of xxhash).
+It supports [user defined hash functions](https://www.ferrumjs.org/module-hashing-Hasher.html)
+(e.g. blake2 instead of xxhash).
 Support for all of the standard types is provided out of the box and
 [support for user defined types](https://www.ferrumjs.org/module-hashing-Hashable.html)
 or third party types can be provided via the trait infrastructure.
