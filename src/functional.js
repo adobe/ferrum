@@ -15,15 +15,6 @@
  * @description Generic library for functional programming & working with functions.
  */
 
-// Circular require resolution
-const _seq = () => {
-  if (!_seq.cache) {
-    // eslint-disable-next-line global-require
-    _seq.cache = require('./sequence');
-  }
-  return _seq.cache;
-};
-
 /**
  * Immediately execute the given function.
  *

@@ -81,8 +81,8 @@ assert.strictEqual(m.get(7), "seven");
 assert.strictEqual(m.get({}), undefined); // Identity based lookup
 
 const hm = new HashMap([[{}, 42], [7, "seven"]]);
-assert.strictEqual(m.get(7), "seven");
-assert.strictEqual(m.get({}), 42); // Content based lookup
+assert.strictEqual(hm.get(7), "seven");
+assert.strictEqual(hm.get({}), 42); // Content based lookup
 ```
 
 <a name="doctest"></a>
