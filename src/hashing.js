@@ -1229,7 +1229,12 @@ UnorderedHasher.withOpts = curry('UnorderedHasher.fromSeedWithOpts',
 // Hash Tables ---------------------------------
 
 /**
- * Key/Value container. Similar to the ES6 [Map](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map).
+ * Key/Value container.
+ *
+ * Implements the same interface ES6 [Map](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map),
+ * except that keys are compared based on equality using a hash function and not based on identity.
+ *
+ * Iterates its elements in insertion order.
  *
  * ```js
  * const assert = require('assert');
@@ -1242,6 +1247,8 @@ UnorderedHasher.withOpts = curry('UnorderedHasher.fromSeedWithOpts',
  * assert(hm.has({}));
  * assert.strictEqual(hm.get({}), 42);
  * ```
+ *
+ * Iteration order is defined to be the order of insertation
  *
  * # Version history
  *
@@ -1592,7 +1599,12 @@ HashMap.fromSeqWithOpts = curry('HashMap.fromSeqWithOpts',
 const hashmap = HashMap.fromSeq;
 
 /**
- * Key/Value container. Similar to the ES6 [Set](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set).
+ * Container that makes sure it contains each element just one time.
+ *
+ * Implements the same interface ES6 [Set](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set),
+ * except that keys are compared based on equality using a hash function and not based on identity.
+ *
+ * Iterates its elements in insertion order.
  *
  * ```js
  * const assert = require('assert');
