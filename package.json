@@ -54,7 +54,7 @@
     "mocha-parallel-tests": "2.3.0",
     "nyc": "15.1.0",
     "semantic-release": "17.4.2",
-    "object-hash": "^2.1.1"
+    "object-hash": "2.1.1"
   },
   "renovate": {
     "extends": [
