@@ -33,7 +33,7 @@
     "@semantic-release/github": "7.2.1",
     "@semantic-release/npm": "7.1.1",
     "@semantic-release/release-notes-generator": "9.0.2",
-    "ajv": "8.1.0",
+    "ajv": "8.2.0",
     "codecov": "3.8.1",
     "commitizen": "4.2.3",
     "cz-conventional-changelog": "3.3.0",
