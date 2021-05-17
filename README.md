@@ -25,6 +25,7 @@ Features from the Rust language in JavaScript: Provides [Traits](https://doc.rus
     - [Typing utilities](#typing-utilities)
     - [Functional Utilities](#functional-utilities)
   - [Change Log](#change-log)
+    - [1.9.0](#190)
     - [1.8.0](#180)
     - [1.7.0](#170)
     - [1.6.0](#160)
