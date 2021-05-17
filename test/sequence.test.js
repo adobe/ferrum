@@ -286,12 +286,12 @@ it('skipWhile', () => {
 });
 
 it('take/...', () => {
-  ckEqSeq(tryTake(4)(range0(10)), [0, 1, 2, 3]);
+  ckEqSeq(tryTake(4)(list(range0(10))), [0, 1, 2, 3]);
   ckEqSeq(tryTake(4)(range0(2)), [0, 1]);
   ckEqSeq(tryTake(4)([]), []);
-  ckEqSeq(takeWithFallback(4, 99)(range0(2)), [0, 1, 99, 99]);
+  ckEqSeq(takeWithFallback(4, 99)(list(range0(2))), [0, 1, 99, 99]);
   ckEqSeq(takeWithFallback(4, 99)([]), [99, 99, 99, 99]);
-  ckEqSeq(take(2)(range0(2)), [0, 1]);
+  ckEqSeq(take(2)(list(range0(2))), [0, 1]);
   ckThrows(IteratorEnded, () => take(4)(range0(2)));
 
   const it = iter(range0(12));
