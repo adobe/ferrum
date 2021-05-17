@@ -1,3 +1,10 @@
+## [1.9.1](https://github.com/adobe/ferrum/compare/v1.9.0...v1.9.1) (2021-05-17)
+
+
+### Bug Fixes
+
+* take, tryTake now support all containers ([7915b49](https://github.com/adobe/ferrum/commit/7915b4952c620de84f88d370b119a55e868891da)), closes [#193](https://github.com/adobe/ferrum/issues/193)
+
 # [1.9.0](https://github.com/adobe/ferrum/compare/v1.8.0...v1.9.0) (2021-04-16)
 
 
