@@ -28,7 +28,7 @@ const {
   _reinterpretCast, bytes2hex, hex2bytes, _TypedArray,
   _str2bin, _padToSize, _u64, hashset, hashmap, _sentinels,
   _bin, _bytes2u64, _u642bytes,
-} = require('../src/hashing.js');
+} = require('../src/hashing');
 
 const popcnt = (bytes) =>
   sum(map(cartesian2(bytes, range0(8)), ([byt, off]) =>
