@@ -25,6 +25,7 @@ Features from the Rust language in JavaScript: Provides [Traits](https://doc.rus
     - [Typing utilities](#typing-utilities)
     - [Functional Utilities](#functional-utilities)
   - [Change Log](#change-log)
+    - [1.9.1](#191)
     - [1.9.0](#190)
     - [1.8.0](#180)
     - [1.7.0](#170)
@@ -646,6 +647,12 @@ assertEquals(pair(2)(1), /* => */ [1,2]);
 ## Change Log
 
 ### Features
+
+### 1.9.1
+
+* #193 fix: take(), tryTake(), takeWithFallback() no longer broken on plain
+  arrays. Congrats to @tobia for finding the first bug affecting the actual
+  code (not just documentation or CI).
 
 ### 1.9.0
 
