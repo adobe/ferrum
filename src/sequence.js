@@ -1436,9 +1436,10 @@ const skipWhile = curry('skipWhile', (seq, pred) => {
 */
 const tryTake = curry('tryTake', (seq, no) => {
   const Nothing = Symbol('Nothing');
+  const it = iter(seq);
   return pipe(
     range0(no),
-    map(() => tryNext(seq, Nothing)),
+    map(() => tryNext(it, Nothing)),
     takeUntilVal(Nothing),
     list,
   );
@@ -1456,11 +1457,10 @@ const takeShort = tryTake;
 * @throws IteratorEnded
 * @returns {Array}
 */
-const take = curry('take', (seq, no) => pipe(
-  range0(no),
-  map(() => next(seq)),
-  list,
-));
+const take = curry('take', (seq, no) => {
+  const it = iter(seq);
+  return list(map(range0(no), (_) => next(it)));
+});
 
 /**
 * Yields an iterator of the first `no` elements in the given
@@ -1473,11 +1473,10 @@ const take = curry('take', (seq, no) => pipe(
 * @param {Any} fallback The value to supply if the input sequence is too short
 * @returns {Array} The elements taken
 */
-const takeWithFallback = curry('takeWithFallback', (seq, no, fallback) => pipe(
-  concat(range0(no)),
-  map(() => tryNext(seq, fallback)),
-  list,
-));
+const takeWithFallback = curry('takeWithFallback', (seq, no, fallback) => {
+  const it = iter(seq);
+  return list(map(range0(no), (_) => tryNext(it, fallback)));
+});
 
 /**
 * Cut off the sequence at the first point where the given condition is no
