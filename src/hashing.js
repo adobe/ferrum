@@ -27,14 +27,14 @@ const { inspect } = require('util');
 const { randomBytes } = require('crypto');
 const { h64: Xxhash64 } = require('xxhashjs');
 const { encode: utf8encode } = require('fastestsmallesttextencoderdecoder');
-const { first, map, second, each, Into, join, list, iter, all } = require('./sequence.js');
-const { isdef, ifdef, type, typename, createFrom } = require('./typesafe.js');
-const { withFunctionName, curry, mutate } = require('./functional.js');
-const { Trait } = require('./trait.js');
+const { first, map, second, each, Into, join, list, iter, all } = require('./sequence');
+const { isdef, ifdef, type, typename, createFrom } = require('./typesafe');
+const { withFunctionName, curry, mutate } = require('./functional');
+const { Trait } = require('./trait');
 const {
   _typedArrays, _maybeURL, assertEquals, size, Size, Equals, eq, Get, Has,
   Assign, Delete, Pairs, Shallowclone, Deepclone, deepclone,
-} = require('./stdtraits.js');
+} = require('./stdtraits');
 
 const { assign } = Object;
 
