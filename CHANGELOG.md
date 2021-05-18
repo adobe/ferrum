@@ -1,3 +1,10 @@
+## [1.9.2](https://github.com/adobe/ferrum/compare/v1.9.1...v1.9.2) (2021-05-18)
+
+
+### Bug Fixes
+
+* security updates ([205e075](https://github.com/adobe/ferrum/commit/205e075af6cea668cd203af822de6fc35315111e))
+
 ## [1.9.1](https://github.com/adobe/ferrum/compare/v1.9.0...v1.9.1) (2021-05-17)
 
 
