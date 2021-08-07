@@ -22,10 +22,9 @@
   },
   "homepage": "https://github.com/adobe/ferrum#readme",
   "dependencies": {
-    "documentation": "^13.2.1",
-    "fastestsmallesttextencoderdecoder": "^1.0.22",
+    "fastestsmallesttextencoderdecoder": "1.0.22",
     "lodash.isplainobject": "4.0.6",
-    "xxhashjs": "^0.2.2"
+    "xxhashjs": "0.2.2"
   },
   "devDependencies": {
     "@semantic-release/changelog": "5.0.1",
@@ -52,7 +51,6 @@
     "mocha": "9.0.3",
     "mocha-junit-reporter": "2.0.0",
     "mocha-multi-reporters": "1.5.1",
-    "mocha-parallel-tests": "2.3.0",
     "nyc": "15.1.0",
     "object-hash": "2.2.0",
     "semantic-release": "17.4.4"
