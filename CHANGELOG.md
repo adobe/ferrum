@@ -1,3 +1,10 @@
+## [1.9.3](https://github.com/adobe/ferrum/compare/v1.9.2...v1.9.3) (2021-09-20)
+
+
+### Bug Fixes
+
+* cleanup dependencies ([#206](https://github.com/adobe/ferrum/issues/206)) ([198adf6](https://github.com/adobe/ferrum/commit/198adf6dadecc474a9823bbe1e81aca4c5a96ce7))
+
 ## [1.9.2](https://github.com/adobe/ferrum/compare/v1.9.1...v1.9.2) (2021-05-18)
 
 
