@@ -1,3 +1,10 @@
+## [1.9.4](https://github.com/adobe/ferrum/compare/v1.9.3...v1.9.4) (2022-02-03)
+
+
+### Bug Fixes
+
+* Please create a new release ([89987f4](https://github.com/adobe/ferrum/commit/89987f4a627b1ce32796842c88c5c5bce2e27775))
+
 ## [1.9.3](https://github.com/adobe/ferrum/compare/v1.9.2...v1.9.3) (2021-09-20)
 
 
