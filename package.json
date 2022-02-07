@@ -32,7 +32,7 @@
     "@semantic-release/git": "10.0.1",
     "ajv": "8.6.3",
     "codecov": "3.8.3",
-    "commitizen": "^3.0.0",
+    "commitizen": "4.2.4",
     "cz-conventional-changelog": "^3.0.1",
     "docdash": "git+https://github.com/koraa/docdash.git",
     "eslint": "8.2.0",
