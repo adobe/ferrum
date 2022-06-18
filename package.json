@@ -41,12 +41,12 @@
     "ferrum.doctest": "1.0.5",
     "jsdoc": "^3.6.10",
     "junit-report-builder": "3.0.0",
-    "lint-staged": "12.1.1",
-    "mocha": "^9.2.0",
+    "lint-staged": "13.0.2",
+    "mocha": "10.0.0",
     "mocha-junit-reporter": "2.0.2",
     "mocha-multi-reporters": "1.5.1",
     "nyc": "15.1.0",
-    "object-hash": "2.2.0",
+    "object-hash": "3.0.0",
     "semantic-release": "^19.0.2"
   },
   "renovate": {
