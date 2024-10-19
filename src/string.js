@@ -11,68 +11,29 @@
  */
 
 const { pipe } = require('./functional');
-const { size } = require('./stdtraits');
-const { filter, map, count, foldl, join } = require('./sequence');
+const { count, filter, foldl, join, map } = require('./sequence');
 
-/**
- * Helpers for working with strings.
- */
-
-/**
- * This is a helper for declaring multiline strings.
- *
- * ```
- * const { strictEqual: assertIs } = require('assert');
- * const { multiline } = require('ferrum');
- *
- * assertIs(
- *   multiline(`
- *     Foo
- *     Bar
- *     Baz
- *
- *        Hello
- *
- *     Bang
- *
- *   `),
- *   'Foo\nBar\nBaz\n\n   Hello\n\nBang\n');
- *
- * assertIs(
- *   multiline(`Foo\nBar`),
- *   'Foo\nBar');
- * ```
- *
- * The function basically just takes a string and then
- * strips the first & last lines if they are empty.
- *
- * In order to remove indentation, we determine the common
- * whitespace prefix length (number of space 0x20 characters
- * at the start of the line). This prefix is simply removed
- * from each line...
- *
- * @function
- */
 const multiline = (str) => {
-  // Discard the leading & trailing line
-  const lines = str.split('\n');
+  if (!str.trim()) return '';  // Handle empty or whitespace-only strings early
 
-  // Strip the first and the last line
-  if (lines[0].match(/^\s*$/)) {
-    lines.shift();
-  }
-  if (size(lines) > 0 && lines[size(lines) - 1].match(/^\s*$/)) {
-    lines.pop();
-  }
+  const lines = str.trim().split('\n');  // Use trim to avoid shift/pop
 
-  // Find the prefix length
   const prefixLen = pipe(
     lines,
-    filter((l) => !l.match(/^\s*$/)), // Disregarding empty lines
-    map((l) => l.match(/^ */)[0]), // Extract prefixes
-    map(count), // calculate length
-    foldl(Infinity, (a, b) => Math.min(a, b)),
-  ); // minimum
+    filter(l => l.trim()),  // Ignore empty lines
+    map(l => l.match(/^ */)[0].length),  // Calculate prefix lengths
+    foldl(Infinity, Math.min)  // Find minimum prefix length
+  );
+
+  return pipe(
+    lines,
+    map(l => l.slice(prefixLen)),  // Remove the common prefix
+    join('\n')
+  );
+};
+
+module.exports = { multiline };
+
 
   return pipe(
     lines,
