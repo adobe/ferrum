@@ -2,7 +2,7 @@ version: 2.1
 executors:
   node12:
     docker:
-      - image: circleci/node:17
+      - image: circleci/node:17.2.0
         environment:
           NPM_CONFIG_PREFIX: "~/.npm-global"
     working_directory: ~/repo
